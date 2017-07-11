@@ -26,14 +26,29 @@ var io = require('socket.io')(serv,{});
 
 //whenever there is a connection, print 'socket connection'
 io.sockets.on('connection', function(socket){
-	console.log('socket connection');
+	console.log('new socket connection');
+	socket.id = Math.random();
+	//make id or number the ID for the player...make sure it is unique
+	socket.number = "" + Math.floor(10 * Math.random());
+	SOCKET_LIST[socket.id] = socket;
 
-	socket.on('happy',function(data){
-		console.log('happy because ' + data.reason);
-	});
-
-	socket.emit('serverMsg',{
-		msg:'hello',
+	socket.on('disconnect',function(){
+		delete SOCKET_LIST[socket.id];
 	});
 
 });
+
+setInterval(function(){
+	var pack = [];
+	for(var i in SOCKET_LIST[i]){
+		var socket = SOCKET_LIST[i];
+		pack.push({
+			somedata:socket.somedata
+			//here, make somedata stuff like player character, allies, etc?
+		});
+	}
+	for(var i in SOCKET_LIST){
+		socket.emit('updatePlayers',pack);
+	}
+
+
