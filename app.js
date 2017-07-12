@@ -19,21 +19,30 @@ app.get('/',function(req, res) {
 app.use('/client',express.static(__dirname + '/client'));
 
 serv.listen(2000);
+console.log("server started");
 //End Express
 
-//Socket.io
-var io = require('socket.io')(serv,{});
+var SOCKET_LIST = [];
+var PLAYER_LIST = [];
 
-//whenever there is a connection, print 'socket connection'
+var Player = function(id){
+	var self = {
+		id:id,
+		name:id,
+		character:none
+	}
+	return self;
+}
+
+var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
 	console.log('new socket connection');
-	socket.id = Math.random();
-	//make id or number the ID for the player...make sure it is unique
-	socket.number = "" + Math.floor(10 * Math.random());
+	socket.id = SOCKET_LIST.length;
 	SOCKET_LIST[socket.id] = socket;
 
 	socket.on('disconnect',function(){
 		delete SOCKET_LIST[socket.id];
+		delete PLAYER_LIST[socket.id];
 	});
 
 });
@@ -50,5 +59,3 @@ setInterval(function(){
 	for(var i in SOCKET_LIST){
 		socket.emit('updatePlayers',pack);
 	}
-
-
