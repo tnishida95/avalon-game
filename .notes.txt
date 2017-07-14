@@ -1,0 +1,18 @@
+TODO:
+	continue tutorial
+	research bootstrap vs angularJS vs react
+
+Current tutorial episode: 3- Multiple WebSocket Connections
+	https://youtu.be/_GioD4LpjMw
+
+packages needed:
+	express
+	socket.io
+to install (after "npm init"): npm install <package>
+
+File communication (Express)
+	Client asks server for a file
+
+Package communication (Socket.io)
+	Client sends data to server
+	Server sends data to client
