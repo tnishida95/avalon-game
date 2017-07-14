@@ -1,7 +1,5 @@
 //app.js
 
-console.log("Hello World");
-
 //Express
 /*
 creates a serv and makes it listen on the port 2000
@@ -12,18 +10,17 @@ by default, domain is localhost
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
-
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
 app.use('/client',express.static(__dirname + '/client'));
-
 serv.listen(2000);
+//end Express
 console.log("server started");
-//End Express
 
-var SOCKET_LIST = [];
-var PLAYER_LIST = [];
+var socketList = [];
+var playerList = [];
+var playerid = 0;
 
 var Player = function(id){
 	var self = {
@@ -35,27 +32,36 @@ var Player = function(id){
 }
 
 var io = require('socket.io')(serv,{});
-io.sockets.on('connection', function(socket){
-	console.log('new socket connection');
-	socket.id = SOCKET_LIST.length;
-	SOCKET_LIST[socket.id] = socket;
 
+function printPlayerList() {
+	if(playerList.length < 1) return;
+	for(i = 0; i < playerList.length; i++)
+		process.stdout.write(" | " + playerList[i]);
+	console.log(" |");
+}
+
+//upon new socket connection
+io.sockets.on('connection', function(socket){
+	socket.id = playerid;
+	playerList[playerList.length] = playerid;
+	socketList[playerList.length] = socket;
+	console.log('new socket connection, player  #' + socket.id);
+	playerid++;
+	printPlayerList();
+
+	//upon disconnect
 	socket.on('disconnect',function(){
-		delete SOCKET_LIST[socket.id];
-		delete PLAYER_LIST[socket.id];
+		//get the index of the socket that just dc'd, cut it out of lists
+		var index = playerList.indexOf(socket.id);
+		socketList.splice(index,1);
+		playerList.splice(index,1);
+		console.log('player #' + socket.id + ' disconnected');
+		printPlayerList();
+	});
+
+	//upon pressing New Game button; broken
+	socket.on('btnPressNewGame',function(data){
+		console.log(data.message + socket.id);
 	});
 
 });
-
-setInterval(function(){
-	var pack = [];
-	for(var i in SOCKET_LIST[i]){
-		var socket = SOCKET_LIST[i];
-		pack.push({
-			somedata:socket.somedata
-			//here, make somedata stuff like player character, allies, etc?
-		});
-	}
-	for(var i in SOCKET_LIST){
-		socket.emit('updatePlayers',pack);
-	}

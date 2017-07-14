@@ -1,13 +1,35 @@
-Hello World!
 
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-<script>
-    var socket = io();
-    sock.on('updatePlayers',function(data){
-        //here we update local variables?  or should everything be handled on the server
-        //server would listen for player actions (button presses, etc.)
-        //and push out the game phases (eg. voting vs. questing)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Avalon</title>
 
-</script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="/scripts/jquery.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
 
-<button onclick ="thisFunctionHappensOnClick()">Here is a button</button>
+    <script>
+        var socket = io();
+        var btnPressNewGame = function(){
+            socket.emit('btnPressNewGame',{
+                message:'New Game button was pressed by '
+            });
+        }
+        testFunction();
+    </script>
+
+</head>
+
+<body>
+        <div class="main-content">
+            <div class="main-menu">
+                <h1>Avalon</h1>
+                <hr>
+                <div class="button-container">
+                    <button onclick="btnPressNewGame()">New Game</button>
+                    <button id="btn-join-game">Join Game</button>
+                </div>
+            </div>
+        </div>
+</body>
+</html>
