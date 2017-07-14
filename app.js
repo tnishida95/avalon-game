@@ -49,7 +49,7 @@ io.sockets.on('connection', function(socket){
 	playerid++;
 	printPlayerList();
 
-	//upon disconnect
+	//upon socket disconnect
 	socket.on('disconnect',function(){
 		//get the index of the socket that just dc'd, cut it out of lists
 		var index = playerList.indexOf(socket.id);
@@ -59,8 +59,11 @@ io.sockets.on('connection', function(socket){
 		printPlayerList();
 	});
 
-	//upon pressing New Game button; broken
+	//button presses
 	socket.on('btnPressNewGame',function(data){
+		console.log(data.message + socket.id);
+	});
+	socket.on('btnPressJoinGame',function(data){
 		console.log(data.message + socket.id);
 	});
 

@@ -1,35 +1,100 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Avalon</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width = device-width, initial-scale=1">
+<title>Avalon</title>
 
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-    <script src="/scripts/jquery.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+    crossorigin="anonymous">
 
-    <script>
-        var socket = io();
-        var btnPressNewGame = function(){
-            socket.emit('btnPressNewGame',{
-                message:'New Game button was pressed by '
-            });
-        }
-        testFunction();
-    </script>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+    var socket = io();
+    var btnPressNewGame = function(){
+        socket.emit('btnPressNewGame',{
+            message:'New Game button was pressed by '
+        });
+    }
+    var btnPressJoinGame = function(){
+        socket.emit('btnPressJoinGame',{
+            message:'Join Game button was pressed by '
+        });
+    }
+</script>
 
 </head>
 
 <body>
-        <div class="main-content">
-            <div class="main-menu">
-                <h1>Avalon</h1>
-                <hr>
-                <div class="button-container">
-                    <button onclick="btnPressNewGame()">New Game</button>
-                    <button id="btn-join-game">Join Game</button>
-                </div>
-            </div>
+
+<div class="container">
+
+<div class="page-header">
+<h1>Avalon</h1>
+</div>
+<h2><a href="#welcomeContent" data-toggle="collapse">Welcome to Avalon!</a></h2>
+<div id="welcomeContent" class="collapse in">
+<div class="jumbotron">
+    <div class="btn-group btn-group-lg" role="group">
+        <button type="button" class="btn btn-default" onclick="btnPressNewGame()">New Game</button>
+        <button type="button" class="btn btn-default" onclick="btnPressJoinGame()">Join Game</button>
+    </div>
+</div>
+</div>
+
+<h2><a href="#instructionsContent" data-toggle="collapse">Rules</a></h2>
+<div id="instructionsContent" class="collapse in">
+<div class="jumbotron">
+    <h4>Overview</h4>
+        All players are randomly assigned a character. This character is either on the side of Good or the side of Evil, and may have a special ability that affects the game in some way.  Agents of Evil are told who the other Evil players are.  All players are candidates to go on quests.  The side of Good wishes to complete three quests successfully, and Evil wishes three quests to fail.  Merlin has knowledge of the agents of Evil, and must try to guide Good to approve only Good players on the questing party.  But he must hide his identity; the Assassin has a chance to kill Merlin at the end of the game.  If she successfully kills Merlin, Evil wins instead.
+    <h4>Selection Phase</h4>
+        At the start of each round, the current party leader proposes a set of players who will go on the quest.  The size of the party is predetermined, decided by the number of players and the quest.  All players are free to talk during this phase to convince others of their suspicions or state who they would like to be on the party.  For Good, it is critical no Evil players make it onto the quest.
+
+    <h4>Voting Phase</h4>
+         Once an official decision is made, further discussion can take place before it is voted on.  If a majority of players reject the party, a different player is assigned the role of party leader and players are reselected.  If five parties are rejected within a single voting phase, Good foreits the game.  If the majority approves the party, the game continues the questing phase.
+
+    <h4>Questing Phase</h4>
+        Once a majority agrees on a party, that party will go on the quest.  Agents of Good can only help it succeed, but agents of Evil can choose to contribute to its success or fail the quest.  Only one fail action is neccessary for the quest to fail.  Once every player has selected an action, the actions are revealed but not associated with the acting player.  After, the party is disbanded and the game returns to the selection phase of a new quest.
+
+    <h4>Game End</h4>
+        Questing ends when three quests have succeeded or three quests have failed.  If the latter occurs, Evil wins and the game is over.  If the former occurs, Good may have won.  After the third successful quest, the Assassin will select an agent of Good.  If that player is Merlin, Evil wins despite the results of the quests.
+</div>
+</div> <!-- instructionContent -->
+</div> <!-- container -->
+
+
+
+
+
+
+
+
+<div class="main-content">
+    <div class="main-menu">
+        <h1>Avalon</h1>
+        <hr>
+        <div class="button-container">
+            <button onclick="btnPressNewGame()">New Game</button>
+            <button id="btn-join-game">Join Game</button>
         </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
 </body>
 </html>
