@@ -36,8 +36,8 @@ var io = require('socket.io')(serv,{});
 function printPlayerList() {
 	if(playerList.length < 1) return;
 	for(i = 0; i < playerList.length; i++)
-		process.stdout.write(" | " + playerList[i]);
-	console.log(" |");
+		process.stdout.write("[" + playerList[i] + "]");
+	console.log("");
 }
 
 //upon new socket connection
