@@ -18,27 +18,31 @@ serv.listen(2000);
 //end Express
 console.log("server started");
 
+//array of sockets
 var socketList = [];
+//array of playerids
 var playerList = [];
+//array of Player objects
+var roomList = [];
 var playerid = 0;
 
-var Player = function(id){
-	var self = {
-		id:id,
-		name:id,
-		character:none
-	}
-	return self;
+
+function Player(idInt, nameString, characterString) {
+	this.id = idInt;
+	this.name = nameString;
+	this.character = characterString;
 }
 
 var io = require('socket.io')(serv,{});
 
 function printPlayerList() {
 	if(playerList.length < 1) return;
+	process.stdout.write("playerList: ");
 	for(i = 0; i < playerList.length; i++)
 		process.stdout.write("[" + playerList[i] + "]");
 	console.log("");
 }
+
 
 //upon new socket connection
 io.sockets.on('connection', function(socket){
@@ -61,7 +65,12 @@ io.sockets.on('connection', function(socket){
 
 	//button presses
 	socket.on('btnPressNewGame',function(data){
-		console.log(data.message + socket.id);
+		console.log("New Game button pressed");
+		var player = new Player(socket.id, data, "none");
+		console.log("Created new Player:");
+		console.log("\tid: " + player.id);
+		console.log("\tname: " + player.name);
+		console.log("\tcharacter: " + player.character);
 	});
 	socket.on('btnPressJoinGame',function(data){
 		console.log(data.message + socket.id);
