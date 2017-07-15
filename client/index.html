@@ -41,7 +41,8 @@
     };
     var btnPressJoinGame = function(){
         socket.emit('btnPressJoinGame',{
-            message:'Join Game button was pressed by '
+            name: $("#nameInput").val(),
+            room: $("#roomInput").val()
         });
     }
 </script>

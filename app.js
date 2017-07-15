@@ -22,8 +22,9 @@ console.log("server started");
 var socketList = [];
 //array of playerids
 var playerList = [];
-//array of Player objects
+//key: roomNum, val: array of Players in the room
 var roomList = [];
+//growing value to give unique ids to all connections
 var playerid = 0;
 
 
@@ -41,6 +42,22 @@ function printPlayerList() {
 	for(i = 0; i < playerList.length; i++)
 		process.stdout.write("[" + playerList[i] + "]");
 	console.log("");
+}
+
+function printRoomList() {
+	if(roomList.length < 1) {
+		console.log("no room currently");
+		return;
+	}
+	console.log("-------------------------");
+	for(roomNums in roomList) {
+			process.stdout.write("Room #" + roomNums + ": ");
+			for(i = 0; i < roomList[roomNums].length; i++) {
+				process.stdout.write("[" + roomList[roomNums][i].id + ":" + roomList[roomNums][i].name + "]");
+			}
+			console.log("");
+	}
+	console.log("-------------------------");
 }
 
 
@@ -71,9 +88,21 @@ io.sockets.on('connection', function(socket){
 		console.log("\tid: " + player.id);
 		console.log("\tname: " + player.name);
 		console.log("\tcharacter: " + player.character);
+		//generate unique, four digit roomNum [1000,9999]
+		do {
+			roomNum = Math.floor(Math.random() * 9000) + 1000;
+		}
+		while (roomNum in roomList);
+		//making an array of players that will fill the room
+		var tmpArr = [player];
+		roomList[roomNum.toString()] = tmpArr;
+		printRoomList();
 	});
 	socket.on('btnPressJoinGame',function(data){
-		console.log(data.message + socket.id);
+		//console.log(data.message + socket.id);
+		console.log("Join Game button pressed");
+		console.log("Got name: [" + data.name + "] and room: [" + data.room + "]");
+
 	});
 
 });
