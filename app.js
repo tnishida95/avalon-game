@@ -60,7 +60,6 @@ function printRoomList() {
 	console.log("-------------------------");
 }
 
-
 //upon new socket connection
 io.sockets.on('connection', function(socket){
 	socket.id = playerid;
@@ -95,13 +94,21 @@ io.sockets.on('connection', function(socket){
 		while (roomNum in roomList);
 		//making an array of players that will fill the room
 		var tmpArr = [player];
-		roomList[roomNum.toString()] = tmpArr;
+		roomList[roomNum] = tmpArr;
 		printRoomList();
 	});
 	socket.on('btnPressJoinGame',function(data){
-		//console.log(data.message + socket.id);
-		console.log("Join Game button pressed");
-		console.log("Got name: [" + data.name + "] and room: [" + data.room + "]");
+		roomNum = (data.room).toString();
+		console.log("Join Game button pressed with roomNum: " + roomNum);
+		if(roomNum in roomList) {
+			var player = new Player(socket.id, data.name, "none");
+			roomList[roomNum][roomList[roomNum].length] = player;
+			printRoomList();
+		}
+		else {
+			console.log("roomNum not found");
+			//send error message
+		}
 
 	});
 
