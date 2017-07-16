@@ -59,11 +59,13 @@
 
 <!-- another style option: text-transform:uppercase -->
 <div id="inputArea" class="text-center">
-<input type="text" id="nameInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Name">
-<p></p>
-<input type="text" id="roomInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="For Join: Room #">
-<hr>
+    <input type="text" id="nameInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Your Name">
+    <p></p>
+    <input type="text" id="roomInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
+    <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
+    <hr>
 </div>
+
 
 <div class="text-center">
 <div class="btn-group btn-group-lg" role="group"  style="box-shadow:0px 0px 0px 0px">
@@ -73,8 +75,6 @@
 </div>
 <hr>
 </div>
-
-
 
 <!-- class="collapse in" for expanded by default -->
 <div id="rulesContent" class="collapse">
