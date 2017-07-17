@@ -15,7 +15,7 @@
 <meta name="viewport" content="width = device-width, initial-scale=1">
 <title>Avalon</title>
 
-<script src="handlebars-v4.0.10.js"></script>
+<!-- <script src="handlebars-v4.0.10.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -37,6 +37,7 @@
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
     var socket = io();
+
     var btnPressNewGame = function(){
         socket.emit('btnPressNewGame',$("#nameInput").val())
     };
@@ -46,6 +47,11 @@
             room: $("#roomInput").val()
         });
     }
+    socket.on('loadLobby',function(data){
+        console.log("Received: [loadLobby] from server");
+        document.getElementById("topText").innerHTML = "Avalon Room #" + data.num;
+        //TODO: load the lobby div
+    });
 </script>
 
 </head>
@@ -54,7 +60,7 @@
 <div class="center">
 <div class="container">
 
-<h2 style="text-align:center;">Welcome to Avalon!</h2>
+<h2 id="topText" style="text-align:center;">Welcome to Avalon!</h2>
 
 <hr>
 
@@ -84,13 +90,10 @@
             All players are randomly assigned a character. This character is either on the side of Good or the side of Evil, and may have a special ability that affects the game in some way.  Agents of Evil are told who the other Evil players are.  All players are candidates to go on quests.  The side of Good wishes to complete three quests successfully, and Evil wishes three quests to fail.  Merlin has knowledge of the agents of Evil, and must try to guide Good to approve only Good players on the questing party.  But he must hide his identity; the Assassin has a chance to kill Merlin at the end of the game.  If she successfully kills Merlin, Evil wins instead.
         <h4>Selection Phase</h4>
             At the start of each round, the current party leader proposes a set of players who will go on the quest.  The size of the party is predetermined, decided by the number of players and the quest.  All players are free to talk during this phase to convince others of their suspicions or state who they would like to be on the party.  For Good, it is critical no Evil players make it onto the quest.
-
         <h4>Voting Phase</h4>
              Once an official decision is made, further discussion can take place before it is voted on.  If a majority of players reject the party, a different player is assigned the role of party leader and players are reselected.  If five parties are rejected within a single voting phase, Good foreits the game.  If the majority approves the party, the game continues the questing phase.
-
         <h4>Questing Phase</h4>
             Once a majority agrees on a party, that party will go on the quest.  Agents of Good can only help it succeed, but agents of Evil can choose to contribute to its success or fail the quest.  Only one fail action is neccessary for the quest to fail.  Once every player has selected an action, the actions are revealed but not associated with the acting player.  After, the party is disbanded and the game returns to the selection phase of a new quest.
-
         <h4>Game End</h4>
             Questing ends when three quests have succeeded or three quests have failed.  If the latter occurs, Evil wins and the game is over.  If the former occurs, Good may have won.  After the third successful quest, the Assassin will select an agent of Good.  If that player is Merlin, Evil wins despite the results of the quests.
     </div>

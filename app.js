@@ -34,7 +34,7 @@ function Player(idInt, nameString, characterString) {
 	this.character = characterString;
 }
 
-var io = require('socket.io')(serv,{});
+const io = require('socket.io')(serv,{});
 
 function printPlayerList() {
 	if(playerList.length < 1) return;
@@ -62,27 +62,27 @@ function printRoomList() {
 
 //upon new socket connection
 io.sockets.on('connection', function(socket){
-	socket.id = playerid;
+	socket.num = playerid;
 	playerList[playerList.length] = playerid;
 	socketList[playerList.length] = socket;
-	console.log('new socket connection, player  #' + socket.id);
+	console.log('new socket connection, player  #' + socket.num);
 	playerid++;
 	printPlayerList();
 
 	//upon socket disconnect
 	socket.on('disconnect',function(){
 		//get the index of the socket that just dc'd, cut it out of lists
-		var index = playerList.indexOf(socket.id);
+		var index = playerList.indexOf(socket.num);
 		socketList.splice(index,1);
 		playerList.splice(index,1);
-		console.log('player #' + socket.id + ' disconnected');
+		console.log('player #' + socket.num + ' disconnected');
 		printPlayerList();
 	});
 
 	//button presses
 	socket.on('btnPressNewGame',function(data){
 		console.log("New Game button pressed");
-		var player = new Player(socket.id, data, "none");
+		var player = new Player(socket.num, data, "none");
 		console.log("Created new Player:");
 		console.log("\tid: " + player.id);
 		console.log("\tname: " + player.name);
@@ -96,12 +96,16 @@ io.sockets.on('connection', function(socket){
 		var tmpArr = [player];
 		roomList[roomNum] = tmpArr;
 		printRoomList();
+		io.to(socket.id).emit("loadLobby", {
+			list: roomList[roomNum],
+			num: roomNum
+		});
 	});
 	socket.on('btnPressJoinGame',function(data){
 		roomNum = (data.room).toString();
 		console.log("Join Game button pressed with roomNum: " + roomNum);
 		if(roomNum in roomList) {
-			var player = new Player(socket.id, data.name, "none");
+			var player = new Player(socket.num, data.name, "none");
 			roomList[roomNum][roomList[roomNum].length] = player;
 			printRoomList();
 		}
@@ -109,7 +113,6 @@ io.sockets.on('connection', function(socket){
 			console.log("roomNum not found");
 			//send error message
 		}
-
 	});
 
 });
