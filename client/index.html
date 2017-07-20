@@ -51,6 +51,7 @@
         console.log("Received: [loadLobby] from server");
         document.getElementById("topText").innerHTML = "Avalon Room #" + data.num;
         //TODO: load the lobby div
+        //$("#mainDiv").html( $("#nameOfOtherDiv").val() ); ? maybe html instead of val...play around
     });
 </script>
 
@@ -60,11 +61,20 @@
 <div class="center">
 <div class="container">
 
-<h2 id="topText" style="text-align:center;">Welcome to Avalon!</h2>
+<!-- ########## ########## START ########## ########## -->
+<div id="topDiv">
+    <h2 id="topText" style="text-align:center;">Welcome to Avalon!</h2>
+    <hr>
+</div>
+<!-- ########## ########## END ########## ########## -->
 
-<hr>
+<!-- @@@@@@@@@@ @@@@@@@@@@ START @@@@@@@@@@ @@@@@@@@@@ -->
+<div id="centerDiv">
+    <!-- all the main game screens should be replaced here with javascript -->
+</div>
+<!-- @@@@@@@@@@ @@@@@@@@@@ END @@@@@@@@@@ @@@@@@@@@@ -->
 
-<!-- another style option: text-transform:uppercase -->
+<!-- ########## ########## START ########## ########## -->
 <div id="inputArea" class="text-center">
     <input type="text" id="nameInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Your Name">
     <p></p>
@@ -72,17 +82,20 @@
     <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
     <hr>
 </div>
+<!-- ########## ########## END ########## ########## -->
 
-
+<!-- ########## ########## START ########## ########## -->
 <div class="text-center">
-<div class="btn-group btn-group-lg" role="group"  style="box-shadow:0px 0px 0px 0px">
-    <button type="button" class="btn btn-default" onclick="btnPressNewGame()" style="border-radius:0px; background:none;">New Game</button>
-    <button type="button" class="btn btn-default" onclick="btnPressJoinGame()"style="border-radius:0px; background:none;">Join Game</button>
-    <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent"style="border-radius:0px; background:none;">Rules</button>
+    <div class="btn-group btn-group-lg" role="group"  style="box-shadow:0px 0px 0px 0px">
+        <button type="button" class="btn btn-default" onclick="btnPressNewGame()" style="border-radius:0px; background:none;">New Game</button>
+        <button type="button" class="btn btn-default" onclick="btnPressJoinGame()"style="border-radius:0px; background:none;">Join Game</button>
+        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent"style="border-radius:0px; background:none;">Rules</button>
+    </div>
+    <hr>
 </div>
-<hr>
-</div>
+<!-- ########## ########## END ########## ########## -->
 
+<!-- ########## ########## START ########## ########## -->
 <!-- class="collapse in" for expanded by default -->
 <div id="rulesContent" class="collapse">
     <div class="well" style="background:none;">
@@ -99,10 +112,13 @@
     </div>
     <hr>
 </div> <!-- instructionContent -->
+<!-- ########## ########## END ########## ########## -->
 
+<!-- ########## ########## START ########## ########## -->
 <div style="text-align:center;">
     <h6>Tyler Nishida | Based on "The Resistance: Avalon" board game by Don Eskridge | Not endorsed by or affiliated with Indie Boards & Cards | https://github.com/tnishida95/avalon-game</h6>
 </div>
+<!-- ########## ########## END ########## ########## -->
 
 </div> <!-- container -->
 </div> <!-- center -->
