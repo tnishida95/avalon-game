@@ -53,24 +53,32 @@
         lobby = data.list;
 
 
-        var replacementStr = '<h2 id="topText" style="text-align:center;"></h2><hr>';
-        document.getElementById("topDiv").innerHTML = replacementStr;
+        var topTextReplacementStr = '<h2 id="topText" style="text-align:center;"></h2><hr>';
+        document.getElementById("topDiv").innerHTML = topTextReplacementStr;
         document.getElementById("topText").innerHTML = "Avalon Room #" + data.num;
         //TODO: load the lobby here
-        var replacementStr = '';
+        var hostLobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default" onclick="btnPressStartGame()" style="border-radius:0px; background:none;">Start Game</button><button type="button" class="btn btn-default" onclick="btnPressLeaveGame()" style="border-radius:0px; background:none;">Leave Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent" style="border-radius:0px; background:none;">Rules</button></div><hr></div>';
+        var characterSelectStr = '';
+        var lobbyListStr = '';
+        var centerReplacementStr = hostLobbyButtonsStr + characterSelectStr + lobbyListStr;
+        document.getElementById("centerDiv").innerHTML = centerReplacementStr;
         //TODO: build replacementStr
 
         /*
         if host, aka lobby[0].sid == socket.id...otherwise load different options
-        [start game][leave room][rules]
-        [playerone]
-        [playertwo]
-        [playerthree]
-        [etc...]
 
-        character select:
-        [merlin]
-        [percival]
+        hostLobbyButtonsStr
+            [start game][leave room][rules]
+
+        lobbyListStr
+            [playerone]
+            [playertwo]
+            [playerthree]
+            [etc...]
+
+        characterSelectStr
+        [merlin] [Assassin]
+        [percival] [Morgana]
         [etc...]
 
         */
@@ -104,8 +112,8 @@
 <div class="text-center">
     <div class="btn-group btn-group-lg" role="group"  style="box-shadow:0px 0px 0px 0px">
         <button type="button" class="btn btn-default" onclick="btnPressNewGame()" style="border-radius:0px; background:none;">New Game</button>
-        <button type="button" class="btn btn-default" onclick="btnPressJoinGame()"style="border-radius:0px; background:none;">Join Game</button>
-        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent"style="border-radius:0px; background:none;">Rules</button>
+        <button type="button" class="btn btn-default" onclick="btnPressJoinGame()" style="border-radius:0px; background:none;">Join Game</button>
+        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent" style="border-radius:0px; background:none;">Rules</button>
     </div>
     <hr>
 </div>
@@ -130,6 +138,10 @@
     </div>
     <hr>
 </div> <!-- rulesContent -->
+
+<!-- ########## ########## ########## ########## ########## -->
+
+
 
 <!-- ########## ########## ########## ########## ########## -->
 
