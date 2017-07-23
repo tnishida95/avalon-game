@@ -47,9 +47,16 @@
             room: $("#roomInput").val()
         });
     }
-    socket.on('loadLobby',function(data){
-        console.log("Received: [loadLobby] from server");
+    socket.on('joinSocketRoom',function(data){
+        //socket.join(data);
+        console.log("Received: [updateLobby] from server");
+        document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;"></h2><hr>';
         document.getElementById("topText").innerHTML = "Avalon Room #" + data.num;
+        //TODO: load the lobby here
+    })
+    socket.on('updateLobby',function(data){
+        console.log("Received: [updateLobby] from server");
+        document.getElementById("topDiv").innerHTML = "Avalon Room #" + data.num;
         //TODO: load the lobby div
         //$("#mainDiv").html( $("#nameOfOtherDiv").val() ); ? maybe html instead of val...play around
     });
@@ -66,13 +73,13 @@
     <h2 id="topText" style="text-align:center;">Welcome to Avalon!</h2>
     <hr>
 </div>
-<!-- ########## ########## END ########## ########## -->
+<!-- ########## ##########  END  ########## ########## -->
 
 <!-- @@@@@@@@@@ @@@@@@@@@@ START @@@@@@@@@@ @@@@@@@@@@ -->
 <div id="centerDiv">
     <!-- all the main game screens should be replaced here with javascript -->
 </div>
-<!-- @@@@@@@@@@ @@@@@@@@@@ END @@@@@@@@@@ @@@@@@@@@@ -->
+<!-- @@@@@@@@@@ @@@@@@@@@@  END  @@@@@@@@@@ @@@@@@@@@@ -->
 
 <!-- ########## ########## START ########## ########## -->
 <div id="inputArea" class="text-center">
@@ -82,7 +89,7 @@
     <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
     <hr>
 </div>
-<!-- ########## ########## END ########## ########## -->
+<!-- ########## ##########  END  ########## ########## -->
 
 <!-- ########## ########## START ########## ########## -->
 <div class="text-center">
@@ -93,7 +100,7 @@
     </div>
     <hr>
 </div>
-<!-- ########## ########## END ########## ########## -->
+<!-- ########## ##########  END  ########## ########## -->
 
 <!-- ########## ########## START ########## ########## -->
 <!-- class="collapse in" for expanded by default -->
@@ -112,13 +119,13 @@
     </div>
     <hr>
 </div> <!-- instructionContent -->
-<!-- ########## ########## END ########## ########## -->
+<!-- ########## ##########  END  ########## ########## -->
 
 <!-- ########## ########## START ########## ########## -->
 <div style="text-align:center;">
     <h6>Tyler Nishida | Based on "The Resistance: Avalon" board game by Don Eskridge | Not endorsed by or affiliated with Indie Boards & Cards | https://github.com/tnishida95/avalon-game</h6>
 </div>
-<!-- ########## ########## END ########## ########## -->
+<!-- ########## ##########  END  ########## ########## -->
 
 </div> <!-- container -->
 </div> <!-- center -->

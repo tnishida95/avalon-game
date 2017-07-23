@@ -96,10 +96,12 @@ io.sockets.on('connection', function(socket){
 		var tmpArr = [player];
 		roomList[roomNum] = tmpArr;
 		printRoomList();
-		io.to(socket.id).emit("loadLobby", {
-			list: roomList[roomNum],
-			num: roomNum
-		});
+		socket.join(data);
+		io.to(roomNum).emit("joinSocketRoom", roomNum);
+		//io.to(socket.id).emit("updateLobby", {
+		//	list: roomList[roomNum],
+		//	num: roomNum
+		//});
 	});
 	socket.on('btnPressJoinGame',function(data){
 		roomNum = (data.room).toString();
