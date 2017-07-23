@@ -28,8 +28,9 @@ var roomList = [];
 var playerid = 0;
 
 
-function Player(idInt, nameString, characterString) {
+function Player(idInt, socketidInt, nameString, characterString) {
 	this.id = idInt;
+	this.sid = socketidInt;
 	this.name = nameString;
 	this.character = characterString;
 }
@@ -77,12 +78,13 @@ io.sockets.on('connection', function(socket){
 		playerList.splice(index,1);
 		console.log('player #' + socket.num + ' disconnected');
 		printPlayerList();
+		//TODO: update any rooms with the socket of the dc
 	});
 
 	//button presses
 	socket.on('btnPressNewGame',function(data){
 		console.log("New Game button pressed");
-		var player = new Player(socket.num, data, "none");
+		var player = new Player(socket.num, socket.id, data, "none");
 		console.log("Created new Player:");
 		console.log("\tid: " + player.id);
 		console.log("\tname: " + player.name);
@@ -96,20 +98,24 @@ io.sockets.on('connection', function(socket){
 		var tmpArr = [player];
 		roomList[roomNum] = tmpArr;
 		printRoomList();
-		socket.join(data);
-		io.to(roomNum).emit("joinSocketRoom", roomNum);
-		//io.to(socket.id).emit("updateLobby", {
-		//	list: roomList[roomNum],
-		//	num: roomNum
-		//});
+		socket.join(roomNum);
+		io.to(roomNum).emit("loadLobby", {
+			list: roomList[roomNum],
+			num: roomNum
+		});
 	});
 	socket.on('btnPressJoinGame',function(data){
 		roomNum = (data.room).toString();
 		console.log("Join Game button pressed with roomNum: " + roomNum);
 		if(roomNum in roomList) {
-			var player = new Player(socket.num, data.name, "none");
+			var player = new Player(socket.num, socket.id, data.name, "none");
 			roomList[roomNum][roomList[roomNum].length] = player;
 			printRoomList();
+			socket.join(roomNum);
+			io.to(roomNum).emit("loadLobby", {
+				list: roomList[roomNum],
+				num: roomNum
+			});
 		}
 		else {
 			console.log("roomNum not found");
