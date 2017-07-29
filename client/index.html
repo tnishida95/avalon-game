@@ -41,6 +41,7 @@
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
     var socket = io();
+    var lobby;
 
     var btnPressNewGame = function(){
         socket.emit('btnPressNewGame',$("#nameInput").val())
@@ -62,47 +63,69 @@
         //TODO: send to the server
     };
 
+    function updateLobby() {
+        var lobbyListStr = '<div class="text-center"><p>' + lobby.length + ' Players - ';
+        if(lobby.length < 5) {
+            var playersNeeded = 5 - lobby.length;
+            lobbyListStr += 'Need at least ' + playersNeeded + ' more player(s).</p>';
+        }
+        else if (lobby.length == 5) {
+            lobbyListStr += 'There will be 3 Good and 2 Evil.</p>';
+        }
+        else if (lobby.length == 6) {
+            lobbyListStr += 'There will be 4 Good and 2 Evil.</p>';
+        }
+        else if (lobby.length == 7) {
+            lobbyListStr += 'There will be 4 Good and 3 Evil.</p>';
+        }
+        else if (lobby.length == 8) {
+            lobbyListStr += 'There will be 5 Good and 3 Evil.</p>';
+        }
+        else if (lobby.length == 9) {
+            lobbyListStr += 'There will be 6 Good and 3 Evil.</p>';
+        }
+        else if (lobby.length == 10) {
+            lobbyListStr += 'There will be 6 Good and 4 Evil.</p>';
+        }
+        else {
+            lobbyListStr += 'Too many.</p>';
+        }
+        for (var i = 0; i < lobby.length; i++) {
+            lobbyListStr += '[' + lobby[i].name + '] ';
+        }
+        lobbyListStr += '<hr></div>';
+
+        document.getElementById("lobbyDiv").innerHTML = lobbyListStr;
+    }
+
     socket.on('loadLobby',function(data){
         console.log("Received: [loadLobby] from server");
-
         lobby = data.list;
-        console.log(lobby);
+        document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;">' + 'Avalon Room #' + data.num + '</h2><hr>';
 
-        var topTextReplacementStr = '<h2 id="topText" style="text-align:center;"></h2><hr>';
-        document.getElementById("topDiv").innerHTML = topTextReplacementStr;
-        document.getElementById("topText").innerHTML = "Avalon Room #" + data.num;
-        //TODO: load the lobby here
-        var hostLobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default" onclick="btnPressStartGame()">Start Game</button><button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><hr></div>';
+        var hostLobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default" onclick="btnPressStartGame()">Start Game</button><button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><hr></div>';
+        var lobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default">Waiting...</button><button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><hr></div>';
         var characterSelectStr = '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active"><input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="percival">Percival</input></label><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodOne" checked>1st Servant of Arthur</input></label><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodTwo" checked>2nd Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodThree">3rd Servant of Arthur</input></label>' +
         '<button type="button" class="btn btn-default">-</button><button type="button" class="btn btn-default">-</button><button type="button" class="btn btn-default">-</button><button type="button" class="btn btn-default">-</button></div>' +
         '<div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="assassin" checked disabled="disabled">Assassin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="morgana">Morgana</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="mordred">Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="oberon">Oberon</input></label>' +
         '<label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="evilOne" checked>1st Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilTwo">2nd Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilThree">3rd Minion of Modred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilFour">4th Minion of Modred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilFive">5th Minion of Modred</input></label></div><hr></div>';
-        var lobbyListStr = '';
-        var centerReplacementStr = hostLobbyButtonsStr + characterSelectStr + lobbyListStr;
+        var lobbyDivStr = '<div id="lobbyDiv"></div>';
+        var centerReplacementStr = "";
+        if(socket.id == lobby[0].sid) {
+            centerReplacementStr = hostLobbyButtonsStr + characterSelectStr + lobbyDivStr;
+        }
+        else {
+            centerReplacementStr = lobbyButtonsStr + lobbyDivStr;
+        }
         document.getElementById("centerDiv").innerHTML = centerReplacementStr;
-        //TODO: build replacementStr
-
-        /*
-        if host, aka lobby[0].sid == socket.id...otherwise load different options
-
-        hostLobbyButtonsStr
-            [start game][leave room][rules]
-
-        lobbyListStr
-            [playerone]
-            [playertwo]
-            [playerthree]
-            [etc...]
-
-        characterSelectStr
-        [merlin] [Assassin]
-        [percival] [Morgana]
-        [etc...]
-
-        */
+        updateLobby();
     })
 
-    //characterSelect logic:
+    socket.on('updateLobby',function(data){
+        console.log("Received [updateLobby] from server");
+        lobby = data.list;
+        updateLobby();
+    })
 
 
 </script>
@@ -122,15 +145,7 @@
 
 <!-- ########## ########## ########## ########## ########## -->
 
-<div class="text-center">
-    <p>X Players</p>
-    player1
-    player2
-    player3
-    player4
-    player5
-    <hr>
-</div>
+
 
 <!-- ########## ########## ########## ########## ########## -->
 

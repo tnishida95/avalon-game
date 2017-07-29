@@ -15,6 +15,7 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 serv.listen(2000);
+//above was serv.listen(2000);
 //end Express
 console.log("server started");
 
@@ -112,7 +113,11 @@ io.sockets.on('connection', function(socket){
 			roomList[roomNum][roomList[roomNum].length] = player;
 			printRoomList();
 			socket.join(roomNum);
-			io.to(roomNum).emit("loadLobby", {
+			io.to(socket.id).emit("loadLobby", {
+				list: roomList[roomNum],
+				num: roomNum
+			});
+			io.to(roomNum).emit("updateLobby", {
 				list: roomList[roomNum],
 				num: roomNum
 			});
