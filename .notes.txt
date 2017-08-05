@@ -14,3 +14,6 @@ File communication (Express)
 Package communication (Socket.io)
 	Client sends data to server
 	Server sends data to client
+
+Forward port 80 to port 2000 so the web server can run without root privileges
+	iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 2000

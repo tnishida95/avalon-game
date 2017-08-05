@@ -15,7 +15,8 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 serv.listen(2000);
-//above was serv.listen(2000);
+//above line works as: serv.listen(2000);
+
 //end Express
 console.log("server started");
 
@@ -169,7 +170,100 @@ io.sockets.on('connection', function(socket){
 		delete roomList[roomNum];
 		printRoomList();
 	});
+	socket.on('btnPressStartGame',function(data){
+		roomNum = data.room;
+		var characterSelections = data.charList;
+		console.log("Start Game button pressed for roomNum: " + roomNum);
+		var goodCount, evilCount = 0;
+		var goodArray = [0,0,0,0,0];
+		var evilArray = [0,0,0,0,0,0,0,0,0];
+		//goodArray: 0 = merlin, 1 = percival, 2..4 = basic good
+		//evilArray: 0 = assassin, 1 = morgana, 2 = mordred, 3 = oberon, 4..5 = basic evil
+		for(characters in characterSelections) {
+			if(characters == "merlin") {
+				goodArray[0] = 1;
+				goodCount++;
+			}
+			else if (characters == "percival") {
+				goodArray[1] = 1;
+				goodCount++;
+			}
+			else if (characters == "goodOne") {
+				goodArray[2] = 1;
+				goodCount++;
+			}
+			else if (characters == "goodTwo") {
+				goodArray[3] = 1;
+				goodCount++;
+			}
+			else if (characters == "goodThree") {
+				goodArray[4] = 1;
+				goodCount++;
+			}
+			else if (characters == "assassin") {
+				evilArray[0] = 1;
+				evilCount++;
+			}
+			else if (characters == "morgana") {
+				evilArray[1] = 1;
+				evilCount++;
+			}
+			else if (characters == "mordred") {
+				evilArray[2] = 1;
+				evilCount++;
+			}
+			else if (characters == "oberon") {
+				evilArray[3] = 1;
+				evilCount++;
+			}
+			else if (characters == "evilOne") {
+				evilArray[4] = 1;
+				evilCount++;
+			}
+			else if (characters == "evilTwo") {
+				evilArray[5] = 1;
+				evilCount++;
+			}
+			else if (characters == "evilThree") {
+				evilArray[6] = 1;
+				evilCount++;
+			}
+			else if (characters == "evilFour") {
+				evilArray[7] = 1;
+				evilCount++;
+			}
+			else if (characters == "evilFive") {
+				evilArray[8] = 1;
+				evilCount++;
+			}
+			else {
+				return;
+			}
+		}
+		/*
+		rules check:
+			merlin and assassin must be selected
+			morgana must be selected with percival
+			good and evil player numbers align with the rules
+		*/
+		if(
+			(goodArray[0] == 0 || evilArray[0] == 0) ||
+			(evilArray[1] == 1 && goodArray[1] == 0) ||
+			((characterSelections.length == 5) && ((goodCount != 3) || (evilCount != 2))) ||
+			((characterSelections.length == 6) && ((goodCount != 4) || (evilCount != 2))) ||
+			((characterSelections.length == 7) && ((goodCount != 4) || (evilCount != 3))) ||
+			((characterSelections.length == 8) && ((goodCount != 5) || (evilCount != 3))) ||
+			((characterSelections.length == 9) && ((goodCount != 6) || (evilCount != 3))) ||
+			((characterSelections.length == 10) && ((goodCount != 6) || (evilCount != 4)))
+		) {
+			return;
+		}
+		//TODO: randomly assign characters to the players...don't forget about preassigned
 
+		io.to(roomNum).emit("loadGameScreen", {
+			list: roomList[roomNum]
+		});
+	});
 
 
 });

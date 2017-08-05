@@ -4,10 +4,11 @@
 <!-- hostLobbyButtonsStr -->
 <div class="text-center">
     <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
-        <button type="button" class="btn btn-default" onclick="btnPressStartGame()">Start Game</button>
+        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invalidCharacterSelectContent" onclick="btnPressStartGame()">Start Game</button>
         <button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button>
         <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
     </div>
+    <h6 id="invalidCharacterSelectContent" class="collapse">Invalid character selection.</h6>
     <hr>
 </div>
 
