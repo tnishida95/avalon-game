@@ -17,7 +17,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width = device-width, initial-scale=1">
-<title>Avalon</title>
+<title id="title">Avalon</title>
 
 <!-- <script src="handlebars-v4.0.10.js"></script> -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -42,6 +42,7 @@
 <script>
     var socket = io();
     var lobby;
+    var roomNum = -1;
 
     var btnPressNewGame = function(){
         socket.emit('btnPressNewGame',$("#nameInput").val())
@@ -52,19 +53,37 @@
             room: $("#roomInput").val()
         });
     }
-
     var btnPressStartGame = function(){
         var characterSelections = [];
         $.each($("input[name='charSelection']:checked"), function(){
             characterSelections.push($(this).val());
         });
         console.log(characterSelections);
-        //TODO: do validation client side not
-            //active matches the number of good and evil allowed?
-            //merlin and assassin are selected?
-            //no morgana without percival
-        //TODO: send to the server
+        //TODO: send to the server, do rule validation there
     };
+
+    var btnPressLeaveGame = function(){
+        socket.emit('btnPressLeaveGame',{
+            room: roomNum
+        });
+        loadMainMenu();
+    }
+
+    var btnPressDisbandGame = function(){
+        socket.emit('btnPressDisbandGame',{
+            room: roomNum
+        });
+        loadMainMenu();
+    }
+
+    function loadMainMenu() {
+        document.getElementById("title").innerHTML = 'Avalon';
+        var mainMenuStr = '<div id="inputArea" class="text-center"> <input type="text" id="nameInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Your Name"> <p></p> <input type="text" id="roomInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent"> <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6> <hr> </div>' +
+        '<div class="text-center"> <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">  <button type="button" class="btn btn-default" onclick="btnPressNewGame()">New Game</button> <button type="button" class="btn btn-default" onclick="btnPressJoinGame()">Join Game</button> <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button> </div> <hr> </div>';
+        document.getElementById("centerDiv").innerHTML = mainMenuStr;
+        document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;">Welcome to Avalon!</h2><hr>';
+    }
+
 
     function updateLobby() {
         var lobbyListStr = '<div class="text-center"><p>' + lobby.length + ' Players - ';
@@ -104,8 +123,10 @@
     socket.on('loadLobby',function(data){
         console.log("Received: [loadLobby] from server");
         lobby = data.list;
-        document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;">' + 'Avalon Room #' + data.num + '</h2><hr>';
-
+        roomNum = data.num;
+        document.getElementById("title").innerHTML = 'Avalon Room #' + roomNum;
+        document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;">' + 'Avalon Room #' + roomNum + '</h2><hr>';
+        //TODO: move all of these predefined strings server-side I mean cmon man seriously
         var hostLobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default" onclick="btnPressStartGame()">Start Game</button><button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><hr></div>';
         var lobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default">Waiting...</button><button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><hr></div>';
         var characterSelectStr = '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active"><input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="percival">Percival</input></label><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodOne" checked>1st Servant of Arthur</input></label><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodTwo" checked>2nd Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodThree">3rd Servant of Arthur</input></label>' +
@@ -130,9 +151,10 @@
         updateLobby();
     })
 
-    //TODO: btnPressLeaveGame
-    //TODO: btnPressDisbandGame
-    //TODO: loadMainMenu
+    socket.on('loadMainMenu',function(data){
+        loadMainMenu();
+    })
+
 
 </script>
 

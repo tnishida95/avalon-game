@@ -24,7 +24,7 @@ var socketList = [];
 //array of playerids
 var playerList = [];
 //key: roomNum, val: array of Players in the room
-var roomList = [];
+var roomList = {};
 //growing value to give unique ids to all connections
 var playerid = 0;
 
@@ -47,17 +47,18 @@ function printPlayerList() {
 }
 
 function printRoomList() {
-	if(roomList.length < 1) {
-		console.log("no room currently");
-		return;
-	}
 	console.log("-------------------------");
+	var listSize = 0;
 	for(roomNums in roomList) {
+			listSize++;
 			process.stdout.write("Room #" + roomNums + ": ");
 			for(i = 0; i < roomList[roomNums].length; i++) {
 				process.stdout.write("[" + roomList[roomNums][i].id + ":" + roomList[roomNums][i].name + "]");
 			}
 			console.log("");
+	}
+	if(listSize == 0) {
+		console.log("no room currently");
 	}
 	console.log("-------------------------");
 }
@@ -85,7 +86,12 @@ io.sockets.on('connection', function(socket){
 	//button presses
 	socket.on('btnPressNewGame',function(data){
 		console.log("New Game button pressed");
-		var player = new Player(socket.num, socket.id, data, "none");
+		if(data == "ShoyuMordred") {
+			var player = new Player(socket.num, socket.id, "Tyler", "mordred");
+		}
+		else {
+			var player = new Player(socket.num, socket.id, data, "none");
+		}
 		console.log("Created new Player:");
 		console.log("\tid: " + player.id);
 		console.log("\tname: " + player.name);
@@ -110,6 +116,10 @@ io.sockets.on('connection', function(socket){
 		console.log("Join Game button pressed with roomNum: " + roomNum);
 		if(roomNum in roomList) {
 			var player = new Player(socket.num, socket.id, data.name, "none");
+			console.log("Created new Player:");
+			console.log("\tid: " + player.id);
+			console.log("\tname: " + player.name);
+			console.log("\tcharacter: " + player.character);
 			roomList[roomNum][roomList[roomNum].length] = player;
 			printRoomList();
 			socket.join(roomNum);
@@ -127,6 +137,39 @@ io.sockets.on('connection', function(socket){
 			//send error message
 		}
 	});
+	socket.on('btnPressLeaveGame',function(data){
+		roomNum = data.room;
+		//removing the player from the lobby
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			if(roomList[roomNum][i].sid == socket.id) {
+				console.log("Leave Game button pressed by: " + roomList[roomNum][i].name);
+				roomList[roomNum].splice(i,1);
+				break;
+			}
+		}
+		socket.leave(roomNum);
+		printRoomList();
+		io.to(roomNum).emit("updateLobby", {
+			list: roomList[roomNum],
+			num: roomNum
+		});
+	});
+	socket.on('btnPressDisbandGame',function(data){
+		roomNum = data.room;
+		console.log("Disband Game button pressed for roomNum: " + roomNum);
+		io.to(roomNum).emit("loadMainMenu", {
+			list: roomList[roomNum],
+			num: roomNum
+		});
+		//make all sockets leave the room
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			console.log("\tLeft the socket room: " + roomList[roomNum][i].name);
+			io.sockets.connected[(roomList[roomNum][i].sid)].leave(roomNum);
+		}
+		delete roomList[roomNum];
+		printRoomList();
+	});
+
 
 
 });
