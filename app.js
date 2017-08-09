@@ -59,7 +59,7 @@ function printRoomList() {
 			console.log("");
 	}
 	if(listSize == 0) {
-		console.log("no room currently");
+		console.log("no occupied rooms");
 	}
 	console.log("-------------------------");
 }
