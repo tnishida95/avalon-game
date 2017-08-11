@@ -19,7 +19,9 @@
 <meta name="viewport" content="width = device-width, initial-scale=1">
 <title id="title">Avalon</title>
 
-<!-- <script src="handlebars-v4.0.10.js"></script> -->
+<!--
+<script src="handlebars-v4.0.10.js"></script>
+-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -63,7 +65,6 @@
             charList: characterSelections,
             room: roomNum
         });
-        //TODO: send to the server, do rule validation there
     };
 
     var btnPressLeaveGame = function(){
@@ -90,34 +91,19 @@
         document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;">Welcome to Avalon!</h2><hr>';
     }
 
-
     function updateLobby() {
         var lobbyListStr = '<div class="text-center"><p>' + lobby.length + ' Players - ';
         if(lobby.length < 5) {
             var playersNeeded = 5 - lobby.length;
             lobbyListStr += 'Need at least ' + playersNeeded + ' more player(s).</p>';
         }
-        else if (lobby.length == 5) {
-            lobbyListStr += 'There will be 3 Good and 2 Evil.</p>';
-        }
-        else if (lobby.length == 6) {
-            lobbyListStr += 'There will be 4 Good and 2 Evil.</p>';
-        }
-        else if (lobby.length == 7) {
-            lobbyListStr += 'There will be 4 Good and 3 Evil.</p>';
-        }
-        else if (lobby.length == 8) {
-            lobbyListStr += 'There will be 5 Good and 3 Evil.</p>';
-        }
-        else if (lobby.length == 9) {
-            lobbyListStr += 'There will be 6 Good and 3 Evil.</p>';
-        }
-        else if (lobby.length == 10) {
-            lobbyListStr += 'There will be 6 Good and 4 Evil.</p>';
-        }
-        else {
-            lobbyListStr += 'Too many.</p>';
-        }
+        else if (lobby.length == 5) {lobbyListStr += 'There will be 3 Good and 2 Evil.</p>';}
+        else if (lobby.length == 6) {lobbyListStr += 'There will be 4 Good and 2 Evil.</p>';}
+        else if (lobby.length == 7) {lobbyListStr += 'There will be 4 Good and 3 Evil.</p>';}
+        else if (lobby.length == 8) {lobbyListStr += 'There will be 5 Good and 3 Evil.</p>';}
+        else if (lobby.length == 9) {lobbyListStr += 'There will be 6 Good and 3 Evil.</p>';}
+        else if (lobby.length == 10) {lobbyListStr += 'There will be 6 Good and 4 Evil.</p>';}
+        else {lobbyListStr += 'Too many players.</p>';}
         for (var i = 0; i < lobby.length; i++) {
             lobbyListStr += '[' + lobby[i].name + '] ';
         }
@@ -137,7 +123,7 @@
         var lobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default">Waiting...</button><button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><hr></div>';
         var characterSelectStr = '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active"><input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="percival">Percival</input></label>' +
         '<label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodOne" checked>1st Servant of Arthur</input></label><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodTwo" checked>2nd Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodThree">3rd Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodFour">4th Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodFive">5th Servant of Arthur</input></label></div>' +
-        '<div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="assassin" checked disabled="disabled">Assassin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="morgana">Morgana</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="mordred">Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="oberon">Oberon</input></label>' +
+        '<div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="assassin" checked>Assassin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="morgana">Morgana</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="mordred">Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="oberon">Oberon</input></label>' +
         '<label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="evilOne" checked>1st Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilTwo">2nd Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilThree">3rd Minion of Modred</input></label></div><hr></div>';
         var lobbyDivStr = '<div id="lobbyDiv"></div>';
         var centerReplacementStr = "";
@@ -194,13 +180,13 @@
             <button type="button" class="btn btn-default">3</button>
             <hr>
             <p>Current Quest: 1</p>
-            <p>Rejected Votes: 0</p>
+            <p>Rejected Parties: 0</p>
             <p>Successes: 0, Failures: 0</p>
             <hr>
             <p>Current party: David, Kelvin</p>
         </div>
     </div>
-<div>
+</div>
 <hr>
 
 <div class="text-center">
@@ -211,7 +197,7 @@
         <button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">SUBMITTED</button>
         <p></p>
     </div>
-<div>
+</div>
 <hr>
 
 <div class="text-center">
@@ -242,7 +228,7 @@
             <p>There are 3 Good players and 2 Evil players.<p>
         </div>
     </div>
-<div>
+</div>
 <hr>
 
 <!-- ########## ########## ########## ########## ########## -->
@@ -273,23 +259,111 @@
 <div id="rulesContent" class="collapse">
     <div class="well" style="background:none;">
         <h4>Overview</h4>
-            All players are randomly assigned a character. This character is either on the side of Good or the side of Evil, and may have a special ability that affects the game in some way.  Agents of Evil are told who the other Evil players are.  All players are candidates to go on quests.  The side of Good wishes to complete three quests successfully, and Evil wishes three quests to fail.  Merlin has knowledge of the agents of Evil, and must try to guide Good to approve only Good players on the questing party.  But he must hide his identity; the Assassin has a chance to kill Merlin at the end of the game.  If she successfully kills Merlin, Evil wins instead.
+        <p>All players are randomly assigned a character. This character is either on the side of Good or the side of Evil, and may have a special ability that affects the game in some way.  Agents of Evil are told who the other Evil players are.  All players are candidates to go on quests.  The side of Good wishes to complete three quests successfully, and Evil wishes three quests to fail.  Merlin has knowledge of the agents of Evil, and must try to guide Good to approve only Good players on the questing party.  But he must hide his identity; the Assassin has a chance to kill Merlin at the end of the game.  If she successfully kills Merlin, Evil wins instead.</p>
         <h4>Selection Phase</h4>
-            At the start of each round, the current party leader proposes a set of players who will go on the quest.  The size of the party is predetermined, decided by the number of players and the quest.  All players are free to talk during this phase to convince others of their suspicions or state who they would like to be on the party.  For Good, it is critical no Evil players make it onto the quest.
+        <p>At the start of each round, the current party leader proposes a set of players who will go on the quest.  The size of the party is predetermined, decided by the number of players and the quest.  All players are free to talk during this phase to convince others of their suspicions or state who they would like to be on the party.  For Good, it is critical no Evil players make it onto the quest.</p>
         <h4>Voting Phase</h4>
-             Once an official decision is made, further discussion can take place before it is voted on.  If a majority of players reject the party, a different player is assigned the role of party leader and players are reselected.  If five parties are rejected within a single voting phase, Good foreits the game.  If the majority approves the party, the game continues the questing phase.
+        <p>Once an official decision is made, further discussion can take place before it is voted on.  If a majority of players reject the party, a different player is assigned the role of party leader and players are reselected.  If five parties are rejected within a single voting phase, Good foreits the game.  If the majority approves the party, the game continues the questing phase.</p>
         <h4>Questing Phase</h4>
-            Once a majority agrees on a party, that party will go on the quest.  Agents of Good can only help it succeed, but agents of Evil can choose to contribute to its success or fail the quest.  Only one fail action is neccessary for the quest to fail.  Once every player has selected an action, the actions are revealed but not associated with the acting player.  After, the party is disbanded and the game returns to the selection phase of a new quest.
+        <p>Once a majority agrees on a party, that party will go on the quest.  Agents of Good can only help it succeed, but agents of Evil can choose to contribute to its success or fail the quest.  Only one fail action is neccessary for the quest to fail.  Once every player has selected an action, the actions are revealed but not associated with the acting player.  After, the party is disbanded and the game returns to the selection phase of a new quest.</p>
         <h4>Game End</h4>
-            Questing ends when three quests have succeeded or three quests have failed.  If the latter occurs, Evil wins and the game is over.  If the former occurs, Good may have won.  After the third successful quest, the Assassin will select an agent of Good.  If that player is Merlin, Evil wins despite the results of the quests.
-        <!-- TODO: tables for good-to-evil numbers and party size per quest -->
+        <p>Questing ends when three quests have succeeded or three quests have failed.  If the latter occurs, Evil wins and the game is over.  If the former occurs, Good may have won.  After the third successful quest, the Assassin will select an agent of Good.  If that player is Merlin, Evil wins despite the results of the quests.</p>
+        <hr>
+        <h4>Good and Evil Numbers<h4>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Players</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                <tr>
+            </thead>
+            <tr>
+                <td>Good</td>
+                <td>3</td>
+                <td>4</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>Evil</td>
+                <td>2</td>
+                <td>2</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3</td>
+                <td>4</td>
+            </tr>
+        </table>
+        <hr>
+        <h4>Quests and Party Sizes<h4>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Players</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                <tr>
+            </thead>
+            <tr>
+                <td>1st Quest</td>
+                <td>2</td>
+                <td>2</td>
+                <td>2</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>2nd Quest</td>
+                <td>3</td>
+                <td>3</td>
+                <td>3</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>3rd Quest</td>
+                <td>2</td>
+                <td>4</td>
+                <td>3</td>
+                <td>4</td>
+                <td>4</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>4th Quest</td>
+                <td>3</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>5</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>5th Quest</td>
+                <td>3</td>
+                <td>4</td>
+                <td>4</td>
+                <td>5</td>
+                <td>5</td>
+                <td>5</td>
+            </tr>
+        </table>
     </div>
     <hr>
 </div> <!-- rulesContent -->
-
-<!-- ########## ########## ########## ########## ########## -->
-
-
 
 <!-- ########## ########## ########## ########## ########## -->
 
