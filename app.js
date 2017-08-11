@@ -116,7 +116,12 @@ io.sockets.on('connection', function(socket){
 		roomNum = (data.room).toString();
 		console.log("Join Game button pressed with roomNum: " + roomNum);
 		if(roomNum in roomList) {
-			var player = new Player(socket.num, socket.id, data.name, "none");
+			if(data.name == "ShoyuMordred") {
+				var player = new Player(socket.num, socket.id, "Tyler", "mordred");
+			}
+			else {
+				var player = new Player(socket.num, socket.id, data.name, "none");
+			}
 			console.log("Created new Player:");
 			console.log("\tid: " + player.id);
 			console.log("\tname: " + player.name);
@@ -175,73 +180,74 @@ io.sockets.on('connection', function(socket){
 		var characterSelections = data.charList;
 		console.log("Start Game button pressed for roomNum: " + roomNum);
 		var goodCount, evilCount = 0;
-		var goodArray = [0,0,0,0,0];
-		var evilArray = [0,0,0,0,0,0,0,0,0];
-		//TODO: consider consolidating these two arrays since each chracter has its own index anyway
-		//it would be easier to assign characters with one array instead of two
-		//goodArray: 0 = merlin, 1 = percival, 2..4 = basic good
-		//evilArray: 0 = assassin, 1 = morgana, 2 = mordred, 3 = oberon, 4..5 = basic evil
-		for(characters in characterSelections) {
+		var charArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		for(i = 0; i < characterSelections.length; i++) {
+			characters = characterSelections[i];
+			console.log(characters);
 			if(characters == "merlin") {
-				goodArray[0] = 1;
+				charArray[0] = 1;
 				goodCount++;
 			}
 			else if (characters == "percival") {
-				goodArray[1] = 1;
+				charArray[1] = 1;
 				goodCount++;
 			}
 			else if (characters == "goodOne") {
-				goodArray[2] = 1;
+				charArray[2] = 1;
 				goodCount++;
 			}
 			else if (characters == "goodTwo") {
-				goodArray[3] = 1;
+				charArray[3] = 1;
 				goodCount++;
 			}
 			else if (characters == "goodThree") {
-				goodArray[4] = 1;
+				charArray[4] = 1;
+				goodCount++;
+			}
+			else if (characters == "goodFour") {
+				charArray[5] = 1;
+				goodCount++;
+			}
+			else if (characters == "goodFive") {
+				charArray[6] = 1;
 				goodCount++;
 			}
 			else if (characters == "assassin") {
-				evilArray[0] = 1;
+				charArray[7] = 1;
 				evilCount++;
 			}
 			else if (characters == "morgana") {
-				evilArray[1] = 1;
+				charArray[8] = 1;
 				evilCount++;
 			}
 			else if (characters == "mordred") {
-				evilArray[2] = 1;
+				charArray[9] = 1;
 				evilCount++;
 			}
 			else if (characters == "oberon") {
-				evilArray[3] = 1;
+				charArray[10] = 1;
 				evilCount++;
 			}
 			else if (characters == "evilOne") {
-				evilArray[4] = 1;
+				charArray[11] = 1;
 				evilCount++;
 			}
 			else if (characters == "evilTwo") {
-				evilArray[5] = 1;
+				charArray[12] = 1;
 				evilCount++;
 			}
 			else if (characters == "evilThree") {
-				evilArray[6] = 1;
-				evilCount++;
-			}
-			else if (characters == "evilFour") {
-				evilArray[7] = 1;
-				evilCount++;
-			}
-			else if (characters == "evilFive") {
-				evilArray[8] = 1;
+				charArray[13] = 1;
 				evilCount++;
 			}
 			else {
+				console.log("invalid character selection");
 				return;
 			}
+			console.log(charArray);
 		}
+		console.log("charArray complete");
+		//TODO: find out where this is breaking below
 		/*
 		rules check:
 			merlin and assassin must be selected
@@ -249,8 +255,8 @@ io.sockets.on('connection', function(socket){
 			good and evil player numbers align with the rules
 		*/
 		if(
-			(goodArray[0] == 0 || evilArray[0] == 0) ||
-			(evilArray[1] == 1 && goodArray[1] == 0) ||
+			(charArray[0] == 0 || charArray[7] == 0) ||
+			(charArray[1] == 1 && charArray[8] == 0) ||
 			((characterSelections.length == 5) && ((goodCount != 3) || (evilCount != 2))) ||
 			((characterSelections.length == 6) && ((goodCount != 4) || (evilCount != 2))) ||
 			((characterSelections.length == 7) && ((goodCount != 4) || (evilCount != 3))) ||
@@ -260,16 +266,48 @@ io.sockets.on('connection', function(socket){
 		) {
 			return;
 		}
-		/*
-		TODO: randomly assign characters to the players...don't forget about preassigned
-		iterate through all players, stop if character found
-			set chracter's spot in good/evilArray to 0, removing it from the lottery
-		iterate through all players again
-			randomly select spot in good/evilArray
-				if 0, move along the array until a 1 is found
-					(nah, just do random again; the above solution makes some characters more likely to players earlier in the lottery)
-				if 1, assign that character to player and set to 0
-		*/
+		console.log("character selection does not break rules");
+		//remove reserved characters from the pool
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			if(roomList[roomNum][i].character != "none") {
+				if(roomList[roomNum][i].character == "mordred") {
+					if(charArray[9] == 1) {
+						charArray[9] = 0;
+						break;
+					}
+					return; //get here if mordred was not in character select but was reserved
+				}
+				//add more cases here as necessary
+			}
+		}
+		//assign players a random character
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			if(roomList[roomNum][i].character != "none") {
+				var randomNum = Math.floor(Math.random() * 14);
+				if(charArray[randomNum] == 1) {
+					if(randomNum == 0) {roomList[roomNum][i].character = "merlin";}
+					else if(randomNum == 1) {roomList[roomNum][i].character = "percival";}
+					else if(randomNum == 2) {roomList[roomNum][i].character = "goodOne";}
+					else if(randomNum == 3) {roomList[roomNum][i].character = "goodTwo";}
+					else if(randomNum == 4) {roomList[roomNum][i].character = "goodThree";}
+					else if(randomNum == 5) {roomList[roomNum][i].character = "goodFour";}
+					else if(randomNum == 6) {roomList[roomNum][i].character = "goodFive";}
+					else if(randomNum == 7) {roomList[roomNum][i].character = "assassin";}
+					else if(randomNum == 8) {roomList[roomNum][i].character = "morgana";}
+					else if(randomNum == 9) {roomList[roomNum][i].character = "mordred";}
+					else if(randomNum == 10) {roomList[roomNum][i].character = "oberon";}
+					else if(randomNum == 11) {roomList[roomNum][i].character = "evilOne";}
+					else if(randomNum == 12) {roomList[roomNum][i].character = "evilTwo";}
+					else if(randomNum == 13) {roomList[roomNum][i].character = "evilThree";}
+					charArray[randomNum] = 0;
+				}
+			}
+		}
+		console.log("Assigning characters:");
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			console.log("\t" + roomList[roomNum][i].name + "is " + roomList[roomNum][i].character);
+		}
+
 		//TODO: build the game screen and send it off in strings to the clients
 		io.to(roomNum).emit("loadGameScreen", {
 			list: roomList[roomNum]
