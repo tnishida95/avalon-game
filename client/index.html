@@ -161,6 +161,10 @@
         loadMainMenu();
     })
 
+    socket.on('loadGameScreen',function(data){
+        //TODO: implement this
+    })
+
 </script>
 
 </head>
@@ -204,6 +208,7 @@
     <div class="well" style="background:none;">
         <button type="button" class="btn btn-default" style="width: 40%; height: 80px; margin: 1%;">Accept</button>
         <button type="button" class="btn btn-default" style="width: 40%; height: 80px; margin: 1%;">Reject</button>
+        <button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">SUBMITTED</button>
         <p></p>
     </div>
 <div>
@@ -232,8 +237,9 @@
             <button type="button" class="btn btn-default" style="width: 20%;">EVIL</button>
             <button type="button" class="btn btn-default" style="width: 40%;">Mark</button>
             <button type="button" class="btn btn-default" style="width: 20%;">Vote Cast</button>
-            <p></p>
-
+            <hr>
+            <p>Special Characters Present: Merlin, Assassin, Percival</p>
+            <p>There are 3 Good players and 2 Evil players.<p>
         </div>
     </div>
 <div>

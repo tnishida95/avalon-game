@@ -177,6 +177,8 @@ io.sockets.on('connection', function(socket){
 		var goodCount, evilCount = 0;
 		var goodArray = [0,0,0,0,0];
 		var evilArray = [0,0,0,0,0,0,0,0,0];
+		//TODO: consider consolidating these two arrays since each chracter has its own index anyway
+		//it would be easier to assign characters with one array instead of two
 		//goodArray: 0 = merlin, 1 = percival, 2..4 = basic good
 		//evilArray: 0 = assassin, 1 = morgana, 2 = mordred, 3 = oberon, 4..5 = basic evil
 		for(characters in characterSelections) {
@@ -258,8 +260,17 @@ io.sockets.on('connection', function(socket){
 		) {
 			return;
 		}
-		//TODO: randomly assign characters to the players...don't forget about preassigned
-
+		/*
+		TODO: randomly assign characters to the players...don't forget about preassigned
+		iterate through all players, stop if character found
+			set chracter's spot in good/evilArray to 0, removing it from the lottery
+		iterate through all players again
+			randomly select spot in good/evilArray
+				if 0, move along the array until a 1 is found
+					(nah, just do random again; the above solution makes some characters more likely to players earlier in the lottery)
+				if 1, assign that character to player and set to 0
+		*/
+		//TODO: build the game screen and send it off in strings to the clients
 		io.to(roomNum).emit("loadGameScreen", {
 			list: roomList[roomNum]
 		});
