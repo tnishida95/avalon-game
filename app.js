@@ -25,11 +25,19 @@ console.log("server started");
 var socketList = [];
 //array of playerids
 var playerList = [];
-//key: roomNum, val: array of Players in the room
+//key: roomNum, val: array of Player objects in the room
 var roomList = {};
+//key: roomNum, val: gameManager objects
+var gameList = {};
 //growing value to give unique ids to all connections
 var playerid = 0;
 
+//TODO: figure this out
+function gameManager(playerCountInt) {
+	this.playerCount = playerCountInt;
+	//TODO: figure out how the states needed and list here
+	this.phase = 0;
+}
 
 function Player(idInt, socketidInt, nameString, characterString) {
 	this.id = idInt;
@@ -63,6 +71,11 @@ function printRoomList() {
 		console.log("no occupied rooms");
 	}
 	console.log("-------------------------");
+}
+
+function buildGameBoard() {
+	var gameScreenStr;
+	var gameBoardStr; //TODO: start building the strings
 }
 
 //upon new socket connection
