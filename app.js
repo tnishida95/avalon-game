@@ -32,11 +32,32 @@ var gameList = {};
 //growing value to give unique ids to all connections
 var playerid = 0;
 
-//TODO: figure this out
 function gameManager(playerCountInt) {
+	//how many players in the game
 	this.playerCount = playerCountInt;
-	//TODO: figure out how the states needed and list here
+	if(playerCountInt == 5) {this.goodNum = 3; this.evilNum = 2;}
+	if(playerCountInt == 6) {this.goodNum = 4; this.evilNum = 2;}
+	if(playerCountInt == 7) {this.goodNum = 4; this.evilNum = 3;}
+	if(playerCountInt == 8) {this.goodNum = 5; this.evilNum = 3;}
+	if(playerCountInt == 9) {this.goodNum = 6; this.evilNum = 3;}
+	if(playerCountInt == 10) {this.goodNum = 6; this.evilNum = 4;}
+	/*
+	0, 1, 2 = 1st quest: party select, voting, questing
+	3, 4, 5 = 2nd quest
+	6, 7, 8 = 3rd quest
+	9, 10, 11 = 4th quest
+	12, 13, 14 = 5th quest
+	15 = assassin phase
+	16 = game end/results/stats
+	*/
 	this.phase = 0;
+	this.votesRejected = 0;
+	/*
+	0 = no status
+	1 = success
+	2 = fail
+	*/
+	this.quests = [0,0,0,0,0];
 }
 
 function Player(idInt, socketidInt, nameString, characterString) {
@@ -75,7 +96,8 @@ function printRoomList() {
 
 function buildGameBoard() {
 	var gameScreenStr;
-	var gameBoardStr; //TODO: start building the strings
+	var gameBoardStr = '<div id="gameBoardDiv" class="text-center"> <h2 data-toggle="collapse"data-target="#gameBoardContent">Game Board</h2> <div id="gameBoardContent"class="collapse-in"> <div class="well" style="background:none;"> <p>Quests</p> <button type="button" style="box-shadow:0px 0px 0px 0px;background:none;" class="btn-lg btn-default">';
+	gameBoardStr +=
 }
 
 //upon new socket connection
