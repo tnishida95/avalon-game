@@ -169,22 +169,20 @@
 <!-- ########## ########## ########## ########## ########## -->
 
 <div id="gameBoardDiv" class="text-center">
-    <h2 data-toggle="collapse" data-target="#gameBoardContent">Game Board</h2>
-    <div id="gameBoardContent" class="collapse-in">
-        <div class="well" style="background:none;">
-            <p>Quests</p>
-            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">2</button>
-            <button type="button" class="btn btn-default">3</button>
-            <button type="button" class="btn btn-default">2</button>
-            <button type="button" class="btn btn-default">2</button>
-            <button type="button" class="btn btn-default">3</button>
-            <hr>
-            <p>Current Quest: 1</p>
-            <p>Rejected Parties: 0</p>
-            <p>Successes: 0, Failures: 0</p>
-            <hr>
-            <p>Current party: David, Kelvin</p>
-        </div>
+    <h2>Game Board</h2>
+    <div class="well" style="background:none;">
+        <p>Quests</p>
+        <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">2</button>
+        <button type="button" class="btn btn-default">3</button>
+        <button type="button" class="btn btn-default">2</button>
+        <button type="button" class="btn btn-default">2</button>
+        <button type="button" class="btn btn-default">3</button>
+        <hr>
+        <p id="currentQuestDisplay">Current Quest: 1</p>
+        <p id="rejectedDisplay">Rejected Parties: 0</p>
+        <p id="successesDisplay">Successes: 0, Failures: 0</p>
+        <hr>
+        <p id="currentPartyDisplay">Current party: David, Kelvin</p>
     </div>
     <hr>
 </div>
@@ -192,8 +190,8 @@
 <div id="actionPanelDiv" class="text-center">
     <h2>Actions</h2>
     <div class="well" style="background:none;">
-        <button type="button" class="btn btn-default" style="width: 40%; height: 80px; margin: 1%;">Accept</button>
-        <button type="button" class="btn btn-default" style="width: 40%; height: 80px; margin: 1%;">Reject</button>
+        <button type="button" class="btn btn-default" style="width: 40%; height: 80px; margin: 1%;" onclick="btnPressAccept()">Accept</button>
+        <button type="button" class="btn btn-default" style="width: 40%; height: 80px; margin: 1%;" onclick="btnPressReject()">Reject</button>
         <button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">SUBMITTED</button>
         <p></p>
     </div>
@@ -346,10 +344,10 @@
                 <td>4th Quest</td>
                 <td>3</td>
                 <td>3</td>
-                <td>4</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
+                <td>4*</td>
+                <td>5*</td>
+                <td>5*</td>
+                <td>5*</td>
             </tr>
             <tr>
                 <td>5th Quest</td>
@@ -361,6 +359,7 @@
                 <td>5</td>
             </tr>
         </table>
+        <p>* Requires 2 or more Fails to fail the quest.</p>
     </div>
     <hr>
 </div> <!-- rulesContent -->

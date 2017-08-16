@@ -1,13 +1,10 @@
-//app.js
-//Tyler Nishida, tnishida95@gmail.com
-
-//Express
 /*
-creates a serv and makes it listen on the port 2000
-by default, domain is localhost
-	go to "localhost:2000" in browser to test
-	make sure "node app.js" has been called from the command line
+app.js
+Server-side javascript for avalon-game.
+
+Tyler Nishida, tnishida95@gmail.com
 */
+
 var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
@@ -16,11 +13,9 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 serv.listen(2000);
-//above line works as: serv.listen(2000);
-
-//end Express
 console.log("server started");
 
+const io = require('socket.io')(serv,{});
 //array of sockets
 var socketList = [];
 //array of playerids
@@ -32,15 +27,31 @@ var gameList = {};
 //growing value to give unique ids to all connections
 var playerid = 0;
 
+function Player(idInt, socketidInt, nameString, characterString) {
+	this.id = idInt;
+	this.sid = socketidInt;
+	this.name = nameString;
+	this.character = characterString;
+}
 function gameManager(playerCountInt) {
 	//how many players in the game
 	this.playerCount = playerCountInt;
+	//number of good and evil characters
 	if(playerCountInt == 5) {this.goodNum = 3; this.evilNum = 2;}
 	if(playerCountInt == 6) {this.goodNum = 4; this.evilNum = 2;}
 	if(playerCountInt == 7) {this.goodNum = 4; this.evilNum = 3;}
 	if(playerCountInt == 8) {this.goodNum = 5; this.evilNum = 3;}
 	if(playerCountInt == 9) {this.goodNum = 6; this.evilNum = 3;}
 	if(playerCountInt == 10) {this.goodNum = 6; this.evilNum = 4;}
+
+	//array with the size of each quest; remember it is base 0
+	if(playerCountInt == 5) {this.questSize = [2,3,2,3,3];}
+	if(playerCountInt == 6) {this.questSize = [2,3,4,3,4];}
+	if(playerCountInt == 7) {this.questSize = [2,3,3,4,4];}
+	if(playerCountInt == 8) {this.questSize = [3,4,4,5,5];}
+	if(playerCountInt == 9) {this.questSize = [3,4,4,5,5];}
+	if(playerCountInt == 10) {this.questSize = [3,4,4,5,5];}
+
 	/*
 	0, 1, 2 = 1st quest: party select, voting, questing
 	3, 4, 5 = 2nd quest
@@ -58,16 +69,12 @@ function gameManager(playerCountInt) {
 	2 = fail
 	*/
 	this.quests = [0,0,0,0,0];
-}
 
-function Player(idInt, socketidInt, nameString, characterString) {
-	this.id = idInt;
-	this.sid = socketidInt;
-	this.name = nameString;
-	this.character = characterString;
+	//these numbers refer to the indices of Players in array at roomList[roomNum]
+	this.partyLeader = 0;
+	//could assign this a new array every time a new quest comes up
+	this.selectedParty = [-1,-1,-1,-1,-1,-1];
 }
-
-const io = require('socket.io')(serv,{});
 
 function printPlayerList() {
 	if(playerList.length < 1) return;
@@ -76,7 +83,6 @@ function printPlayerList() {
 		process.stdout.write("[" + playerList[i] + "]");
 	console.log("");
 }
-
 function printRoomList() {
 	console.log("-------------------------");
 	var listSize = 0;
@@ -94,10 +100,24 @@ function printRoomList() {
 	console.log("-------------------------");
 }
 
-function buildGameBoard() {
+function buildGameBoard(roomNum) {
 	var gameScreenStr;
-	var gameBoardStr = '<div id="gameBoardDiv" class="text-center"> <h2 data-toggle="collapse"data-target="#gameBoardContent">Game Board</h2> <div id="gameBoardContent"class="collapse-in"> <div class="well" style="background:none;"> <p>Quests</p> <button type="button" style="box-shadow:0px 0px 0px 0px;background:none;" class="btn-lg btn-default">';
-	gameBoardStr +=
+	var gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
+	gameBoardStr += gameList[roomNum].questSize[0];
+	gameBoardStr += '</button><button type="button" class="btn btn-default">';
+	gameBoardStr += gameList[roomNum].questSize[1];
+	gameBoardStr += '</button><button type="button" class="btn btn-default">';
+	gameBoardStr += gameList[roomNum].questSize[2];
+	gameBoardStr += '</button><button type="button" class="btn btn-default">';
+	gameBoardStr += gameList[roomNum].questSize[3];
+	gameBoardStr += '</button><button type="button" class="btn btn-default">';
+	gameBoardStr += gameList[roomNum].questSize[4];
+	gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p><p id="rejectedDisplay">Rejected Parties: 0</p><p id="successesDisplay">Successes: 0, Failures: 0</p><hr><p id="currentPartyDisplay">Current party: none</p></div><hr></div>';
+	var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+	//TODO: figure out how to tailor playerBoardStr to each player (hidden allegiances)...maybe placeholder strings and a string replace function?  going to need to move this out of buildGameBoard() or add another parameter that passes in the player
+	var playerBoardStr;
+	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
+	return gameScreenStr;
 }
 
 //upon new socket connection
@@ -265,7 +285,7 @@ io.sockets.on('connection', function(socket){
 			console.log("invalid character selection: rule breaking");
 			return;
 		}
-		//remove reserved characters from the pool
+		//remove reserved characters from the pool; only handles a single reservation
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(roomList[roomNum][i].character != "none") {
 				if(roomList[roomNum][i].character == "mordred") {
@@ -288,10 +308,10 @@ io.sockets.on('connection', function(socket){
 			if(roomList[roomNum][i].character == "none") {
 				process.stdout.write("getting randomNum: ");
 				do {
-					//TODO: consider reducing the range of values every iteration somehow
-					//...not a big deal though
-					//maybe create another array with the indexes of available characters in charArray,
-					//then splice out elements as they are selected
+					/*
+					TODO: consider reducing the range of values every iteration somehow, not a big deal though
+						maybe create another array with the indexes of available characters in charArray, then splice out elements as they are selected
+					*/
 					randomNum = Math.floor(Math.random() * 14);
 					process.stdout.write(randomNum.toString() + " | ");
 				}
@@ -321,7 +341,8 @@ io.sockets.on('connection', function(socket){
 
 		//TODO: build the game screen and send it off in strings to the clients
 		io.to(roomNum).emit("loadGameScreen", {
-			list: roomList[roomNum]
+			list: roomList[roomNum],
+			gameStr: buildGameBoard(roomNum)
 		});
 	});
 
