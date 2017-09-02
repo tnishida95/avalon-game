@@ -100,7 +100,7 @@ function printRoomList() {
 	console.log("-------------------------");
 }
 
-function buildGameBoard(roomNum) {
+function buildGameBoard(roomNum, character) {
 	var gameScreenStr;
 	var gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 	gameBoardStr += gameList[roomNum].questSize[0];
@@ -115,6 +115,11 @@ function buildGameBoard(roomNum) {
 	gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p><p id="rejectedDisplay">Rejected Parties: 0</p><p id="successesDisplay">Successes: 0, Failures: 0</p><hr><p id="currentPartyDisplay">Current party: none</p></div><hr></div>';
 	var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
 	//TODO: figure out how to tailor playerBoardStr to each player (hidden allegiances)...maybe placeholder strings and a string replace function?  going to need to move this out of buildGameBoard() or add another parameter that passes in the player
+	/*
+	if(character is merlin)
+		playerBoardStr with merlin sight
+	etc
+	*/
 	var playerBoardStr;
 	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
 	return gameScreenStr;
@@ -196,7 +201,6 @@ io.sockets.on('connection', function(socket){
 		}
 		else {
 			console.log("roomNum not found");
-			//send error message
 		}
 	});
 	socket.on('btnPressLeaveGame',function(data){
@@ -339,10 +343,21 @@ io.sockets.on('connection', function(socket){
 			console.log("\t[" + roomList[roomNum][i].name + "] is " + roomList[roomNum][i].character);
 		}
 
-		//TODO: build the game screen and send it off in strings to the clients
+		/*
+		TODO: build the game screen and send it off in strings to the clients; going to need to send to specific sockets, not the whole room
+
+		for(each player socket) {
+			if(player is merlin)
+				send merlin screen
+			if(player is assassin)
+				send assassin screen
+			etc
+		}
+
+		*/
 		io.to(roomNum).emit("loadGameScreen", {
 			list: roomList[roomNum],
-			gameStr: buildGameBoard(roomNum)
+			gameStr: buildGameBoard(roomNum, roomList[roomNum][i].character) //this is broken, and will be removed (only for example to above)
 		});
 	});
 
