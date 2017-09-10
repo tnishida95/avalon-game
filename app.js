@@ -33,7 +33,7 @@ function Player(idInt, socketidInt, nameString, characterString) {
 	this.name = nameString;
 	this.character = characterString;
 }
-function gameManager(playerCountInt) {
+function GameManager(playerCountInt) {
 	//how many players in the game
 	this.playerCount = playerCountInt;
 	//number of good and evil characters
@@ -100,7 +100,7 @@ function printRoomList() {
 	console.log("-------------------------");
 }
 
-function buildGameBoard(roomNum, character) {
+function buildGameBoard(roomNum, character, charArray) {
 	var gameScreenStr;
 	var gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 	gameBoardStr += gameList[roomNum].questSize[0];
@@ -114,13 +114,99 @@ function buildGameBoard(roomNum, character) {
 	gameBoardStr += gameList[roomNum].questSize[4];
 	gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p><p id="rejectedDisplay">Rejected Parties: 0</p><p id="successesDisplay">Successes: 0, Failures: 0</p><hr><p id="currentPartyDisplay">Current party: none</p></div><hr></div>';
 	var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
-	//TODO: figure out how to tailor playerBoardStr to each player (hidden allegiances)...maybe placeholder strings and a string replace function?  going to need to move this out of buildGameBoard() or add another parameter that passes in the player
-	/*
-	if(character is merlin)
-		playerBoardStr with merlin sight
-	etc
-	*/
-	var playerBoardStr;
+	var playerBoardStr = '<div id="playerBoardDiv" class="text-center"><h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2><div id="playerBoardContent" class="collapse-in"><div class="well" style="background:none;">';
+	//show different information based on character
+	for(i = 0; i < gameList[roomNum].playerCount; i++) {
+		currentName = roomList[roomNum][i].name;
+		currentChar = roomList[roomNum][i].character;
+		playerBoardStr += '<button type="button" class="btn btn-default" style="width: 20%;">';
+		if(character == "merlin") {
+			if(charArray[9] == 1) { //mordred
+				if(currentChar == "merlin") {playerBoardStr += 'Merlin';}
+				else if (currentChar == "percival" ||
+					currentChar == "mordred" ||
+					currentChar == "goodOne" ||
+					currentChar == "goodTwo" ||
+					currentChar == "goodThree" ||
+					currentChar == "goodFour" ||
+					currentChar == "goodFive") {playerBoardStr += '?';}
+				else {playerBoardStr += 'EVIL';}
+			}
+			else {
+				if(currentChar == "merlin") {playerBoardStr += 'Merlin';}
+				else if( currentChar == "assassin" ||
+					currentChar == "morgana" ||
+					currentChar == "oberon" ||
+					currentChar == "evilOne" ||
+					currentChar == "evilTwo" ||
+					currentChar == "evilThree") {playerBoardStr += 'EVIL';}
+				else {playerBoardStr += 'GOOD';}
+			}
+		}
+		else if(character == "percival") {
+			if(charArray[8] == 1) { //morgana
+				if( currentChar == "merlin" ||
+					currentChar == "morgana") {playerBoardStr += 'Merlin/Morgana';}
+				else if(currentChar == "percival") {playerBoardStr += 'Percival';}
+				else {playerBoardStr += '?';}
+			}
+			else {
+				if(currentChar == "merlin") {playerBoardStr += 'Merlin';}
+				else if(currentChar == "percival") {playerBoardStr += 'Percival';}
+				else {playerBoardStr += '?';}
+			}
+		}
+		else if( character == "goodOne" ||
+			character == "goodTwo" ||
+			character == "goodThree" ||
+			character == "goodFour" ||
+			character == "goodFive") {
+			if(currentChar == character) {playerBoardStr += 'Servant of Good';}
+			else {playerBoardStr += '?';}
+		}
+		else if(character == "oberon") {
+			if(currentChar == character) {playerBoardStr += 'Oberon';}
+			else {playerBoardStr += '?';}
+		}
+		else { //non-Oberon Evil
+			if(charArray[10] == 1) { //oberon
+				if( currentChar == "merlin" ||
+					currentChar == "percival" ||
+					currentChar == "goodOne" ||
+					currentChar == "goodTwo" ||
+					currentChar == "goodThree" ||
+					currentChar == "goodFour" ||
+					currentChar == "goodFive" ||
+					currentChar == "oberon") {playerBoardStr += '?';}
+				else if(currentChar == "assassin") {playerBoardStr += 'Assassin';}
+				else if(currentChar == "mordred") {playerBoardStr += 'Mordred';}
+				else if(currentChar == "morgana") {playerBoardStr += 'Morgana';}
+				else {playerBoardStr += 'Minion of Evil';}
+			}
+			else {
+				if( currentChar == "merlin" ||
+					currentChar == "percival" ||
+					currentChar == "goodOne" ||
+					currentChar == "goodTwo" ||
+					currentChar == "goodThree" ||
+					currentChar == "goodFour" ||
+					currentChar == "goodFive") {playerBoardStr += 'GOOD';}
+				else if(currentChar == "assassin") {playerBoardStr += 'Assassin';}
+				else if(currentChar == "mordred") {playerBoardStr += 'Mordred';}
+				else if(currentChar == "morgana") {playerBoardStr += 'Morgana';}
+				else {playerBoardStr += 'Minion of Evil';}
+			}
+		}
+		playerBoardStr += '</button><button type="button" class="btn btn-default" style="width: 40%;">';
+		playerBoardStr += currentName;
+		playerBoardStr += '</button><button type="button" class="btn btn-default" style="width: 20%;">Status</button><p></p>';
+	}
+	playerBoardStr += '<hr><p>Special Characters Present: [Merlin][Assassin]';
+	if(charArray[1] == 1) {playerBoardStr += '[Percival]';}
+	if(charArray[8] == 1) {playerBoardStr += '[Morgana]';}
+	if(charArray[9] == 1) {playerBoardStr += '[Mordred]';}
+	if(charArray[10] == 1) {playerBoardStr += '[Oberon]';}
+	playerBoardStr += '<p>There are ' + gameList[roomNum].goodNum + ' Agents of Good and ' + gameList[roomNum].evilNum + ' Agents of Evil.</p></div></div><hr></div>';
 	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
 	return gameScreenStr;
 }
@@ -134,7 +220,6 @@ io.sockets.on('connection', function(socket){
 	playerid++;
 	printPlayerList();
 
-	//upon socket disconnect
 	socket.on('disconnect',function(){
 		//get the index of the socket that just dc'd, cut it out of lists
 		var index = playerList.indexOf(socket.num);
@@ -144,8 +229,6 @@ io.sockets.on('connection', function(socket){
 		printPlayerList();
 		//TODO: update any rooms with the socket of the dc
 	});
-
-	//button presses
 	socket.on('btnPressNewGame',function(data){
 		console.log("New Game button pressed");
 		if(data == "ShoyuMordred") {
@@ -240,16 +323,18 @@ io.sockets.on('connection', function(socket){
 		var characterSelections = data.charList;
 		console.log("Start Game button pressed for roomNum: " + roomNum);
 		if(characterSelections.length != roomList[roomNum].length) {
-			console.log("invalid character selection: player count does not equal character count");
+			console.error("invalid character selection: player count does not equal character count");
 			return;
 		}
 		var goodCount = 0;
 		var evilCount = 0;
 		var charArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+		console.log("getting characters:")
 		//populate the charArray, showing which characters are in the game
 		for(i = 0; i < characterSelections.length; i++) {
 			characters = characterSelections[i];
-			console.log(characters);
+			console.log("\t" + characters);
 			if(characters == "merlin") {charArray[0] = 1; goodCount++;}
 			else if (characters == "percival") {charArray[1] = 1; goodCount++;}
 			else if (characters == "goodOne") {charArray[2] = 1; goodCount++;}
@@ -265,7 +350,7 @@ io.sockets.on('connection', function(socket){
 			else if (characters == "evilTwo") {charArray[12] = 1; evilCount++;}
 			else if (characters == "evilThree") {charArray[13] = 1;	evilCount++;}
 			else {
-				console.log("invalid character selection: unmatched character names");
+				console.error("invalid character selection: unmatched character names");
 				return;
 			}
 		}
@@ -275,7 +360,7 @@ io.sockets.on('connection', function(socket){
 			morgana must be selected with percival
 			good and evil player numbers align with the rules
 		*/
-		console.log("Good: " + goodCount + ", Evil: " + evilCount);
+		console.log("\tGood: " + goodCount + ", Evil: " + evilCount);
 		if(
 			(charArray[0] == 0 || charArray[7] == 0) ||
 			(charArray[8] == 1 && charArray[1] == 0) ||
@@ -286,7 +371,7 @@ io.sockets.on('connection', function(socket){
 			((characterSelections.length == 9) && ((goodCount != 6) || (evilCount != 3))) ||
 			((characterSelections.length == 10) && ((goodCount != 6) || (evilCount != 4)))
 		) {
-			console.log("invalid character selection: rule breaking");
+			console.error("invalid character selection: rule breaking");
 			return;
 		}
 		//remove reserved characters from the pool; only handles a single reservation
@@ -303,24 +388,27 @@ io.sockets.on('connection', function(socket){
 				//add more cases here as necessary
 			}
 		}
+
+		//this is to help buildGameBoard()
+		var charArrayCopy = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		for(i = 0; i < 14; i++) {
+			if(charArray[i] == 1) {charArrayCopy[i] = 1;}
+		}
+
 		//assign players a random character
 		var randomNum;
-		console.log("there are " + roomList[roomNum].length + " players in the room");
+		console.log("\tthere are " + roomList[roomNum].length + " players in the room");
 		for(i = 0; i < roomList[roomNum].length; i++) {
-			console.log("checking if [" + roomList[roomNum][i].name +  "] has a character");
-			console.log("[" + roomList[roomNum][i].name +  "] is " + roomList[roomNum][i].character);
 			if(roomList[roomNum][i].character == "none") {
-				process.stdout.write("getting randomNum: ");
+				//process.stdout.write("getting randomNum: ");
 				do {
 					/*
 					TODO: consider reducing the range of values every iteration somehow, not a big deal though
 						maybe create another array with the indexes of available characters in charArray, then splice out elements as they are selected
 					*/
 					randomNum = Math.floor(Math.random() * 14);
-					process.stdout.write(randomNum.toString() + " | ");
 				}
 				while(charArray[randomNum] != 1);
-				console.log("\nRandomly selected #" + randomNum);
 				if(randomNum == 0) {roomList[roomNum][i].character = "merlin";}
 				else if(randomNum == 1) {roomList[roomNum][i].character = "percival";}
 				else if(randomNum == 2) {roomList[roomNum][i].character = "goodOne";}
@@ -338,27 +426,23 @@ io.sockets.on('connection', function(socket){
 				charArray[randomNum] = 0;
 			}
 		}
-		console.log("Assigned characters:");
+		console.log("assigned characters:");
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			console.log("\t[" + roomList[roomNum][i].name + "] is " + roomList[roomNum][i].character);
 		}
-
-		/*
-		TODO: build the game screen and send it off in strings to the clients; going to need to send to specific sockets, not the whole room
-
-		for(each player socket) {
-			if(player is merlin)
-				send merlin screen
-			if(player is assassin)
-				send assassin screen
-			etc
+		gameList[roomNum] = new GameManager(roomList[roomNum].length);
+		console.log("sending out game boards...");
+		for(j = 0; j < roomList[roomNum].length; j++) {
+			process.stdout.write("\tsending board to [" + roomList[roomNum][j].sid + "]...");
+			io.to(roomList[roomNum][j].sid).emit("loadGameScreen", {
+				list: roomList[roomNum],
+				gameStr: buildGameBoard(roomNum, roomList[roomNum][j].character, charArrayCopy)
+			});
+			console.log("board sent");
+			console.log("Here's the length:" + roomList[roomNum].length);
+			console.log("j = " + j);
 		}
-
-		*/
-		io.to(roomNum).emit("loadGameScreen", {
-			list: roomList[roomNum],
-			gameStr: buildGameBoard(roomNum, roomList[roomNum][i].character) //this is broken, and will be removed (only for example to above)
-		});
-	});
+		console.log("game started");
+	}); //end btnPressStartGame()
 
 });

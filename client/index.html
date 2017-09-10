@@ -25,16 +25,13 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
     integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
     crossorigin="anonymous"></script>
-<!-- Latest compiled and minified CSS -->
 <link rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
     integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
     crossorigin="anonymous">
-<!-- Optional theme -->
 <link rel="stylesheet"
     href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
     integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
@@ -66,7 +63,6 @@
             room: roomNum
         });
     };
-
     var btnPressLeaveGame = function(){
         socket.emit('btnPressLeaveGame',{
             room: roomNum
@@ -74,7 +70,6 @@
         roomNum = -1;
         loadMainMenu();
     }
-
     var btnPressDisbandGame = function(){
         socket.emit('btnPressDisbandGame',{
             room: roomNum
@@ -127,7 +122,7 @@
         '<label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="evilOne" checked>1st Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilTwo">2nd Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilThree">3rd Minion of Modred</input></label></div><hr></div>';
         var lobbyDivStr = '<div id="lobbyDiv"></div>';
         var centerReplacementStr = "";
-        if(socket.id == lobby[0].sid) {
+        if(socket.id == lobby[0].sid) { //if host
             centerReplacementStr = hostLobbyButtonsStr + characterSelectStr + lobbyDivStr;
         }
         else {
@@ -144,11 +139,14 @@
     })
 
     socket.on('loadMainMenu',function(data){
+        console.log("Received: [loadMainMenu] from server");
         loadMainMenu();
     })
 
     socket.on('loadGameScreen',function(data){
-        //TODO: implement this
+        console.log("Received: [loadGameScreen] from server");
+        lobby = data.list;
+        document.getElementById("centerDiv").innerHTML = data.gameStr;
     })
 
 </script>
@@ -167,7 +165,7 @@
 </div>
 
 <!-- ########## ########## ########## ########## ########## -->
-
+<!--
 <div id="gameBoardDiv" class="text-center">
     <h2>Game Board</h2>
     <div class="well" style="background:none;">
@@ -203,7 +201,7 @@
     <div id="playerBoardContent" class="collapse-in">
         <div class="well" style="background:none;">
             <button type="button" class="btn btn-default" style="width: 20%;">Merlin</button>
-            <button type="button" class="btn btn-default" style="width: 40%;">Kelvin (You)</button>
+            <button type="button" class="btn btn-default" style="width: 40%;">Kelvin</button>
             <button type="button" class="btn btn-default" style="width: 20%;">Thinking...</button>
             <p></p>
             <button type="button" class="btn btn-default" style="width: 20%;">EVIL</button>
@@ -221,14 +219,15 @@
             <button type="button" class="btn btn-default" style="width: 20%;">EVIL</button>
             <button type="button" class="btn btn-default" style="width: 40%;">Mark</button>
             <button type="button" class="btn btn-default" style="width: 20%;">Vote Cast</button>
+            <p></p>
             <hr>
             <p>Special Characters Present: Merlin, Assassin, Percival</p>
-            <p>There are 3 Good players and 2 Evil players.<p>
+            <p>There are 3 Agents of Good and 2 Agents of Evil.</p>
         </div>
     </div>
     <hr>
 </div>
-
+-->
 <!-- ########## ########## ########## ########## ########## -->
 
 <div id="centerDiv">
