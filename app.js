@@ -210,6 +210,18 @@ function buildGameBoard(roomNum, character, charArray) {
 	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
 	return gameScreenStr;
 }
+function updateGameBoard(roomNum, character) {
+	//TODO: get this working
+	//check the game phase to get the right information
+	var gameScreenStr;
+	var gameBoardStr;
+	var actionPanelStr;
+
+
+
+	gameScreenStr = gameBoardStr + actionPanelStr;
+	return gameScreenStr;
+}
 
 //upon new socket connection
 io.sockets.on('connection', function(socket){
@@ -444,6 +456,8 @@ io.sockets.on('connection', function(socket){
 			console.log("j = " + j);
 		}
 		console.log("game started");
+		//emit updateGame here?
+
 	}); //end btnPressStartGame()
 
 });
