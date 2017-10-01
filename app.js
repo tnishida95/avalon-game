@@ -380,10 +380,11 @@ io.sockets.on('connection', function(socket){
 				if(roomList[roomNum][i].character == "mordred") {
 					if(charArray[9] == 1) {
 						charArray[9] = 0;
-						break;
+						console.log("fulfilling mordred reservation to " + roomList[roomNum][i].name);
+						break; //remove this if more reservations added
 					}
-					//get here if character was reserved but not selected; drops the reservation
-					roomList[roomNum][i].character == "none";
+					console.log("modred not selected, cannot fulfill reservation");
+					roomList[roomNum][i].character = "none";
 				}
 				//add more cases here as necessary
 			}
