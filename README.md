@@ -1,6 +1,8 @@
-# avalon-game
+# Avalon/avalon-game
 
-**Avalon**/**avalon-game** is a web adaption of *The Resistance: Avalon"* board game by Don Eskridge and published by Indie Boards & Cards.  It is not endorsed by or affiliated with the designer or publisher.  The GitHub repository can be found [here](https://github.com/tnishida95/avalon-game).
+### Introduction
+
+**Avalon** is a web adaption of *The Resistance: Avalon* board game by Don Eskridge and published by Indie Boards & Cards.  It is not endorsed by or affiliated with the designer or publisher.  The original GitHub repository can be found [here](https://github.com/tnishida95/avalon-game).
 
 ### Gameplay
 
