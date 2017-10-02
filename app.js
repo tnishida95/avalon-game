@@ -216,6 +216,7 @@ function updateGameBoard(roomNum, character) {
 	var gameScreenStr;
 	var gameBoardStr;
 	var actionPanelStr;
+	var playerBoardStr
 
 
 
