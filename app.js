@@ -20,10 +20,12 @@ const io = require('socket.io')(serv,{});
 var socketList = [];
 //array of playerids
 var playerList = [];
+
 //key: roomNum, val: array of Player objects in the room
-var roomList = {};
-//key: roomNum, val: gameManager objects
-var gameList = {};
+const var roomList = {};
+//key: roomNum, val: GameManager objects
+const var gameList = {};
+
 //growing value to give unique ids to all connections
 var playerid = 0;
 
@@ -69,6 +71,9 @@ function GameManager(playerCountInt) {
 	2 = fail
 	*/
 	this.quests = [0,0,0,0,0];
+
+	this.successes = 0;
+	this.failures = 0;
 
 	//these numbers refer to the indices of Players in array at roomList[roomNum]
 	this.partyLeader = 0;
@@ -199,6 +204,7 @@ function buildGameBoard(roomNum, character, charArray) {
 		}
 		playerBoardStr += '</button><button type="button" class="btn btn-default" style="width: 40%;">';
 		playerBoardStr += currentName;
+		//TODO: consider dropping this status section and resizing buttons...will make updating boards easier
 		playerBoardStr += '</button><button type="button" class="btn btn-default" style="width: 20%;">Status</button><p></p>';
 	}
 	playerBoardStr += '<hr><p>Special Characters Present: [Merlin][Assassin]';
@@ -211,11 +217,132 @@ function buildGameBoard(roomNum, character, charArray) {
 	return gameScreenStr;
 }
 function updateGameBoard(roomNum, character) {
-	//TODO: get this working
+	//TODO: in progress
 	//check the game phase to get the right information
+	var currentPhase = gameList[roomNum].phase;
+
 	var gameScreenStr;
 	var gameBoardStr;
-	var actionPanelStr;
+	if(currentPhase < 3) {
+		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[0];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[1];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[2];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[3];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[4];
+		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p>';
+	}
+	else if (currentPhase < 6) {
+		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[1];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[2];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[3];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[4];
+		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 2</p>';
+	}
+	else if (currentPhase < 9) {
+		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[1] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[2];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[3];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[4];
+		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 3</p>';
+	}
+	else if (currentPhase < 9) {
+		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[1] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[2] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[3];
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[4];
+		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 4</p>';
+	}
+	else if (currentPhase < 12) {
+		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[1] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[2] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[3] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
+		gameBoardStr += gameList[roomNum].questSize[4];
+		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 5</p>';
+	}
+	else { //assassin or end phase
+		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[1] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[2] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[3] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		gameBoardStr += '</button><button type="button" class="btn btn-default">';
+		if(gameList[roomNum].quests[4] == 1) {gameBoardStr += 'S'}
+		else {gameBoardStr += 'F'}
+		if(currentPhase == 15) {gameBoardStr += '</button><hr><p id="currentQuestDisplay">Assassin Phase</p>';}
+		else{gameBoardStr += '</button><hr><p id="currentQuestDisplay">Results</p>';}
+	}
+	if(currentPhase < 15) {
+		gameBoardStr += '<p id="rejectedDisplay">Rejected Parties: ';
+		gameBoardStr += gameList[roomNum].votesRejected;
+		gameBoardStr += '</p><p id="successesDisplay">Successes: ';
+		gameBoardStr += gameList[roomNum].successes;
+		gameBoardStr += ', Failures: ';
+		gameBoardStr += gameList[roomNum].failures;
+		if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) {
+			gameBoardStr += '</p><hr><p id="currentPartyDisplay">Current party: none</p></div><hr></div>';
+		}
+		else {
+			gameBoardStr += '</p><hr><p id="currentPartyDisplay">Current party: ';
+			for(players in gameList[roomNum].selectedParty) {
+				gameBoardStr += '[' + roomList[players] + ']';
+			}
+			gameBoardStr += '</p></div><hr></div>';
+		}
+	}
+	else {
+		gameBoardStr += '</div><hr></div>';
+	}
+
+	//TODO: left off here
+	//determine actions from character, partyLeader, and currentPhase
+	var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+
 	var playerBoardStr;
 
 	gameScreenStr = gameBoardStr + actionPanelStr;
