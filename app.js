@@ -223,7 +223,7 @@ function updateGameBoard(roomNum, character) {
 
 	var gameScreenStr;
 	var gameBoardStr;
-	if(currentPhase < 3) {
+	if(currentPhase < 3) { //in first quest
 		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 		gameBoardStr += gameList[roomNum].questSize[0];
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -236,7 +236,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += gameList[roomNum].questSize[4];
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p>';
 	}
-	else if (currentPhase < 6) {
+	else if (currentPhase < 6) { //in second quest
 		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
@@ -250,7 +250,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += gameList[roomNum].questSize[4];
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 2</p>';
 	}
-	else if (currentPhase < 9) {
+	else if (currentPhase < 9) { //in third quest
 		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
@@ -265,7 +265,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += gameList[roomNum].questSize[4];
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 3</p>';
 	}
-	else if (currentPhase < 9) {
+	else if (currentPhase < 12) { //in fourth quest
 		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
@@ -281,7 +281,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += gameList[roomNum].questSize[4];
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 4</p>';
 	}
-	else if (currentPhase < 12) {
+	else if (currentPhase < 15) { //in fifth quest
 		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
@@ -317,7 +317,7 @@ function updateGameBoard(roomNum, character) {
 		if(currentPhase == 15) {gameBoardStr += '</button><hr><p id="currentQuestDisplay">Assassin Phase</p>';}
 		else{gameBoardStr += '</button><hr><p id="currentQuestDisplay">Results</p>';}
 	}
-	if(currentPhase < 15) {
+	if(currentPhase < 15) { //if still questing
 		gameBoardStr += '<p id="rejectedDisplay">Rejected Parties: ';
 		gameBoardStr += gameList[roomNum].votesRejected;
 		gameBoardStr += '</p><p id="successesDisplay">Successes: ';
@@ -335,17 +335,47 @@ function updateGameBoard(roomNum, character) {
 			gameBoardStr += '</p></div><hr></div>';
 		}
 	}
-	else {
+	else { //if not questing
 		gameBoardStr += '</div><hr></div>';
 	}
 
-	//TODO: left off here
+	//TODO: left off here, fill the rest in
 	//determine actions from character, partyLeader, and currentPhase
-	var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+	var partyLeaderChar = roomList[roomNum][gameList[roomNum].partyLeader]; //TODO: validate this is correct
+
+	if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //1st quest, party select
+		if(partyLeaderChar == character) {
+			//party select buttons
+		}
+		else {
+			var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+		}
+	}
+	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) {
+		//reject or accept buttons
+	}
+	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {
+		//if(on the party && good)
+		//else if(on the party && evil)
+		//else {
+			var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+		//}
+	}
+	else if(currentPhase == 15) {
+		if(character == "assassin") {
+			//good roster to assassinate
+		}
+		else {
+			var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+		}
+	}
+	else { //game end
+		//buttons to restart game, return to main menu
+	}
 
 	var playerBoardStr;
 
-	gameScreenStr = gameBoardStr + actionPanelStr;
+	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
 	return gameScreenStr;
 }
 
