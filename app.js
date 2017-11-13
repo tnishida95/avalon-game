@@ -22,9 +22,9 @@ var socketList = [];
 var playerList = [];
 
 //key: roomNum, val: array of Player objects in the room
-const var roomList = {};
+var roomList = {};
 //key: roomNum, val: GameManager objects
-const var gameList = {};
+var gameList = {};
 
 //growing value to give unique ids to all connections
 var playerid = 0;
