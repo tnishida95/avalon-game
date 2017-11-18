@@ -205,7 +205,9 @@ function buildGameBoard(roomNum, character, charArray) {
 		playerBoardStr += '</button><button type="button" class="btn btn-default" style="width: 40%;">';
 		playerBoardStr += currentName;
 		//TODO: consider dropping this status section and resizing buttons...will make updating boards easier
-		playerBoardStr += '</button><button type="button" class="btn btn-default" style="width: 20%;">Status</button><p></p>';
+		playerBoardStr += '</button><button id="status';
+		playerBoardStr += i;
+		playerBoardStr += '" type="button" class="btn btn-default" style="width: 20%;">Status</button><p></p>';
 	}
 	playerBoardStr += '<hr><p>Special Characters Present: [Merlin][Assassin]';
 	if(charArray[1] == 1) {playerBoardStr += '[Percival]';}
