@@ -149,6 +149,13 @@
         document.getElementById("centerDiv").innerHTML = data.gameStr;
     })
 
+    socket.on('updateGameScreen',function(data){
+        console.log("Received: [updateGameScreen] from server");
+        lobby = data.list;
+        //if this updateGameBoard() does not handle status, then change from centerDiv to another div that does not affect that section
+        document.getElementById("centerDiv").innerHTML = data.gameStr;
+    })
+
 </script>
 
 </head>

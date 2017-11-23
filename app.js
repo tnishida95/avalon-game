@@ -223,9 +223,9 @@ function updateGameBoard(roomNum, character) {
 	//check the game phase to get the right information
 	var currentPhase = gameList[roomNum].phase;
 
-	var gameScreenStr;
-	var gameBoardStr;
-	var actionPanelStr;
+	var gameScreenStr = '';
+	var gameBoardStr = '';
+	var actionPanelStr = '';
 	if(currentPhase < 3) { //in first quest
 		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 		gameBoardStr += gameList[roomNum].questSize[0];
@@ -344,18 +344,21 @@ function updateGameBoard(roomNum, character) {
 
 	//TODO: left off here, fill the rest in
 	//determine actions from character, partyLeader, and currentPhase
-	var partyLeaderChar = roomList[roomNum][gameList[roomNum].partyLeader]; //TODO: validate this is correct
+	var partyLeaderChar = roomList[roomNum][gameList[roomNum].partyLeader].character;
 
 	if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //1st quest, party select
 		if(partyLeaderChar == character) {
-			actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;">';
-			for(players in roomList[roomNum]) {
-				actionPanelStr = '<button type="button" class="btn btn-default" style="width: 82.5%;">' + players.name + '</button>';
+			actionPanelStr += '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;">';
+			//TODO NEXT: replace the buttons with these from the character select, so the selections can be sent to server
+			//actionPanelStr += '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons">';
+			for(i = 0; i < gameList[roomNum].playerCount; i++) {
+				actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%;">' + roomList[roomNum][i].name + '</button>';
+				//actionPanelStr += '<label class="btn btn-default active"><input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input></label>';
 			}
-			actionPanelStr = '<p></p></div><hr></div>';
+			actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submit</button><p></p></div><hr></div>';
 		}
 		else {
-			actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr += '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
 		}
 	}
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) {
@@ -365,7 +368,7 @@ function updateGameBoard(roomNum, character) {
 		//if(on the party && good)
 		//else if(on the party && evil)
 		//else {
-			actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr += '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
 		//}
 	}
 	else if(currentPhase == 15) {
@@ -373,7 +376,7 @@ function updateGameBoard(roomNum, character) {
 			//good roster to assassinate
 		}
 		else {
-			actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr += '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
 		}
 	}
 	else { //game end
@@ -381,9 +384,10 @@ function updateGameBoard(roomNum, character) {
 	}
 
 	//maybe don't do this...have another function update the status buttons when a player presses a button
-	var playerBoardStr;
+	//var playerBoardStr = '';
 
-	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
+	gameScreenStr = gameBoardStr + actionPanelStr;
+	//gameScreenStr += playerBoardStr;
 	return gameScreenStr;
 }
 
@@ -618,11 +622,14 @@ io.sockets.on('connection', function(socket){
 				gameStr: buildGameBoard(roomNum, roomList[roomNum][j].character, charArrayCopy)
 			});
 			console.log("board sent");
-			console.log("Here's the length:" + roomList[roomNum].length);
-			console.log("j = " + j);
+		}
+		for(j = 0; j < roomList[roomNum].length; j++) {
+			io.to(roomList[roomNum][j].sid).emit("updateGameScreen", {
+				list: roomList[roomNum],
+				gameStr: updateGameBoard(roomNum, roomList[roomNum][j].character)
+			});
 		}
 		console.log("game started");
-		//TODO: emit updateGame here?
 
 	}); //end btnPressStartGame()
 
