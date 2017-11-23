@@ -225,6 +225,7 @@ function updateGameBoard(roomNum, character) {
 
 	var gameScreenStr;
 	var gameBoardStr;
+	var actionPanelStr;
 	if(currentPhase < 3) { //in first quest
 		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 		gameBoardStr += gameList[roomNum].questSize[0];
@@ -347,10 +348,14 @@ function updateGameBoard(roomNum, character) {
 
 	if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //1st quest, party select
 		if(partyLeaderChar == character) {
-			//party select buttons
+			actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;">';
+			for(players in roomList[roomNum]) {
+				actionPanelStr = '<button type="button" class="btn btn-default" style="width: 82.5%;">' + players.name + '</button>';
+			}
+			actionPanelStr = '<p></p></div><hr></div>';
 		}
 		else {
-			var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
 		}
 	}
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) {
@@ -360,7 +365,7 @@ function updateGameBoard(roomNum, character) {
 		//if(on the party && good)
 		//else if(on the party && evil)
 		//else {
-			var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
 		//}
 	}
 	else if(currentPhase == 15) {
@@ -368,13 +373,14 @@ function updateGameBoard(roomNum, character) {
 			//good roster to assassinate
 		}
 		else {
-			var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
 		}
 	}
 	else { //game end
 		//buttons to restart game, return to main menu
 	}
 
+	//maybe don't do this...have another function update the status buttons when a player presses a button
 	var playerBoardStr;
 
 	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
@@ -602,6 +608,8 @@ io.sockets.on('connection', function(socket){
 			console.log("\t[" + roomList[roomNum][i].name + "] is " + roomList[roomNum][i].character);
 		}
 		gameList[roomNum] = new GameManager(roomList[roomNum].length);
+		gameList[roomNum].partyLeader = Math.floor(Math.random() * roomList[roomNum].length);
+		console.log("Party Leader assigned to player at index [" + gameList[roomNum].partyLeader + "], [" + roomList[roomNum][gameList[roomNum].partyLeader].name + "]");
 		console.log("sending out game boards...");
 		for(j = 0; j < roomList[roomNum].length; j++) {
 			process.stdout.write("\tsending board to [" + roomList[roomNum][j].sid + "]...");
@@ -614,7 +622,7 @@ io.sockets.on('connection', function(socket){
 			console.log("j = " + j);
 		}
 		console.log("game started");
-		//emit updateGame here?
+		//TODO: emit updateGame here?
 
 	}); //end btnPressStartGame()
 
