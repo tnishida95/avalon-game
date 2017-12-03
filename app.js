@@ -107,6 +107,8 @@ function printRoomList() {
 
 function buildGameBoard(roomNum, character, charArray) {
 	var gameScreenStr;
+
+	//start of gameBoardDiv
 	var gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 	gameBoardStr += gameList[roomNum].questSize[0];
 	gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -118,7 +120,13 @@ function buildGameBoard(roomNum, character, charArray) {
 	gameBoardStr += '</button><button type="button" class="btn btn-default">';
 	gameBoardStr += gameList[roomNum].questSize[4];
 	gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p><p id="rejectedDisplay">Rejected Parties: 0</p><p id="successesDisplay">Successes: 0, Failures: 0</p><hr><p id="currentPartyDisplay">Current party: none</p></div><hr></div>';
+	//end of gameBoardDiv
+
+	//start of actionPanelDiv
 	var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+	//end of actionPanelDiv
+
+	//start of playerBoardDiv
 	var playerBoardStr = '<div id="playerBoardDiv" class="text-center"><h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2><div id="playerBoardContent" class="collapse-in"><div class="well" style="background:none;">';
 	//show different information based on character
 	for(i = 0; i < gameList[roomNum].playerCount; i++) {
@@ -204,7 +212,6 @@ function buildGameBoard(roomNum, character, charArray) {
 		}
 		playerBoardStr += '</button><button type="button" class="btn btn-default" style="width: 40%;">';
 		playerBoardStr += currentName;
-		//TODO: consider dropping this status section and resizing buttons...will make updating boards easier
 		playerBoardStr += '</button><button id="status';
 		playerBoardStr += i;
 		playerBoardStr += '" type="button" class="btn btn-default" style="width: 20%;">Status</button><p></p>';
@@ -215,19 +222,20 @@ function buildGameBoard(roomNum, character, charArray) {
 	if(charArray[9] == 1) {playerBoardStr += '[Mordred]';}
 	if(charArray[10] == 1) {playerBoardStr += '[Oberon]';}
 	playerBoardStr += '<p>There are ' + gameList[roomNum].goodNum + ' Agents of Good and ' + gameList[roomNum].evilNum + ' Agents of Evil.</p></div></div><hr></div>';
+	//end of playerBoardDiv
+
 	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
 	return gameScreenStr;
 }
-function updateGameBoard(roomNum, character) {
-	//TODO: in progress
-	//check the game phase to get the right information
-	var currentPhase = gameList[roomNum].phase;
 
-	var gameScreenStr = '';
+//TODO (NEXT): clean up these strings, lots of redundant string adds
+function updateGameBoard(roomNum, character) {
+
+	var currentPhase = gameList[roomNum].phase;
 	var gameBoardStr = '';
-	var actionPanelStr = '';
+
 	if(currentPhase < 3) { //in first quest
-		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
+		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 		gameBoardStr += gameList[roomNum].questSize[0];
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
 		gameBoardStr += gameList[roomNum].questSize[1];
@@ -240,7 +248,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p>';
 	}
 	else if (currentPhase < 6) { //in second quest
-		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
@@ -254,7 +262,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 2</p>';
 	}
 	else if (currentPhase < 9) { //in third quest
-		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -269,7 +277,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 3</p>';
 	}
 	else if (currentPhase < 12) { //in fourth quest
-		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -285,7 +293,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 4</p>';
 	}
 	else if (currentPhase < 15) { //in fifth quest
-		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -302,7 +310,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 5</p>';
 	}
 	else { //assassin or end phase
-		gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -327,38 +335,51 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += gameList[roomNum].successes;
 		gameBoardStr += ', Failures: ';
 		gameBoardStr += gameList[roomNum].failures;
+
+		gameBoardStr += '</p><hr><p id="currentPartyDisplay">Current party: ';
 		if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) {
-			gameBoardStr += '</p><hr><p id="currentPartyDisplay">Current party: none</p></div><hr></div>';
+			gameBoardStr += 'none';
 		}
 		else {
-			gameBoardStr += '</p><hr><p id="currentPartyDisplay">Current party: ';
 			for(players in gameList[roomNum].selectedParty) {
 				gameBoardStr += '[' + roomList[players] + ']';
 			}
-			gameBoardStr += '</p></div><hr></div>';
 		}
 	}
-	else { //if not questing
-		gameBoardStr += '</div><hr></div>';
-	}
+	gameBoardStr += '</p></div><hr>';
 
+	return gameBoardStr;
+
+
+
+	//maybe don't do this...have another function update the status buttons when a player presses a button
+	//var playerBoardStr = '';
+
+	gameScreenStr = gameBoardStr + actionPanelStr;
+	//gameScreenStr += playerBoardStr;
+	return gameScreenStr;
+}
+function updateActionPanel(roomNum, character) {
 	//TODO: left off here, fill the rest in
 	//determine actions from character, partyLeader, and currentPhase
+	var currentPhase = gameList[roomNum].phase;
+	var actionPanelStr = '';
+
 	var partyLeaderChar = roomList[roomNum][gameList[roomNum].partyLeader].character;
 
 	if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //1st quest, party select
 		if(partyLeaderChar == character) {
-			actionPanelStr += '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;">';
+			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;">';
 			//TODO NEXT: replace the buttons with these from the character select, so the selections can be sent to server
 			//actionPanelStr += '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons">';
 			for(i = 0; i < gameList[roomNum].playerCount; i++) {
 				actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%;">' + roomList[roomNum][i].name + '</button>';
 				//actionPanelStr += '<label class="btn btn-default active"><input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input></label>';
 			}
-			actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submit</button><p></p></div><hr></div>';
+			actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submit</button><p></p></div><hr>';
 		}
 		else {
-			actionPanelStr += '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
 		}
 	}
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) {
@@ -368,7 +389,7 @@ function updateGameBoard(roomNum, character) {
 		//if(on the party && good)
 		//else if(on the party && evil)
 		//else {
-			actionPanelStr += '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
 		//}
 	}
 	else if(currentPhase == 15) {
@@ -376,20 +397,24 @@ function updateGameBoard(roomNum, character) {
 			//good roster to assassinate
 		}
 		else {
-			actionPanelStr += '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
+			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
 		}
 	}
 	else { //game end
 		//buttons to restart game, return to main menu
 	}
-
-	//maybe don't do this...have another function update the status buttons when a player presses a button
-	//var playerBoardStr = '';
-
-	gameScreenStr = gameBoardStr + actionPanelStr;
-	//gameScreenStr += playerBoardStr;
-	return gameScreenStr;
+	return actionPanelStr;
 }
+function updatePlayerBoard(roomNum, character) {
+	//TODO: this one will NOT replace the actionPanelDiv
+	//it will change the text at status inside the status buttons only
+	//consider making this function handle only one status button at a time, and have it loop and to update each player
+	var currentPhase = gameList[roomNum].phase;
+	var playerBoardStr = '';
+
+	return playerBoardStr = '';
+}
+
 
 //upon new socket connection
 io.sockets.on('connection', function(socket){
@@ -615,19 +640,28 @@ io.sockets.on('connection', function(socket){
 		gameList[roomNum].partyLeader = Math.floor(Math.random() * roomList[roomNum].length);
 		console.log("Party Leader assigned to player at index [" + gameList[roomNum].partyLeader + "], [" + roomList[roomNum][gameList[roomNum].partyLeader].name + "]");
 		console.log("sending out game boards...");
+
+		//build and send out boards
 		for(j = 0; j < roomList[roomNum].length; j++) {
 			process.stdout.write("\tsending board to [" + roomList[roomNum][j].sid + "]...");
 			io.to(roomList[roomNum][j].sid).emit("loadGameScreen", {
 				list: roomList[roomNum],
-				gameStr: buildGameBoard(roomNum, roomList[roomNum][j].character, charArrayCopy)
+				gameScreenStr: buildGameBoard(roomNum, roomList[roomNum][j].character, charArrayCopy)
 			});
 			console.log("board sent");
 		}
 		for(j = 0; j < roomList[roomNum].length; j++) {
-			io.to(roomList[roomNum][j].sid).emit("updateGameScreen", {
-				list: roomList[roomNum],
-				gameStr: updateGameBoard(roomNum, roomList[roomNum][j].character)
+			io.to(roomList[roomNum][j].sid).emit("updateGameBoard", {
+				gameBoardStr: updateGameBoard(roomNum, roomList[roomNum][j].character),
+				});
+			io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
+				actionPanelStr: updateActionPanel(roomNum, roomList[roomNum][j].character),
 			});
+			/* uncomment after updateActionPanel() is done
+			io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
+				playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
+			});
+			*/
 		}
 		console.log("game started");
 

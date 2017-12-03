@@ -146,14 +146,22 @@
     socket.on('loadGameScreen',function(data){
         console.log("Received: [loadGameScreen] from server");
         lobby = data.list;
-        document.getElementById("centerDiv").innerHTML = data.gameStr;
+        document.getElementById("centerDiv").innerHTML = data.gameScreenStr;
     })
 
-    socket.on('updateGameScreen',function(data){
-        console.log("Received: [updateGameScreen] from server");
+    socket.on('updateGameBoard',function(data){
+        console.log("Received: [updateGameBoard] from server");
+        document.getElementById("gameBoardDiv").innerHTML = data.gameBoardStr;
+    })
+    socket.on('updateActionPanel',function(data){
+        console.log("Received: [updateActionPanel] from server");
         lobby = data.list;
-        //if this updateGameBoard() does not handle status, then change from centerDiv to another div that does not affect that section
-        document.getElementById("centerDiv").innerHTML = data.gameStr;
+        document.getElementById("actionPanelDiv").innerHTML = data.actionPanelStr;
+    })
+    socket.on('updatePlayerBoard',function(data){
+        console.log("Received: [updatePlayerBoard] from server");
+        lobby = data.list;
+        document.getElementById("playerBoardDiv").innerHTML = data.playerBoardStr;
     })
 
 </script>
