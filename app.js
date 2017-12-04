@@ -228,14 +228,12 @@ function buildGameBoard(roomNum, character, charArray) {
 	return gameScreenStr;
 }
 
-//TODO (NEXT): clean up these strings, lots of redundant string adds
 function updateGameBoard(roomNum, character) {
-
 	var currentPhase = gameList[roomNum].phase;
-	var gameBoardStr = '';
+	var gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p>';
 
 	if(currentPhase < 3) { //in first quest
-		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
+		gameBoardStr = '<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 		gameBoardStr += gameList[roomNum].questSize[0];
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
 		gameBoardStr += gameList[roomNum].questSize[1];
@@ -248,7 +246,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p>';
 	}
 	else if (currentPhase < 6) { //in second quest
-		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
@@ -262,7 +260,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 2</p>';
 	}
 	else if (currentPhase < 9) { //in third quest
-		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -277,7 +275,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 3</p>';
 	}
 	else if (currentPhase < 12) { //in fourth quest
-		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -293,7 +291,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 4</p>';
 	}
 	else if (currentPhase < 15) { //in fifth quest
-		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -310,7 +308,7 @@ function updateGameBoard(roomNum, character) {
 		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 5</p>';
 	}
 	else { //assassin or end phase
-		gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" class="btn btn-default">';
+		gameBoardStr = '<button type="button" class="btn btn-default">';
 		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
 		else {gameBoardStr += 'F'}
 		gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -370,7 +368,7 @@ function updateActionPanel(roomNum, character) {
 	if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //1st quest, party select
 		if(partyLeaderChar == character) {
 			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;">';
-			//TODO NEXT: replace the buttons with these from the character select, so the selections can be sent to server
+			//TODO: replace the buttons with these from the character select, so the selections can be sent to server
 			//actionPanelStr += '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons">';
 			for(i = 0; i < gameList[roomNum].playerCount; i++) {
 				actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%;">' + roomList[roomNum][i].name + '</button>';
