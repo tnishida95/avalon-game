@@ -79,6 +79,8 @@ function GameManager(playerCountInt) {
 	this.partyLeader = 0;
 	//could assign this a new array every time a new quest comes up
 	this.selectedParty = [-1,-1,-1,-1,-1,-1];
+
+	//TODO NEXT: add data structure that captures the accepts/rejects from players
 }
 
 function printPlayerList() {
@@ -169,7 +171,7 @@ function buildGameBoard(roomNum, character, charArray) {
 				else {playerBoardStr += '?';}
 			}
 		}
-		else if( character == "goodOne" ||
+		else if(character == "goodOne" ||
 			character == "goodTwo" ||
 			character == "goodThree" ||
 			character == "goodFour" ||
@@ -347,15 +349,6 @@ function updateGameBoard(roomNum, character) {
 	gameBoardStr += '</p></div><hr>';
 
 	return gameBoardStr;
-
-
-
-	//maybe don't do this...have another function update the status buttons when a player presses a button
-	//var playerBoardStr = '';
-
-	gameScreenStr = gameBoardStr + actionPanelStr;
-	//gameScreenStr += playerBoardStr;
-	return gameScreenStr;
 }
 function updateActionPanel(roomNum, character) {
 	//TODO: left off here, fill the rest in
