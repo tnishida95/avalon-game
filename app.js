@@ -358,22 +358,22 @@ function updateActionPanel(roomNum, character) {
 
 	var partyLeaderChar = roomList[roomNum][gameList[roomNum].partyLeader].character;
 
-	if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //1st quest, party select
+	if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //party select
+		actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;">';
 		if(partyLeaderChar == character) {
-			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;">';
-			//TODO: replace the buttons with these from the character select, so the selections can be sent to server
-			//actionPanelStr += '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons">';
-			for(i = 0; i < gameList[roomNum].playerCount; i++) {
-				actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%;">' + roomList[roomNum][i].name + '</button>';
-				//actionPanelStr += '<label class="btn btn-default active"><input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input></label>';
+			actionPanelStr += '<div class="text-center"><div data-toggle="buttons">';
+			for(i = 0; i < gameList[roomNum].playerCount - 1; i++) {
+				actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="' + roomList[roomNum][i].name + '">' + roomList[roomNum][i].name + '</input></label>';
 			}
-			actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submit</button><p></p></div><hr>';
+			actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="Submit">' + roomList[roomNum][i].name + '</input></label>';
 		}
 		else {
-			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
+			actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>';
 		}
+		actionPanelStr += '<p></p></div><hr>';
 	}
-	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) {
+	//TODO NEXT: continue filling in actionPanelStrs with toggle buttons
+	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
 		//reject or accept buttons
 	}
 	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {
