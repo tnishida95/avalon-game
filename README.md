@@ -17,7 +17,7 @@ You will need Node and npm.  If you don't have these already, run the following 
 sudo apt-get install nodejs
 sudo apt-get install npm
 ```
-Call `npm init` to start up the npm package manager.  Then, get the needed packages with `npm install <package>`:
+Call `npm init` to start up the npm package manager.  Then, get the needed packages with `npm install` or `npm install <package>`:
 ```
 npm install express
 npm install socket.io

@@ -13,7 +13,9 @@ app.get('/',function(req, res) {
 });
 app.use('/client',express.static(__dirname + '/client'));
 serv.listen(2000);
-console.log("server started");
+console.log("Server started listening on port 2000.");
+var gameStrBuilder = require('./gameStrBuilder');
+//console.log(gameStrBuilder.buildGameBoardDiv(1,2,3,4,5));
 
 const io = require('socket.io')(serv,{});
 //array of sockets
@@ -109,8 +111,10 @@ function printRoomList() {
 
 function buildGameBoard(roomNum, character, charArray) {
 	var gameScreenStr;
-
+	//TODO NEXT: move ALL of the string building out to the gameStrBuilder module
 	//start of gameBoardDiv
+	var gameBoardStr = gameStrBuilder.buildGameBoardDiv(gameList[roomNum].questSize[0], gameList[roomNum].questSize[1], gameList[roomNum].questSize[2], gameList[roomNum].questSize[3], gameList[roomNum].questSize[4]);
+	/*
 	var gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
 	gameBoardStr += gameList[roomNum].questSize[0];
 	gameBoardStr += '</button><button type="button" class="btn btn-default">';
@@ -122,6 +126,7 @@ function buildGameBoard(roomNum, character, charArray) {
 	gameBoardStr += '</button><button type="button" class="btn btn-default">';
 	gameBoardStr += gameList[roomNum].questSize[4];
 	gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p><p id="rejectedDisplay">Rejected Parties: 0</p><p id="successesDisplay">Successes: 0, Failures: 0</p><hr><p id="currentPartyDisplay">Current party: none</p></div><hr></div>';
+	*/
 	//end of gameBoardDiv
 
 	//start of actionPanelDiv
@@ -372,7 +377,7 @@ function updateActionPanel(roomNum, character) {
 		}
 		actionPanelStr += '<p></p></div><hr>';
 	}
-	//TODO NEXT: continue filling in actionPanelStrs with toggle buttons
+	//TODO NEXT-NEXT: continue filling in actionPanelStrs with toggle buttons
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
 		//reject or accept buttons
 	}
