@@ -82,7 +82,7 @@ function GameManager(playerCountInt) {
 	//could assign this a new array every time a new quest comes up
 	this.selectedParty = [-1,-1,-1,-1,-1,-1];
 
-	//TODO NEXT: add data structure that captures the accepts/rejects from players
+	//TODO NEXT NEXT: add data structure that captures the accepts/rejects from players
 }
 
 function printPlayerList() {
@@ -111,29 +111,13 @@ function printRoomList() {
 
 function buildGameBoard(roomNum, character, charArray) {
 	var gameScreenStr;
+	var gameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize[0], gameList[roomNum].questSize[1], gameList[roomNum].questSize[2], gameList[roomNum].questSize[3], gameList[roomNum].questSize[4]);
+	var actionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
+
 	//TODO NEXT: move ALL of the string building out to the gameStrBuilder module
-	//start of gameBoardDiv
-	var gameBoardStr = gameStrBuilder.buildGameBoardDiv(gameList[roomNum].questSize[0], gameList[roomNum].questSize[1], gameList[roomNum].questSize[2], gameList[roomNum].questSize[3], gameList[roomNum].questSize[4]);
-	/*
-	var gameBoardStr = '<div id="gameBoardDiv" class="text-center"><h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
-	gameBoardStr += gameList[roomNum].questSize[0];
-	gameBoardStr += '</button><button type="button" class="btn btn-default">';
-	gameBoardStr += gameList[roomNum].questSize[1];
-	gameBoardStr += '</button><button type="button" class="btn btn-default">';
-	gameBoardStr += gameList[roomNum].questSize[2];
-	gameBoardStr += '</button><button type="button" class="btn btn-default">';
-	gameBoardStr += gameList[roomNum].questSize[3];
-	gameBoardStr += '</button><button type="button" class="btn btn-default">';
-	gameBoardStr += gameList[roomNum].questSize[4];
-	gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p><p id="rejectedDisplay">Rejected Parties: 0</p><p id="successesDisplay">Successes: 0, Failures: 0</p><hr><p id="currentPartyDisplay">Current party: none</p></div><hr></div>';
-	*/
-	//end of gameBoardDiv
-
-	//start of actionPanelDiv
-	var actionPanelStr = '<div id="actionPanelDiv" class="text-center"><h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr></div>';
-	//end of actionPanelDiv
-
 	//start of playerBoardDiv
+	var playerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
+
 	var playerBoardStr = '<div id="playerBoardDiv" class="text-center"><h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2><div id="playerBoardContent" class="collapse-in"><div class="well" style="background:none;">';
 	//show different information based on character
 	for(i = 0; i < gameList[roomNum].playerCount; i++) {
