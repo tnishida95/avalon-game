@@ -39,7 +39,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
         <h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2>
         <div id="playerBoardContent" class="collapse-in">
             <div class="well" style="background:none;">`;
-    for(i = 0; i.length < playerList; i++) {
+    for(i = 0; i < playerList.length; i++) {
         currentName = playerList[i].name;
         currentChar = playerList[i].character;
         currentIdentity = "?";
@@ -57,7 +57,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
             }
             else if(charArray[9] != 1) {
                 // no mordred (if mordred, all others are "?")
-                if(currentChar == "Percival" ||
+                if(currentChar == "percival" ||
 					currentChar == "goodOne" ||
 					currentChar == "goodTwo" ||
 					currentChar == "goodThree" ||
@@ -129,8 +129,6 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
                 }
             }
         }
-        //TODO NOW: debug this
-        console.log(`i = ${i}, currentIdentity = ${currentIdentity}, currentName = ${currentName}`);
         firstPlayerBoardStr += `<button type="button" class="btn btn-default" style="width: 20%;">${currentIdentity}</button>
         <button type="button" class="btn btn-default" style="width: 40%;">${currentName}</button>
         <button id="status${i}" type="button" class="btn btn-default" style="width: 20%;">Status</button>
