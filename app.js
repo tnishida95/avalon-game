@@ -118,6 +118,7 @@ function buildGameBoard(roomNum, character, charArray) {
 	//start of playerBoardDiv
 	var playerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
 
+	/*
 	var playerBoardStr = '<div id="playerBoardDiv" class="text-center"><h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2><div id="playerBoardContent" class="collapse-in"><div class="well" style="background:none;">';
 	//show different information based on character
 	for(i = 0; i < gameList[roomNum].playerCount; i++) {
@@ -213,6 +214,7 @@ function buildGameBoard(roomNum, character, charArray) {
 	if(charArray[9] == 1) {playerBoardStr += '[Mordred]';}
 	if(charArray[10] == 1) {playerBoardStr += '[Oberon]';}
 	playerBoardStr += '<p>There are ' + gameList[roomNum].goodNum + ' Agents of Good and ' + gameList[roomNum].evilNum + ' Agents of Evil.</p></div></div><hr></div>';
+	*/
 	//end of playerBoardDiv
 
 	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
