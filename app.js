@@ -109,119 +109,19 @@ function printRoomList() {
 	console.log("-------------------------");
 }
 
-function buildGameBoard(roomNum, character, charArray) {
-	var gameScreenStr;
-	var gameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize[0], gameList[roomNum].questSize[1], gameList[roomNum].questSize[2], gameList[roomNum].questSize[3], gameList[roomNum].questSize[4]);
-	var actionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
+function buildGameScreen(roomNum, character, charArray) {
+	var firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize[0], gameList[roomNum].questSize[1], gameList[roomNum].questSize[2], gameList[roomNum].questSize[3], gameList[roomNum].questSize[4]);
+	var firstActionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
+	var firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
 
-	//TODO NEXT: move ALL of the string building out to the gameStrBuilder module
-	//start of playerBoardDiv
-	var playerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
-
-	/*
-	var playerBoardStr = '<div id="playerBoardDiv" class="text-center"><h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2><div id="playerBoardContent" class="collapse-in"><div class="well" style="background:none;">';
-	//show different information based on character
-	for(i = 0; i < gameList[roomNum].playerCount; i++) {
-		currentName = roomList[roomNum][i].name;
-		currentChar = roomList[roomNum][i].character;
-		playerBoardStr += '<button type="button" class="btn btn-default" style="width: 20%;">';
-		if(character == "merlin") {
-			if(charArray[9] == 1) { //mordred
-				if(currentChar == "merlin") {playerBoardStr += 'Merlin';}
-				else if (currentChar == "percival" ||
-					currentChar == "mordred" ||
-					currentChar == "goodOne" ||
-					currentChar == "goodTwo" ||
-					currentChar == "goodThree" ||
-					currentChar == "goodFour" ||
-					currentChar == "goodFive") {playerBoardStr += '?';}
-				else {playerBoardStr += 'EVIL';}
-			}
-			else {
-				if(currentChar == "merlin") {playerBoardStr += 'Merlin';}
-				else if( currentChar == "assassin" ||
-					currentChar == "morgana" ||
-					currentChar == "oberon" ||
-					currentChar == "evilOne" ||
-					currentChar == "evilTwo" ||
-					currentChar == "evilThree") {playerBoardStr += 'EVIL';}
-				else {playerBoardStr += 'GOOD';}
-			}
-		}
-		else if(character == "percival") {
-			if(charArray[8] == 1) { //morgana
-				if( currentChar == "merlin" ||
-					currentChar == "morgana") {playerBoardStr += 'Merlin/Morgana';}
-				else if(currentChar == "percival") {playerBoardStr += 'Percival';}
-				else {playerBoardStr += '?';}
-			}
-			else {
-				if(currentChar == "merlin") {playerBoardStr += 'Merlin';}
-				else if(currentChar == "percival") {playerBoardStr += 'Percival';}
-				else {playerBoardStr += '?';}
-			}
-		}
-		else if(character == "goodOne" ||
-			character == "goodTwo" ||
-			character == "goodThree" ||
-			character == "goodFour" ||
-			character == "goodFive") {
-			if(currentChar == character) {playerBoardStr += 'Servant of Good';}
-			else {playerBoardStr += '?';}
-		}
-		else if(character == "oberon") {
-			if(currentChar == character) {playerBoardStr += 'Oberon';}
-			else {playerBoardStr += '?';}
-		}
-		else { //non-Oberon Evil
-			if(charArray[10] == 1) { //oberon
-				if( currentChar == "merlin" ||
-					currentChar == "percival" ||
-					currentChar == "goodOne" ||
-					currentChar == "goodTwo" ||
-					currentChar == "goodThree" ||
-					currentChar == "goodFour" ||
-					currentChar == "goodFive" ||
-					currentChar == "oberon") {playerBoardStr += '?';}
-				else if(currentChar == "assassin") {playerBoardStr += 'Assassin';}
-				else if(currentChar == "mordred") {playerBoardStr += 'Mordred';}
-				else if(currentChar == "morgana") {playerBoardStr += 'Morgana';}
-				else {playerBoardStr += 'Minion of Evil';}
-			}
-			else {
-				if( currentChar == "merlin" ||
-					currentChar == "percival" ||
-					currentChar == "goodOne" ||
-					currentChar == "goodTwo" ||
-					currentChar == "goodThree" ||
-					currentChar == "goodFour" ||
-					currentChar == "goodFive") {playerBoardStr += 'GOOD';}
-				else if(currentChar == "assassin") {playerBoardStr += 'Assassin';}
-				else if(currentChar == "mordred") {playerBoardStr += 'Mordred';}
-				else if(currentChar == "morgana") {playerBoardStr += 'Morgana';}
-				else {playerBoardStr += 'Minion of Evil';}
-			}
-		}
-		playerBoardStr += '</button><button type="button" class="btn btn-default" style="width: 40%;">';
-		playerBoardStr += currentName;
-		playerBoardStr += '</button><button id="status';
-		playerBoardStr += i;
-		playerBoardStr += '" type="button" class="btn btn-default" style="width: 20%;">Status</button><p></p>';
-	}
-	playerBoardStr += '<hr><p>Special Characters Present: [Merlin][Assassin]';
-	if(charArray[1] == 1) {playerBoardStr += '[Percival]';}
-	if(charArray[8] == 1) {playerBoardStr += '[Morgana]';}
-	if(charArray[9] == 1) {playerBoardStr += '[Mordred]';}
-	if(charArray[10] == 1) {playerBoardStr += '[Oberon]';}
-	playerBoardStr += '<p>There are ' + gameList[roomNum].goodNum + ' Agents of Good and ' + gameList[roomNum].evilNum + ' Agents of Evil.</p></div></div><hr></div>';
-	*/
-	//end of playerBoardDiv
-
-	gameScreenStr = gameBoardStr + actionPanelStr + playerBoardStr;
-	return gameScreenStr;
+	var firstGameScreenStr = firstGameBoardStr + firstActionPanelStr + firstPlayerBoardStr;
+	return firstGameScreenStr;
 }
 
 function updateGameBoard(roomNum, character) {
+	/*
+	var gameBoardStr = gameStrBuilder.updateGameBoardStr(roomNum, character, gameList[roomNum].questSize[0], gameList[roomNum].questSize[1], gameList[roomNum].questSize[2], gameList[roomNum].questSize[3], gameList[roomNum].questSize[4], gameList[roomNum].phase, gameList[roomNum].votesRejected, gameList[roomNum].successes, gameList[roomNum].failures, gameList[roomNum].quests);
+	*/
 	var currentPhase = gameList[roomNum].phase;
 	var gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p>';
 
@@ -577,7 +477,7 @@ io.sockets.on('connection', function(socket){
 			}
 		}
 
-		//this is to help buildGameBoard()
+		//this is to help buildGameScreen()
 		var charArrayCopy = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 		for(i = 0; i < 14; i++) {
 			if(charArray[i] == 1) {charArrayCopy[i] = 1;}
@@ -628,7 +528,7 @@ io.sockets.on('connection', function(socket){
 			process.stdout.write("\tsending board to [" + roomList[roomNum][j].sid + "]...");
 			io.to(roomList[roomNum][j].sid).emit("loadGameScreen", {
 				list: roomList[roomNum],
-				gameScreenStr: buildGameBoard(roomNum, roomList[roomNum][j].character, charArrayCopy)
+				gameScreenStr: buildGameScreen(roomNum, roomList[roomNum][j].character, charArrayCopy)
 			});
 			console.log("board sent");
 		}

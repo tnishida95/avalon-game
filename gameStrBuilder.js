@@ -1,6 +1,6 @@
 //gameStrBuilder.js
 
-var buildFirstGameBoardStr = function(qSize1, qSize2, qSize3, qSize4, qSize5) {
+var buildFirstGameBoardStr = function(q1Size, q2Size, q3Size, q4Size, q5Size) {
     return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
         <div class="well" style="background:none;">
@@ -30,7 +30,6 @@ var buildFirstActionPanelStr = function() {
         <hr>
     </div>`
 }
-
 var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNum, evilNum) {
     var currentName;
     var currentChar;
@@ -144,8 +143,30 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
+updateGameBoardStr = function(roomNum, character, q1Size, q2Size, q3Size, q4Size, q5Size, currentPhase, votesRejected, successes, failures, questArray) {
+    var gameBoardStr;
+    if(currentPhase < 3) {
+        gameBoardStr = `<h2>Game Board</h2>
+        <div class="well" style="background:none;">
+            <p>Quests</p>
+            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${q1Size}</button>
+            <button type="button" class="btn btn-default">${q2Size}</button>
+            <button type="button" class="btn btn-default">${q3Size}</button>
+            <button type="button" class="btn btn-default">${q4Size}</button>
+            <button type="button" class="btn btn-default">${q5Size}</button>
+            <hr>
+            <p id="currentQuestDisplay">Current Quest: 1</p>
+            <p id="rejectedDisplay">Rejected Parties: ${votesRejected}</p>
+            <p id="successesDisplay">Successes: ${successes}, Failures: ${failures}</p>
+            <hr>
+            <p id="currentPartyDisplay">Current party: ${}</p>
+        </div>
+        <hr>`;
+}
+
 module.exports = {
     buildFirstGameBoardStr: buildFirstGameBoardStr,
     buildFirstActionPanelStr: buildFirstActionPanelStr,
-    buildFirstPlayerBoardStr: buildFirstPlayerBoardStr
+    buildFirstPlayerBoardStr: buildFirstPlayerBoardStr,
+    updateGameBoardStr: updateGameBoardStr
 }
