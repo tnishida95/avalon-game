@@ -1,15 +1,15 @@
 //gameStrBuilder.js
 
-var buildFirstGameBoardStr = function(q1Size, q2Size, q3Size, q4Size, q5Size) {
+var buildFirstGameBoardStr = function(questSizeArray) {
     return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
-            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${qSize1}</button>
-            <button type="button" class="btn btn-default">${qSize2}</button>
-            <button type="button" class="btn btn-default">${qSize3}</button>
-            <button type="button" class="btn btn-default">${qSize4}</button>
-            <button type="button" class="btn btn-default">${qSize5}</button>
+            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${questSizeArray[0]}</button>
+            <button type="button" class="btn btn-default">${questSizeArray[1]}</button>
+            <button type="button" class="btn btn-default">${questSizeArray[2]}</button>
+            <button type="button" class="btn btn-default">${questSizeArray[3]}</button>
+            <button type="button" class="btn btn-default">${questSizeArray[4]}</button>
             <hr>
             <p id="currentQuestDisplay">Current Quest: 1</p>
             <p id="rejectedDisplay">Rejected Parties: 0</p>
@@ -18,7 +18,7 @@ var buildFirstGameBoardStr = function(q1Size, q2Size, q3Size, q4Size, q5Size) {
             <p id="currentPartyDisplay">Current party: none</p>
         </div>
         <hr>
-    </div>`
+    </div>`;
 }
 var buildFirstActionPanelStr = function() {
     return `<div id="actionPanelDiv" class="text-center">
@@ -28,7 +28,7 @@ var buildFirstActionPanelStr = function() {
             <p></p>
         </div>
         <hr>
-    </div>`
+    </div>`;
 }
 var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNum, evilNum) {
     var currentName;
@@ -143,8 +143,21 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
-updateGameBoardStr = function(roomNum, character, q1Size, q2Size, q3Size, q4Size, q5Size, currentPhase, votesRejected, successes, failures, questArray) {
+// no no no no no just pass in the room's GameManager
+updateGameBoardStr = function(character, questSizeArray, currentPhase, votesRejected, successes, failures, questsArray, selectedPartyArray) {
     var gameBoardStr;
+    var partyDisplayStr = "none";
+    // if a party exists, fill the string
+    if( currentPhase != 0 ||
+        currentPhase != 3 ||
+        currentPhase != 6 ||
+        currentPhase != 9 ||
+        currentPhase != 12) {
+        partyDisplayStr = "";
+        for(players in selectedPartyArray) {
+            selectedPartyArray += '[' + players + ']';
+        }
+    }
     if(currentPhase < 3) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
@@ -159,9 +172,13 @@ updateGameBoardStr = function(roomNum, character, q1Size, q2Size, q3Size, q4Size
             <p id="rejectedDisplay">Rejected Parties: ${votesRejected}</p>
             <p id="successesDisplay">Successes: ${successes}, Failures: ${failures}</p>
             <hr>
-            <p id="currentPartyDisplay">Current party: ${}</p>
+            <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
         </div>
         <hr>`;
+    }
+    else if(currentPhase < 6) {
+
+    }
 }
 
 module.exports = {

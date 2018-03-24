@@ -17,6 +17,7 @@ console.log("Server started listening on port 2000.");
 var gameStrBuilder = require('./gameStrBuilder');
 //console.log(gameStrBuilder.buildGameBoardDiv(1,2,3,4,5));
 
+
 const io = require('socket.io')(serv,{});
 //array of sockets
 var socketList = [];
@@ -110,7 +111,7 @@ function printRoomList() {
 }
 
 function buildGameScreen(roomNum, character, charArray) {
-	var firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize[0], gameList[roomNum].questSize[1], gameList[roomNum].questSize[2], gameList[roomNum].questSize[3], gameList[roomNum].questSize[4]);
+	var firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize);
 	var firstActionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
 	var firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
 
@@ -120,7 +121,7 @@ function buildGameScreen(roomNum, character, charArray) {
 
 function updateGameBoard(roomNum, character) {
 	/*
-	var gameBoardStr = gameStrBuilder.updateGameBoardStr(roomNum, character, gameList[roomNum].questSize[0], gameList[roomNum].questSize[1], gameList[roomNum].questSize[2], gameList[roomNum].questSize[3], gameList[roomNum].questSize[4], gameList[roomNum].phase, gameList[roomNum].votesRejected, gameList[roomNum].successes, gameList[roomNum].failures, gameList[roomNum].quests);
+	var gameBoardStr = gameStrBuilder.updateGameBoardStr(character, gameList[roomNum].questSize, gameList[roomNum].phase, gameList[roomNum].votesRejected, gameList[roomNum].successes, gameList[roomNum].failures, gameList[roomNum].quests, gameList[roomNum].selectedParty);
 	*/
 	var currentPhase = gameList[roomNum].phase;
 	var gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p>';
