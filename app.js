@@ -121,7 +121,7 @@ function buildGameScreen(roomNum, character, charArray) {
 
 function updateGameBoard(roomNum, character) {
 	/*
-	var gameBoardStr = gameStrBuilder.updateGameBoardStr(character, gameList[roomNum].questSize, gameList[roomNum].phase, gameList[roomNum].votesRejected, gameList[roomNum].successes, gameList[roomNum].failures, gameList[roomNum].quests, gameList[roomNum].selectedParty);
+	var gameBoardStr = gameStrBuilder.updateGameBoardStr(character, roomList[roomNum], gameList[roomNum]);
 	*/
 	var currentPhase = gameList[roomNum].phase;
 	var gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p>';

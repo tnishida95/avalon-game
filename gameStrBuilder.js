@@ -143,10 +143,11 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
-// no no no no no just pass in the room's GameManager
-updateGameBoardStr = function(character, questSizeArray, currentPhase, votesRejected, successes, failures, questsArray, selectedPartyArray) {
+updateGameBoardStr = function(character, playerList, gameManager) {
     var gameBoardStr;
     var partyDisplayStr = "none";
+    var firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
+
     // if a party exists, fill the string
     if( currentPhase != 0 ||
         currentPhase != 3 ||
@@ -154,30 +155,143 @@ updateGameBoardStr = function(character, questSizeArray, currentPhase, votesReje
         currentPhase != 9 ||
         currentPhase != 12) {
         partyDisplayStr = "";
-        for(players in selectedPartyArray) {
-            selectedPartyArray += '[' + players + ']';
+        for(player in gameManager.selectedParty) {
+            selectedPartyArray += '[' + playerList[player] + ']';
         }
+    }
+    firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
+    if(gameManager.quests[0] == 1) {
+        firstQuestResult = "S";
+    }
+    if(gameManager.quests[1] == 1) {
+        secondQuestResult = "S";
+    }
+    if(gameManager.quests[2] == 1) {
+        thirdQuestResult = "S";
+    }
+    if(gameManager.quests[3] == 1) {
+        fourthQuestResult = "S";
+    }
+    if(gameManager.quests[4] == 1) {
+        fifthQuestResult = "S";
     }
     if(currentPhase < 3) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
-            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${q1Size}</button>
-            <button type="button" class="btn btn-default">${q2Size}</button>
-            <button type="button" class="btn btn-default">${q3Size}</button>
-            <button type="button" class="btn btn-default">${q4Size}</button>
-            <button type="button" class="btn btn-default">${q5Size}</button>
+            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[1]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[2]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[3]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
             <hr>
             <p id="currentQuestDisplay">Current Quest: 1</p>
-            <p id="rejectedDisplay">Rejected Parties: ${votesRejected}</p>
-            <p id="successesDisplay">Successes: ${successes}, Failures: ${failures}</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
             <hr>
             <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
         </div>
         <hr>`;
     }
     else if(currentPhase < 6) {
-
+        gameBoardStr = `<h2>Game Board</h2>
+        <div class="well" style="background:none;">
+            <p>Quests</p>
+            <button type="button" class="btn btn-default">${firstQuestResult}</button>
+            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[1]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[2]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[3]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
+            <hr>
+            <p id="currentQuestDisplay">Current Quest: 2</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
+            <hr>
+            <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
+        </div>
+        <hr>`;
+    }
+    else if(currentPhase < 9) {
+        gameBoardStr = `<h2>Game Board</h2>
+        <div class="well" style="background:none;">
+            <p>Quests</p>
+            <button type="button" class="btn btn-default">${firstQuestResult}</button>
+            <button type="button" class="btn btn-default">${secondQuestResult}</button>
+            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[2]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[3]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
+            <hr>
+            <p id="currentQuestDisplay">Current Quest: 3</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
+            <hr>
+            <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
+        </div>
+        <hr>`;
+    }
+    else if(currentPhase < 12) {
+        gameBoardStr = `<h2>Game Board</h2>
+        <div class="well" style="background:none;">
+            <p>Quests</p>
+            <button type="button" class="btn btn-default">${firstQuestResult}</button>
+            <button type="button" class="btn btn-default">${secondQuestResult}</button>
+            <button type="button" class="btn btn-default">${thirdQuestResult}</button>
+            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[3]}</button>
+            <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
+            <hr>
+            <p id="currentQuestDisplay">Current Quest: 4</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
+            <hr>
+            <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
+        </div>
+        <hr>`;
+    }
+    else if(currentPhase < 15) {
+        gameBoardStr = `<h2>Game Board</h2>
+        <div class="well" style="background:none;">
+            <p>Quests</p>
+            <button type="button" class="btn btn-default">${firstQuestResult}</button>
+            <button type="button" class="btn btn-default">${secondQuestResult}</button>
+            <button type="button" class="btn btn-default">${thirdQuestResult}</button>
+            <button type="button" class="btn btn-default">${fourthQuestResult}</button>
+            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[4]}</button>
+            <hr>
+            <p id="currentQuestDisplay">Current Quest: 5</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
+            <hr>
+            <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
+        </div>
+        <hr>`;
+    }
+    else if(currentPhase == 15) {
+        gameBoardStr = `<h2>Game Board</h2>
+        <div class="well" style="background:none;">
+            <p>Quests</p>
+            <button type="button" class="btn btn-default">${firstQuestResult}</button>
+            <button type="button" class="btn btn-default">${secondQuestResult}</button>
+            <button type="button" class="btn btn-default">${thirdQuestResult}</button>
+            <button type="button" class="btn btn-default">${fourthQuestResult}</button>
+            <button type="button" class="btn btn-default">${fifthQuestResult}</button>
+            <hr>
+            <p id="currentQuestDisplay">Assassin Phase</p>
+        </div>
+        <hr>`;
+    }
+    else {
+        gameBoardStr = `<h2>Game Board</h2>
+        <div class="well" style="background:none;">
+            <p>Quests</p>
+            <button type="button" class="btn btn-default">${firstQuestResult}</button>
+            <button type="button" class="btn btn-default">${secondQuestResult}</button>
+            <button type="button" class="btn btn-default">${thirdQuestResult}</button>
+            <button type="button" class="btn btn-default">${fourthQuestResult}</button>
+            <button type="button" class="btn btn-default">${fifthQuestResult}</button>
+            <hr>
+            <p id="currentQuestDisplay">Results</p>
+        </div>
+        <hr>`;
     }
 }
 
