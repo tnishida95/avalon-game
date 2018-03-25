@@ -1,5 +1,14 @@
 //gameStrBuilder.js
 
+module.exports = {
+    buildHostLobbyStr: buildHostLobbyStr,
+    buildGuestLobbyStr: buildGuestLobbyStr,
+    buildFirstGameBoardStr: buildFirstGameBoardStr,
+    buildFirstActionPanelStr: buildFirstActionPanelStr,
+    buildFirstPlayerBoardStr: buildFirstPlayerBoardStr,
+    updateGameBoardStr: updateGameBoardStr
+}
+
 var buildHostLobbyStr = function() {
     return `<div class="text-center">
         <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
@@ -59,7 +68,6 @@ var buildHostLobbyStr = function() {
     </div>
     <div id="lobbyDiv"></div>`;
 }
-
 var buildGuestLobbyStr = function() {
     return `<div class="text-center">
         <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
@@ -374,12 +382,53 @@ updateGameBoardStr = function(character, playerList, gameManager) {
         <hr>`;
     }
 }
+updateActionPanelStr = function(character, playerList, gameManager) {
+    //TODO NEXT: replace all the unreachable variables with passed in parameters,
+    //then create the party select screen string
+    var currentPhase = gameList[roomNum].phase;
+    var partyLeaderChar = playerList[gameManager.partyLeader].character;
+	var actionPanelStr = '';
+    var activeStr = '';
+    var waitingStr = '';
 
-module.exports = {
-    buildHostLobbyStr: buildHostLobbyStr,
-    buildGuestLobbyStr: buildGuestLobbyStr,
-    buildFirstGameBoardStr: buildFirstGameBoardStr,
-    buildFirstActionPanelStr: buildFirstActionPanelStr,
-    buildFirstPlayerBoardStr: buildFirstPlayerBoardStr,
-    updateGameBoardStr: updateGameBoardStr
+	if( currentPhase == 0 ||
+        currentPhase == 3 ||
+        currentPhase == 6 ||
+        currentPhase == 9 ||
+        currentPhase == 12) { //party select
+		actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;">';
+		if(partyLeaderChar == character) {
+			actionPanelStr += '<div class="text-center"><div data-toggle="buttons">';
+			for(i = 0; i < gameManager.playerCount - 1; i++) {
+				actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="' + roomList[roomNum][i].name + '">' + roomList[roomNum][i].name + '</input></label>';
+			}
+			actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="Submit">' + roomList[roomNum][i].name + '</input></label>';
+		}
+		else {
+			actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>';
+		}
+		actionPanelStr += '<p></p></div><hr>';
+	}
+	//TODO NEXT-NEXT: continue filling in actionPanelStrs with toggle buttons
+	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
+		//reject or accept buttons
+	}
+	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {
+		//if(on the party && good)
+		//else if(on the party && evil)
+		//else {
+			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
+		//}
+	}
+	else if(currentPhase == 15) {
+		if(character == "assassin") {
+			//good roster to assassinate
+		}
+		else {
+			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
+		}
+	}
+	else { //game end
+		//buttons to restart game, return to main menu
+	}
 }

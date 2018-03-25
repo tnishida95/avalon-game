@@ -92,7 +92,7 @@
   }
 
   function updateLobby() {
-    var lobbyListStr = '<div class="text-center"><p>' + lobby.length + ' Players - ';
+    var lobbyListStr = `<div class="text-center"><p>${lobby.length} Players - `;
     if(lobby.length < 5) {
       var playersNeeded = 5 - lobby.length;
       lobbyListStr += 'Need at least ' + playersNeeded + ' more player(s).</p>';
@@ -112,19 +112,21 @@
     document.getElementById("lobbyDiv").innerHTML = lobbyListStr;
   }
 
+  //TODO: separate this function into loadHostLobby and loadGuestLobby
   socket.on('loadLobby',function(data){
     console.log("Received: [loadLobby] from server");
     lobby = data.list;
     roomNum = data.num;
-    hostLobbyStr = data.hostLobbyStr;
-    guestLobbyStr = data.guestLobbyStr;
+    var hostLobbyStr = data.hostLobbyStr;
+    console.log("Here's the hostLobbyStr:\n" + hostLobbyStr);
+    var guestLobbyStr = data.guestLobbyStr;
+    console.log("Here's the guestLobbyStr:\n" + guestLobbyStr);
     document.getElementById("title").innerHTML = `Avalon Room #${roomNum}`;
     document.getElementById("topDiv").innerHTML = `<h2 id="topText" style="text-align:center;">Avalon Room #${roomNum}</h2><hr>`;
     if(socket.id == lobby[0].sid) { //if host
       document.getElementById("centerDiv").innerHTML = hostLobbyStr;
     }
     else {
-        console.log(guestLobbyStr);
       document.getElementById("centerDiv").innerHTML = guestLobbyStr;
     }
     updateLobby();

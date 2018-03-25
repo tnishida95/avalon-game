@@ -126,57 +126,14 @@ function updateGameBoard(roomNum, character) {
 function updateActionPanel(roomNum, character) {
 	//TODO: left off here, fill the rest in
 	//determine actions from character, partyLeader, and currentPhase
-	var currentPhase = gameList[roomNum].phase;
-	var actionPanelStr = '';
 
-	var partyLeaderChar = roomList[roomNum][gameList[roomNum].partyLeader].character;
-
-	if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //party select
-		actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;">';
-		if(partyLeaderChar == character) {
-			actionPanelStr += '<div class="text-center"><div data-toggle="buttons">';
-			for(i = 0; i < gameList[roomNum].playerCount - 1; i++) {
-				actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="' + roomList[roomNum][i].name + '">' + roomList[roomNum][i].name + '</input></label>';
-			}
-			actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="Submit">' + roomList[roomNum][i].name + '</input></label>';
-		}
-		else {
-			actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>';
-		}
-		actionPanelStr += '<p></p></div><hr>';
-	}
-	//TODO NEXT-NEXT: continue filling in actionPanelStrs with toggle buttons
-	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
-		//reject or accept buttons
-	}
-	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {
-		//if(on the party && good)
-		//else if(on the party && evil)
-		//else {
-			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
-		//}
-	}
-	else if(currentPhase == 15) {
-		if(character == "assassin") {
-			//good roster to assassinate
-		}
-		else {
-			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
-		}
-	}
-	else { //game end
-		//buttons to restart game, return to main menu
-	}
 	return actionPanelStr;
 }
 function updatePlayerBoard(roomNum, character) {
 	//TODO: this one will NOT replace the actionPanelDiv
 	//it will change the text at status inside the status buttons only
 	//consider making this function handle only one status button at a time, and have it loop and to update each player
-	var currentPhase = gameList[roomNum].phase;
-	var playerBoardStr = '';
-
-	return playerBoardStr = '';
+	return gameStrBuilder.updateActionPanelStr(character, gameList[roomNum]);
 }
 
 
@@ -220,7 +177,6 @@ io.sockets.on('connection', function(socket){
 		roomList[roomNum] = tmpArr;
 		printRoomList();
 		socket.join(roomNum);
-		//TODO NOW: fix Guest Lobby, giving undefined in client
 		io.to(roomNum).emit("loadLobby", {
 			list: roomList[roomNum],
 			num: roomNum,
@@ -245,9 +201,11 @@ io.sockets.on('connection', function(socket){
 			roomList[roomNum][roomList[roomNum].length] = player;
 			printRoomList();
 			socket.join(roomNum);
-			io.to(socket.id).emit("loadLobby", {
+			io.to(roomNum).emit("loadLobby", {
 				list: roomList[roomNum],
-				num: roomNum
+				num: roomNum,
+				hostLobbyStr: gameStrBuilder.buildHostLobbyStr(),
+				guestLobbyStr: gameStrBuilder.buildGuestLobbyStr()
 			});
 			io.to(roomNum).emit("updateLobby", {
 				list: roomList[roomNum],
@@ -255,7 +213,7 @@ io.sockets.on('connection', function(socket){
 			});
 		}
 		else {
-			console.log("roomNum not found");
+			console.log("roomNum " + roomNum + " not found");
 		}
 	});
 	socket.on('btnPressLeaveGame',function(data){
