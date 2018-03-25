@@ -11,7 +11,7 @@ var serv = require('http').Server(app);
 app.get('/',function(req, res) {
 	res.sendFile(__dirname + '/index.html');
 });
-//app.use('/',express.static(__dirname + '/'));
+app.use('/',express.static(__dirname + '/'));
 serv.listen(2000);
 console.log("Server started listening on port 2000.");
 var gameStrBuilder = require('./gameStrBuilder');
