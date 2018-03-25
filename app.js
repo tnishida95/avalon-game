@@ -9,14 +9,12 @@ var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
 app.get('/',function(req, res) {
-	res.sendFile(__dirname + '/client/index.html');
+	res.sendFile(__dirname + '/index.html');
 });
-app.use('/client',express.static(__dirname + '/client'));
+//app.use('/',express.static(__dirname + '/'));
 serv.listen(2000);
 console.log("Server started listening on port 2000.");
 var gameStrBuilder = require('./gameStrBuilder');
-//console.log(gameStrBuilder.buildGameBoardDiv(1,2,3,4,5));
-
 
 const io = require('socket.io')(serv,{});
 //array of sockets
@@ -120,9 +118,10 @@ function buildGameScreen(roomNum, character, charArray) {
 }
 
 function updateGameBoard(roomNum, character) {
-	/*
+
 	var gameBoardStr = gameStrBuilder.updateGameBoardStr(character, roomList[roomNum], gameList[roomNum]);
-	*/
+
+	/*
 	var currentPhase = gameList[roomNum].phase;
 	var gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p>';
 
@@ -239,6 +238,7 @@ function updateGameBoard(roomNum, character) {
 		}
 	}
 	gameBoardStr += '</p></div><hr>';
+	*/
 
 	return gameBoardStr;
 }

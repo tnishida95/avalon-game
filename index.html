@@ -2,17 +2,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<link rel="stylesheet" type="text/css" href="css/syntax.css">
+
 <style>
 .center {
     margin: auto;
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     font-family: "Verdana";
 }
 .btn-default {
     border-radius: 0px !important;
 }
-
 </style>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -191,10 +193,10 @@
     <hr>
 </div>
 <div class="text-center">
-    <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
-        <button type="button" class="btn btn-default" onclick="btnPressNewGame()">New Game</button>
-        <button type="button" class="btn btn-default" onclick="btnPressJoinGame()">Join Game</button>
-        <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
+    <div class="row" style="background: lightblue;">
+        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressNewGame()">New Game</button>
+        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressJoinGame()">Join Game</button>
+        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" data-toggle="collapse" data-target="#rulesContent">Rules</button>
     </div>
     <hr>
 </div>
