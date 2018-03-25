@@ -1,3 +1,32 @@
+.center {
+  font-family: "Verdana";
+}
+.btn-default {
+  border-radius: 0px !important;
+}
+
+.well {
+  background: none;
+}
+
 #topText {
-    background-color: none;
+  text-align: center;
+}
+
+#nameInput {
+  text-align: center;
+  height: auto;
+  width: 40%;
+  transparent;
+  outline-width: 0px;
+  outline-style: solid;
+}
+
+#roomInput {
+  text-align: center;
+  height: auto;
+  width: 40%;
+  transparent;
+  outline-width: 0px;
+  outline-style: solid;
 }

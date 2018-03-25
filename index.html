@@ -4,21 +4,9 @@
 <head>
 
 <link rel="stylesheet" type="text/css" href="/styles.css">
-
-<style>
-.center {
-    margin: auto;
-    width: 100%;
-    padding: 5px;
-    font-family: "Verdana";
-}
-.btn-default {
-    border-radius: 0px !important;
-}
-</style>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width = device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title id="title">Avalon</title>
 
 <!--
@@ -28,143 +16,158 @@
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-    crossorigin="anonymous"></script>
+  integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+  crossorigin="anonymous"></script>
 <link rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-    crossorigin="anonymous">
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+  crossorigin="anonymous">
 <link rel="stylesheet"
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-    crossorigin="anonymous">
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+  integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+  crossorigin="anonymous">
 
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
-    var socket = io();
-    var lobby;
-    var roomNum = -1;
+  var socket = io();
+  var lobby;
+  var roomNum = -1;
 
-    var btnPressNewGame = function(){
-        socket.emit('btnPressNewGame',$("#nameInput").val())
-    };
-    var btnPressJoinGame = function(){
-        socket.emit('btnPressJoinGame',{
-            name: $("#nameInput").val(),
-            room: $("#roomInput").val()
-        });
+  var btnPressNewGame = function(){
+    socket.emit('btnPressNewGame',$("#nameInput").val())
+  };
+  var btnPressJoinGame = function(){
+    socket.emit('btnPressJoinGame',{
+      name: $("#nameInput").val(),
+      room: $("#roomInput").val()
+    });
+  }
+  var btnPressStartGame = function(){
+    var characterSelections = [];
+    $.each($("input[name='charSelection']:checked"), function(){
+      characterSelections.push($(this).val());
+    });
+    console.log(characterSelections);
+    socket.emit('btnPressStartGame',{
+      charList: characterSelections,
+      room: roomNum
+    });
+  };
+  var btnPressLeaveGame = function(){
+    socket.emit('btnPressLeaveGame',{
+      room: roomNum
+    });
+    roomNum = -1;
+    loadMainMenu();
+  }
+  var btnPressDisbandGame = function(){
+    socket.emit('btnPressDisbandGame',{
+      room: roomNum
+    });
+    roomNum = -1;
+    loadMainMenu();
+  }
+
+  function loadMainMenu() {
+    document.getElementById("title").innerHTML = 'Avalon';
+    var mainMenuStr = `<div class="text-center">
+        <div id="inputArea">
+            <input type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
+            <p></p>
+            <input type="text" id="roomInput" maxlength="20" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
+            <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row">
+                <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressNewGame()">New Game</button>
+                <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressJoinGame()">Join Game</button>
+                <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" data-toggle="collapse" data-target="#rulesContent">Rules</button>
+            </div>
+        </div>
+        <hr>
+    </div>`;
+    document.getElementById("centerDiv").innerHTML = mainMenuStr;
+    document.getElementById("topDiv").innerHTML = '<h2 id="topText">Welcome to Avalon!</h2><hr>';
+  }
+
+  function updateLobby() {
+    var lobbyListStr = '<div class="text-center"><p>' + lobby.length + ' Players - ';
+    if(lobby.length < 5) {
+      var playersNeeded = 5 - lobby.length;
+      lobbyListStr += 'Need at least ' + playersNeeded + ' more player(s).</p>';
     }
-    var btnPressStartGame = function(){
-        var characterSelections = [];
-        $.each($("input[name='charSelection']:checked"), function(){
-            characterSelections.push($(this).val());
-        });
-        console.log(characterSelections);
-        socket.emit('btnPressStartGame',{
-            charList: characterSelections,
-            room: roomNum
-        });
-    };
-    var btnPressLeaveGame = function(){
-        socket.emit('btnPressLeaveGame',{
-            room: roomNum
-        });
-        roomNum = -1;
-        loadMainMenu();
+    else if (lobby.length == 5) {lobbyListStr += 'There will be 3 Good and 2 Evil.</p>';}
+    else if (lobby.length == 6) {lobbyListStr += 'There will be 4 Good and 2 Evil.</p>';}
+    else if (lobby.length == 7) {lobbyListStr += 'There will be 4 Good and 3 Evil.</p>';}
+    else if (lobby.length == 8) {lobbyListStr += 'There will be 5 Good and 3 Evil.</p>';}
+    else if (lobby.length == 9) {lobbyListStr += 'There will be 6 Good and 3 Evil.</p>';}
+    else if (lobby.length == 10) {lobbyListStr += 'There will be 6 Good and 4 Evil.</p>';}
+    else {lobbyListStr += 'Too many players.</p>';}
+    for (var i = 0; i < lobby.length; i++) {
+      lobbyListStr += '[' + lobby[i].name + '] ';
     }
-    var btnPressDisbandGame = function(){
-        socket.emit('btnPressDisbandGame',{
-            room: roomNum
-        });
-        roomNum = -1;
-        loadMainMenu();
+    lobbyListStr += '<hr></div>';
+
+    document.getElementById("lobbyDiv").innerHTML = lobbyListStr;
+  }
+
+  socket.on('loadLobby',function(data){
+    console.log("Received: [loadLobby] from server");
+    lobby = data.list;
+    roomNum = data.num;
+    document.getElementById("title").innerHTML = 'Avalon Room #' + roomNum;
+    document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;">' + 'Avalon Room #' + roomNum + '</h2><hr>';
+    //TODO: move all of these predefined strings server-side I mean cmon man seriously
+    var hostLobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invalidCharacterSelectContent" onclick="btnPressStartGame()">Start Game</button><button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><h6 id="invalidCharacterSelectContent" class="collapse">Invalid character selection.</h6><hr></div>';
+    var lobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default">Waiting...</button><button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><hr></div>';
+    var characterSelectStr = '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active"><input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="percival">Percival</input></label>' +
+    '<label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodOne" checked>1st Servant of Arthur</input></label><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodTwo" checked>2nd Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodThree">3rd Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodFour">4th Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodFive">5th Servant of Arthur</input></label></div>' +
+    '<div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="assassin" checked>Assassin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="morgana">Morgana</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="mordred">Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="oberon">Oberon</input></label>' +
+    '<label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="evilOne" checked>1st Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilTwo">2nd Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilThree">3rd Minion of Modred</input></label></div><hr></div>';
+    var lobbyDivStr = '<div id="lobbyDiv"></div>';
+    var centerReplacementStr = "";
+    if(socket.id == lobby[0].sid) { //if host
+      centerReplacementStr = hostLobbyButtonsStr + characterSelectStr + lobbyDivStr;
     }
-
-    function loadMainMenu() {
-        document.getElementById("title").innerHTML = 'Avalon';
-        var mainMenuStr = '<div id="inputArea" class="text-center"> <input type="text" id="nameInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Your Name"> <p></p> <input type="text" id="roomInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent"> <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6> <hr> </div>' +
-        '<div class="text-center"> <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">  <button type="button" class="btn btn-default" onclick="btnPressNewGame()">New Game</button> <button type="button" class="btn btn-default" onclick="btnPressJoinGame()">Join Game</button> <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button> </div> <hr> </div>';
-        document.getElementById("centerDiv").innerHTML = mainMenuStr;
-        document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;">Welcome to Avalon!</h2><hr>';
+    else {
+      centerReplacementStr = lobbyButtonsStr + lobbyDivStr;
     }
+    document.getElementById("centerDiv").innerHTML = centerReplacementStr;
+    updateLobby();
+  })
 
-    function updateLobby() {
-        var lobbyListStr = '<div class="text-center"><p>' + lobby.length + ' Players - ';
-        if(lobby.length < 5) {
-            var playersNeeded = 5 - lobby.length;
-            lobbyListStr += 'Need at least ' + playersNeeded + ' more player(s).</p>';
-        }
-        else if (lobby.length == 5) {lobbyListStr += 'There will be 3 Good and 2 Evil.</p>';}
-        else if (lobby.length == 6) {lobbyListStr += 'There will be 4 Good and 2 Evil.</p>';}
-        else if (lobby.length == 7) {lobbyListStr += 'There will be 4 Good and 3 Evil.</p>';}
-        else if (lobby.length == 8) {lobbyListStr += 'There will be 5 Good and 3 Evil.</p>';}
-        else if (lobby.length == 9) {lobbyListStr += 'There will be 6 Good and 3 Evil.</p>';}
-        else if (lobby.length == 10) {lobbyListStr += 'There will be 6 Good and 4 Evil.</p>';}
-        else {lobbyListStr += 'Too many players.</p>';}
-        for (var i = 0; i < lobby.length; i++) {
-            lobbyListStr += '[' + lobby[i].name + '] ';
-        }
-        lobbyListStr += '<hr></div>';
+  socket.on('updateLobby',function(data){
+    console.log("Received [updateLobby] from server");
+    lobby = data.list;
+    updateLobby();
+  })
 
-        document.getElementById("lobbyDiv").innerHTML = lobbyListStr;
-    }
+  socket.on('loadMainMenu',function(data){
+    console.log("Received: [loadMainMenu] from server");
+    loadMainMenu();
+  })
 
-    socket.on('loadLobby',function(data){
-        console.log("Received: [loadLobby] from server");
-        lobby = data.list;
-        roomNum = data.num;
-        document.getElementById("title").innerHTML = 'Avalon Room #' + roomNum;
-        document.getElementById("topDiv").innerHTML = '<h2 id="topText" style="text-align:center;">' + 'Avalon Room #' + roomNum + '</h2><hr>';
-        //TODO: move all of these predefined strings server-side I mean cmon man seriously
-        var hostLobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invalidCharacterSelectContent" onclick="btnPressStartGame()">Start Game</button><button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><h6 id="invalidCharacterSelectContent" class="collapse">Invalid character selection.</h6><hr></div>';
-        var lobbyButtonsStr = '<div class="text-center"><div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px"><button type="button" class="btn btn-default">Waiting...</button><button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button></div><hr></div>';
-        var characterSelectStr = '<div class="text-center"><div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active"><input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="percival">Percival</input></label>' +
-        '<label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodOne" checked>1st Servant of Arthur</input></label><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="goodTwo" checked>2nd Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodThree">3rd Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodFour">4th Servant of Arthur</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="goodFive">5th Servant of Arthur</input></label></div>' +
-        '<div class="btn-group-vertical" data-toggle="buttons"><label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="assassin" checked>Assassin</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="morgana">Morgana</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="mordred">Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="oberon">Oberon</input></label>' +
-        '<label class="btn btn-default active" aria-pressed="true"><input type="checkbox" autocomplete="off" name="charSelection" value="evilOne" checked>1st Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilTwo">2nd Minion of Mordred</input></label><label class="btn btn-default" aria-pressed="false"><input type="checkbox" autocomplete="off" name="charSelection" value="evilThree">3rd Minion of Modred</input></label></div><hr></div>';
-        var lobbyDivStr = '<div id="lobbyDiv"></div>';
-        var centerReplacementStr = "";
-        if(socket.id == lobby[0].sid) { //if host
-            centerReplacementStr = hostLobbyButtonsStr + characterSelectStr + lobbyDivStr;
-        }
-        else {
-            centerReplacementStr = lobbyButtonsStr + lobbyDivStr;
-        }
-        document.getElementById("centerDiv").innerHTML = centerReplacementStr;
-        updateLobby();
-    })
+  socket.on('loadGameScreen',function(data){
+    console.log("Received: [loadGameScreen] from server");
+    lobby = data.list;
+    document.getElementById("centerDiv").innerHTML = data.gameScreenStr;
+  })
 
-    socket.on('updateLobby',function(data){
-        console.log("Received [updateLobby] from server");
-        lobby = data.list;
-        updateLobby();
-    })
-
-    socket.on('loadMainMenu',function(data){
-        console.log("Received: [loadMainMenu] from server");
-        loadMainMenu();
-    })
-
-    socket.on('loadGameScreen',function(data){
-        console.log("Received: [loadGameScreen] from server");
-        lobby = data.list;
-        document.getElementById("centerDiv").innerHTML = data.gameScreenStr;
-    })
-
-    socket.on('updateGameBoard',function(data){
-        console.log("Received: [updateGameBoard] from server");
-        document.getElementById("gameBoardDiv").innerHTML = data.gameBoardStr;
-    })
-    socket.on('updateActionPanel',function(data){
-        console.log("Received: [updateActionPanel] from server");
-        lobby = data.list;
-        document.getElementById("actionPanelDiv").innerHTML = data.actionPanelStr;
-    })
-    socket.on('updatePlayerBoard',function(data){
-        console.log("Received: [updatePlayerBoard] from server");
-        lobby = data.list;
-        document.getElementById("playerBoardDiv").innerHTML = data.playerBoardStr;
-    })
+  socket.on('updateGameBoard',function(data){
+    console.log("Received: [updateGameBoard] from server");
+    document.getElementById("gameBoardDiv").innerHTML = data.gameBoardStr;
+  })
+  socket.on('updateActionPanel',function(data){
+    console.log("Received: [updateActionPanel] from server");
+    lobby = data.list;
+    document.getElementById("actionPanelDiv").innerHTML = data.actionPanelStr;
+  })
+  socket.on('updatePlayerBoard',function(data){
+    console.log("Received: [updatePlayerBoard] from server");
+    lobby = data.list;
+    document.getElementById("playerBoardDiv").innerHTML = data.playerBoardStr;
+  })
 
 </script>
 
@@ -177,166 +180,166 @@
 <!-- ########## ########## ########## ########## ########## -->
 
 <div id="topDiv">
-    <h2 id="topText" style="text-align:center;">Welcome to Avalon!</h2>
-    <hr>
+  <h2 id="topText">Welcome to Avalon!</h2>
+  <hr>
 </div>
 
 <!-- ########## ########## ########## ########## ########## -->
 
 <div id="centerDiv">
-
-<div id="inputArea" class="text-center">
-    <input type="text" id="nameInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Your Name">
-    <p></p>
-    <input type="text" id="roomInput" maxlength="20" style="text-align:center; height: auto; width: 40%; transparent; outline-width: 0px; outline-style: solid;" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
-    <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
-    <hr>
-</div>
-<div class="text-center">
-    <div class="row" style="background: lightblue;">
-        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressNewGame()">New Game</button>
-        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressJoinGame()">Join Game</button>
-        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" data-toggle="collapse" data-target="#rulesContent">Rules</button>
+    <div class="text-center">
+        <div id="inputArea">
+            <input type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
+            <p></p>
+            <input type="text" id="roomInput" maxlength="20" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
+            <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row">
+                <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressNewGame()">New Game</button>
+                <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressJoinGame()">Join Game</button>
+                <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" data-toggle="collapse" data-target="#rulesContent">Rules</button>
+            </div>
+        </div>
+        <hr>
     </div>
-    <hr>
-</div>
-
 </div>  <!-- centerDiv -->
 
 <!-- ########## ########## ########## ########## ########## -->
 
 <!-- class="collapse in" for expanded by default -->
 <div id="rulesContent" class="collapse">
-    <div class="well" style="background:none;">
-        <h3>Overview</h3>
-        <p>All players are randomly assigned a character. This character is either on the side of Good or the side of Evil, and may have a special ability that affects the game in some way.  Agents of Evil are told who the other Evil players are.  All players are candidates to go on quests.  The side of Good wishes to complete three quests successfully, and Evil wishes three quests to fail.  Merlin has knowledge of the agents of Evil, and must try to guide Good to approve only Good players on the questing party.  But he must hide his identity; the Assassin has a chance to kill Merlin at the end of the game.  If she successfully kills Merlin, Evil wins instead.</p>
-        <h4>Selection Phase</h4>
-        <p>At the start of each round, the current party leader proposes a set of players who will go on the quest.  The size of the party is predetermined, decided by the number of players and the quest.  All players are free to talk during this phase to convince others of their suspicions or state who they would like to be on the party.  For Good, it is critical no Evil players make it onto the quest.</p>
-        <h4>Voting Phase</h4>
-        <p>Once an official decision is made, further discussion can take place before it is voted on.  If a majority of players reject the party, a different player is assigned the role of party leader and players are reselected.  If five parties are rejected within a single voting phase, Good foreits the game.  If the majority approves the party, the game continues the questing phase.</p>
-        <h4>Questing Phase</h4>
-        <p>Once a majority agrees on a party, that party will go on the quest.  Agents of Good can only help it succeed, but agents of Evil can choose to contribute to its success or fail the quest.  Only one fail action is neccessary for the quest to fail.  Once every player has selected an action, the actions are revealed but not associated with the acting player.  After, the party is disbanded and the game returns to the selection phase of a new quest.</p>
-        <h4>Game End</h4>
-        <p>Questing ends when three quests have succeeded or three quests have failed.  If the latter occurs, Evil wins and the game is over.  If the former occurs, Good may have won.  After the third successful quest, the Assassin will select an agent of Good.  If that player is Merlin, Evil wins despite the results of the quests.</p>
-        <hr>
-        <h4>Good and Evil Numbers<h4>
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Players</th>
-                    <th>5</th>
-                    <th>6</th>
-                    <th>7</th>
-                    <th>8</th>
-                    <th>9</th>
-                    <th>10</th>
-                <tr>
-            </thead>
-            <tr>
-                <td>Good</td>
-                <td>3</td>
-                <td>4</td>
-                <td>4</td>
-                <td>5</td>
-                <td>6</td>
-                <td>6</td>
-            </tr>
-            <tr>
-                <td>Evil</td>
-                <td>2</td>
-                <td>2</td>
-                <td>3</td>
-                <td>3</td>
-                <td>3</td>
-                <td>4</td>
-            </tr>
-        </table>
-        <hr>
-        <h4>Quests and Party Sizes<h4>
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Players</th>
-                    <th>5</th>
-                    <th>6</th>
-                    <th>7</th>
-                    <th>8</th>
-                    <th>9</th>
-                    <th>10</th>
-                <tr>
-            </thead>
-            <tr>
-                <td>1st Quest</td>
-                <td>2</td>
-                <td>2</td>
-                <td>2</td>
-                <td>3</td>
-                <td>3</td>
-                <td>3</td>
-            </tr>
-            <tr>
-                <td>2nd Quest</td>
-                <td>3</td>
-                <td>3</td>
-                <td>3</td>
-                <td>4</td>
-                <td>4</td>
-                <td>4</td>
-            </tr>
-            <tr>
-                <td>3rd Quest</td>
-                <td>2</td>
-                <td>4</td>
-                <td>3</td>
-                <td>4</td>
-                <td>4</td>
-                <td>4</td>
-            </tr>
-            <tr>
-                <td>4th Quest</td>
-                <td>3</td>
-                <td>3</td>
-                <td>4*</td>
-                <td>5*</td>
-                <td>5*</td>
-                <td>5*</td>
-            </tr>
-            <tr>
-                <td>5th Quest</td>
-                <td>3</td>
-                <td>4</td>
-                <td>4</td>
-                <td>5</td>
-                <td>5</td>
-                <td>5</td>
-            </tr>
-        </table>
-        <h4></h4>
-        <p>* Requires 2 or more Fails to fail the quest.</p>
-        <hr>
-        <h3>Good Special Characters</h3>
-        <h4>Merlin</h4>
-        <p>Sees all agents of Evil, except for Mordred.  If killed by the Assassin, at the end of a game, Evil wins.</p>
-        <h4>Percival</h4>
-        <p>Sees Merlin.  If Morgana is also in play, Percival will see both but not who is who.</p>
-        <h3>Evil Special Characters</h3>
-        <h4>Assassin</h4>
-        <p>If Good succeeds in three quests, the Assassin chooses an agent of Good to kill.  If Merlin is chosen, Evil wins.</p>
-        <h4>Mordred</h4>
-        <p>Unseen by Merlin.  Mordred's player will not be revealed as an agent of Evil to Merlin.</p>
-        <h4>Oberon</h4>
-        <p>Unseen by agents of Evil, and does not see agents of Evil.  Oberon does not know who the Evil players are, and the Evil players do not know he is Evil.</p>
-        <h4>Morgana</h4>
-        <p>Appears as Merlin to Percival.  Percival will see both Merlin and Morgana, but not know which player is actually Merlin.</p>
-    </div>
+  <div class="well">
+    <h3>Overview</h3>
+    <p>All players are randomly assigned a character. This character is either on the side of Good or the side of Evil, and may have a special ability that affects the game in some way.  Agents of Evil are told who the other Evil players are.  All players are candidates to go on quests.  The side of Good wishes to complete three quests successfully, and Evil wishes three quests to fail.  Merlin has knowledge of the agents of Evil, and must try to guide Good to approve only Good players on the questing party.  But he must hide his identity; the Assassin has a chance to kill Merlin at the end of the game.  If she successfully kills Merlin, Evil wins instead.</p>
+    <h4>Selection Phase</h4>
+    <p>At the start of each round, the current party leader proposes a set of players who will go on the quest.  The size of the party is predetermined, decided by the number of players and the quest.  All players are free to talk during this phase to convince others of their suspicions or state who they would like to be on the party.  For Good, it is critical no Evil players make it onto the quest.</p>
+    <h4>Voting Phase</h4>
+    <p>Once an official decision is made, further discussion can take place before it is voted on.  If a majority of players reject the party, a different player is assigned the role of party leader and players are reselected.  If five parties are rejected within a single voting phase, Good foreits the game.  If the majority approves the party, the game continues the questing phase.</p>
+    <h4>Questing Phase</h4>
+    <p>Once a majority agrees on a party, that party will go on the quest.  Agents of Good can only help it succeed, but agents of Evil can choose to contribute to its success or fail the quest.  Only one fail action is neccessary for the quest to fail.  Once every player has selected an action, the actions are revealed but not associated with the acting player.  After, the party is disbanded and the game returns to the selection phase of a new quest.</p>
+    <h4>Game End</h4>
+    <p>Questing ends when three quests have succeeded or three quests have failed.  If the latter occurs, Evil wins and the game is over.  If the former occurs, Good may have won.  After the third successful quest, the Assassin will select an agent of Good.  If that player is Merlin, Evil wins despite the results of the quests.</p>
     <hr>
+    <h3>Good and Evil Numbers</h3>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Players</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9</th>
+          <th>10</th>
+        <tr>
+      </thead>
+      <tr>
+        <td>Good</td>
+        <td>3</td>
+        <td>4</td>
+        <td>4</td>
+        <td>5</td>
+        <td>6</td>
+        <td>6</td>
+      </tr>
+      <tr>
+        <td>Evil</td>
+        <td>2</td>
+        <td>2</td>
+        <td>3</td>
+        <td>3</td>
+        <td>3</td>
+        <td>4</td>
+      </tr>
+    </table>
+    <hr>
+    <h3>Quests and Party Sizes</h3>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>Players</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9</th>
+          <th>10</th>
+        <tr>
+      </thead>
+      <tr>
+        <td>1st Quest</td>
+        <td>2</td>
+        <td>2</td>
+        <td>2</td>
+        <td>3</td>
+        <td>3</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>2nd Quest</td>
+        <td>3</td>
+        <td>3</td>
+        <td>3</td>
+        <td>4</td>
+        <td>4</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>3rd Quest</td>
+        <td>2</td>
+        <td>4</td>
+        <td>3</td>
+        <td>4</td>
+        <td>4</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>4th Quest</td>
+        <td>3</td>
+        <td>3</td>
+        <td>4*</td>
+        <td>5*</td>
+        <td>5*</td>
+        <td>5*</td>
+      </tr>
+      <tr>
+        <td>5th Quest</td>
+        <td>3</td>
+        <td>4</td>
+        <td>4</td>
+        <td>5</td>
+        <td>5</td>
+        <td>5</td>
+      </tr>
+    </table>
+    <h4></h4>
+    <p>* Requires 2 or more Fails to fail the quest.</p>
+    <hr>
+    <h3>Good Special Characters</h3>
+    <h4>Merlin</h4>
+    <p>Sees all agents of Evil, except for Mordred.  If killed by the Assassin, at the end of a game, Evil wins.</p>
+    <h4>Percival</h4>
+    <p>Sees Merlin.  If Morgana is also in play, Percival will see both but not who is who.</p>
+    <h3>Evil Special Characters</h3>
+    <h4>Assassin</h4>
+    <p>If Good succeeds in three quests, the Assassin chooses an agent of Good to kill.  If Merlin is chosen, Evil wins.</p>
+    <h4>Mordred</h4>
+    <p>Unseen by Merlin.  Mordred's player will not be revealed as an agent of Evil to Merlin.</p>
+    <h4>Oberon</h4>
+    <p>Unseen by agents of Evil, and does not see agents of Evil.  Oberon does not know who the Evil players are, and the Evil players do not know he is Evil.</p>
+    <h4>Morgana</h4>
+    <p>Appears as Merlin to Percival.  Percival will see both Merlin and Morgana, but not know which player is actually Merlin.</p>
+  </div>
+  <hr>
 </div> <!-- rulesContent -->
 
 <!-- ########## ########## ########## ########## ########## -->
 
 <div style="text-align:center;">
-    <!-- TODO: make clickable links -->
-    <h6>Tyler Nishida | Based on "The Resistance: Avalon" board game by Don Eskridge and published by Indie Boards & Cards | Not endorsed by or affiliated by designer or publisher | https://github.com/tnishida95/avalon-game</h6>
+  <!-- TODO: make clickable links -->
+  <h6>Tyler Nishida | Based on "The Resistance: Avalon" board game by Don Eskridge and published by Indie Boards & Cards | Not endorsed by or affiliated by designer or publisher | https://github.com/tnishida95/avalon-game</h6>
 </div>
 
 <!-- ########## ########## ########## ########## ########## -->
