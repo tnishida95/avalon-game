@@ -16,6 +16,8 @@ serv.listen(2000);
 console.log("Server started listening on port 2000.");
 var gameStrBuilder = require('./gameStrBuilder');
 
+console.log(gameStrBuilder.buildGuestLobbyStr());
+
 const io = require('socket.io')(serv,{});
 //array of sockets
 var socketList = [];
@@ -118,128 +120,7 @@ function buildGameScreen(roomNum, character, charArray) {
 }
 
 function updateGameBoard(roomNum, character) {
-
 	var gameBoardStr = gameStrBuilder.updateGameBoardStr(character, roomList[roomNum], gameList[roomNum]);
-
-	/*
-	var currentPhase = gameList[roomNum].phase;
-	var gameBoardStr = '<h2>Game Board</h2><div class="well" style="background:none;"><p>Quests</p>';
-
-	if(currentPhase < 3) { //in first quest
-		gameBoardStr = '<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[0];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[1];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[2];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[3];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[4];
-		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 1</p>';
-	}
-	else if (currentPhase < 6) { //in second quest
-		gameBoardStr = '<button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[1];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[2];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[3];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[4];
-		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 2</p>';
-	}
-	else if (currentPhase < 9) { //in third quest
-		gameBoardStr = '<button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[1] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[2];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[3];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[4];
-		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 3</p>';
-	}
-	else if (currentPhase < 12) { //in fourth quest
-		gameBoardStr = '<button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[1] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[2] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[3];
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[4];
-		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 4</p>';
-	}
-	else if (currentPhase < 15) { //in fifth quest
-		gameBoardStr = '<button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[1] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[2] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[3] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">';
-		gameBoardStr += gameList[roomNum].questSize[4];
-		gameBoardStr += '</button><hr><p id="currentQuestDisplay">Current Quest: 5</p>';
-	}
-	else { //assassin or end phase
-		gameBoardStr = '<button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[0] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[1] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[2] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[3] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		gameBoardStr += '</button><button type="button" class="btn btn-default">';
-		if(gameList[roomNum].quests[4] == 1) {gameBoardStr += 'S'}
-		else {gameBoardStr += 'F'}
-		if(currentPhase == 15) {gameBoardStr += '</button><hr><p id="currentQuestDisplay">Assassin Phase</p>';}
-		else{gameBoardStr += '</button><hr><p id="currentQuestDisplay">Results</p>';}
-	}
-	if(currentPhase < 15) { //if still questing
-		gameBoardStr += '<p id="rejectedDisplay">Rejected Parties: ';
-		gameBoardStr += gameList[roomNum].votesRejected;
-		gameBoardStr += '</p><p id="successesDisplay">Successes: ';
-		gameBoardStr += gameList[roomNum].successes;
-		gameBoardStr += ', Failures: ';
-		gameBoardStr += gameList[roomNum].failures;
-
-		gameBoardStr += '</p><hr><p id="currentPartyDisplay">Current party: ';
-		if(currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) {
-			gameBoardStr += 'none';
-		}
-		else {
-			for(players in gameList[roomNum].selectedParty) {
-				gameBoardStr += '[' + roomList[players] + ']';
-			}
-		}
-	}
-	gameBoardStr += '</p></div><hr>';
-	*/
-
 	return gameBoardStr;
 }
 function updateActionPanel(roomNum, character) {
@@ -339,9 +220,12 @@ io.sockets.on('connection', function(socket){
 		roomList[roomNum] = tmpArr;
 		printRoomList();
 		socket.join(roomNum);
+		//TODO NOW: fix Guest Lobby, giving undefined in client
 		io.to(roomNum).emit("loadLobby", {
 			list: roomList[roomNum],
-			num: roomNum
+			num: roomNum,
+			hostLobbyStr: gameStrBuilder.buildHostLobbyStr(),
+			guestLobbyStr: gameStrBuilder.buildGuestLobbyStr()
 		});
 	});
 	socket.on('btnPressJoinGame',function(data){

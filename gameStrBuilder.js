@@ -1,5 +1,77 @@
 //gameStrBuilder.js
 
+var buildHostLobbyStr = function() {
+    return `<div class="text-center">
+        <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invalidCharacterSelectContent" onclick="btnPressStartGame()">Start Game</button>
+            <button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button>
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
+        </div>
+        <h6 id="invalidCharacterSelectContent" class="collapse">Invalid character selection.</h6>
+        <hr>
+        <div class="btn-group-vertical" data-toggle="buttons">
+            <label class="btn btn-default active">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="merlin" checked>Merlin</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="percival">Percival</input>
+            </label>
+            <label class="btn btn-default active" aria-pressed="true">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="goodOne" checked>1st Servant of Arthur</input>
+            </label>
+            <label class="btn btn-default active" aria-pressed="true">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="goodTwo" checked>2nd Servant of Arthur</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="goodThree">3rd Servant of Arthur</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="goodFour">4th Servant of Arthur</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="goodFive">5th Servant of Arthur</input>
+            </label>
+        </div>
+        <div class="btn-group-vertical" data-toggle="buttons">
+            <label class="btn btn-default active" aria-pressed="true">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="assassin" checked>Assassin</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="morgana">Morgana</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="mordred">Mordred</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="oberon">Oberon</input>
+            </label>
+            <label class="btn btn-default active" aria-pressed="true">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="evilOne" checked>1st Minion of Mordred</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="evilTwo">2nd Minion of Mordred</input>
+            </label>
+            <label class="btn btn-default" aria-pressed="false">
+                <input type="checkbox" autocomplete="off" name="charSelection" value="evilThree">3rd Minion of Modred</input>
+            </label>
+        </div>
+        <hr>
+    </div>
+    <div id="lobbyDiv"></div>`;
+}
+
+var buildGuestLobbyStr = function() {
+    return `<div class="text-center">
+        <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
+            <button type="button" class="btn btn-default">Waiting...</button>
+            <button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button>
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
+        </div>
+        <hr>
+    </div>
+    <div id="lobbyDiv"></div>`;
+}
+
 var buildFirstGameBoardStr = function(questSizeArray) {
     return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
@@ -34,10 +106,16 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     var currentName;
     var currentChar;
     var currentIdentity;
+    var specialCharacters = '[Merlin][Morgana]';
+    if(charArray[1] == 1) {firstPlayerBoardStr += '[Percival]';}
+    if(charArray[8] == 1) {firstPlayerBoardStr += '[Morgana]';}
+    if(charArray[9] == 1) {firstPlayerBoardStr += '[Mordred]';}
+    if(charArray[10] == 1) {firstPlayerBoardStr += '[Oberon]';}
     var firstPlayerBoardStr = `<div id="playerBoardDiv" class="text-center">
         <h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2>
         <div id="playerBoardContent" class="collapse-in">
-            <div class="well" style="background:none;">`;
+            <div class="well">
+                <div class="container-fluid">`;
     for(i = 0; i < playerList.length; i++) {
         currentName = playerList[i].name;
         currentChar = playerList[i].character;
@@ -128,18 +206,18 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
                 }
             }
         }
-        firstPlayerBoardStr += `<button type="button" class="btn btn-default" style="width: 20%;">${currentIdentity}</button>
-        <button type="button" class="btn btn-default" style="width: 40%;">${currentName}</button>
-        <button id="status${i}" type="button" class="btn btn-default" style="width: 20%;">Status</button>
-        <p></p>`;
+        firstPlayerBoardStr += `<div class="row">
+            <button type="button" class="btn btn-default col-xs-3">${currentIdentity}</button>
+            <button type="button" class="btn btn-default col-xs-5">${currentName}</button>
+            <button type="button" class="btn btn-default col-xs-4" id="status${i}">Status</button>
+        </div>`;
     }
-    firstPlayerBoardStr += `<hr><p>Special Characters Present: [Merlin][Assassin]`;
-    // listing other special characters
-    if(charArray[1] == 1) {firstPlayerBoardStr += '[Percival]';}
-    if(charArray[8] == 1) {firstPlayerBoardStr += '[Morgana]';}
-    if(charArray[9] == 1) {firstPlayerBoardStr += '[Mordred]';}
-    if(charArray[10] == 1) {firstPlayerBoardStr += '[Oberon]';}
-    firstPlayerBoardStr += `<p>There are ${goodNum} Agents of Good and ${evilNum} Agents of Evil.</p></div></div><hr></div>`;
+    firstPlayerBoardStr += `</div>
+        <hr>
+        <p>Special Characters Present: ${specialCharacters}</p>
+        <p>There are ${goodNum} Agents of Good and ${evilNum} Agents of Evil.</p>
+        </div>
+    </div><hr></div>`;
     return firstPlayerBoardStr;
 }
 
@@ -149,14 +227,16 @@ updateGameBoardStr = function(character, playerList, gameManager) {
     var firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
 
     // if a party exists, fill the string
-    if( currentPhase != 0 ||
-        currentPhase != 3 ||
-        currentPhase != 6 ||
-        currentPhase != 9 ||
-        currentPhase != 12) {
+    if( gameManager.phase != 0 ||
+        gameManager.phase != 3 ||
+        gameManager.phase != 6 ||
+        gameManager.phase != 9 ||
+        gameManager.phase != 12 ||
+        gameManager.phase != 15 ||
+        gameManager.phase != 16) {
         partyDisplayStr = "";
         for(player in gameManager.selectedParty) {
-            selectedPartyArray += '[' + playerList[player] + ']';
+            partyDisplayStr += '[' + playerList[player] + ']';
         }
     }
     firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
@@ -175,7 +255,7 @@ updateGameBoardStr = function(character, playerList, gameManager) {
     if(gameManager.quests[4] == 1) {
         fifthQuestResult = "S";
     }
-    if(currentPhase < 3) {
+    if(gameManager.phase < 3) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
@@ -193,7 +273,7 @@ updateGameBoardStr = function(character, playerList, gameManager) {
         </div>
         <hr>`;
     }
-    else if(currentPhase < 6) {
+    else if(gameManager.phase < 6) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
@@ -211,7 +291,7 @@ updateGameBoardStr = function(character, playerList, gameManager) {
         </div>
         <hr>`;
     }
-    else if(currentPhase < 9) {
+    else if(gameManager.phase < 9) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
@@ -229,7 +309,7 @@ updateGameBoardStr = function(character, playerList, gameManager) {
         </div>
         <hr>`;
     }
-    else if(currentPhase < 12) {
+    else if(gameManager.phase < 12) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
@@ -247,7 +327,7 @@ updateGameBoardStr = function(character, playerList, gameManager) {
         </div>
         <hr>`;
     }
-    else if(currentPhase < 15) {
+    else if(gameManager.phase < 15) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
@@ -265,7 +345,7 @@ updateGameBoardStr = function(character, playerList, gameManager) {
         </div>
         <hr>`;
     }
-    else if(currentPhase == 15) {
+    else if(gameManager.phase == 15) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
@@ -296,6 +376,8 @@ updateGameBoardStr = function(character, playerList, gameManager) {
 }
 
 module.exports = {
+    buildHostLobbyStr: buildHostLobbyStr,
+    buildGuestLobbyStr: buildGuestLobbyStr,
     buildFirstGameBoardStr: buildFirstGameBoardStr,
     buildFirstActionPanelStr: buildFirstActionPanelStr,
     buildFirstPlayerBoardStr: buildFirstPlayerBoardStr,
