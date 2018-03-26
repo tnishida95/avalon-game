@@ -16,8 +16,6 @@ serv.listen(2000);
 console.log("Server started listening on port 2000.");
 var gameStrBuilder = require('./gameStrBuilder');
 
-console.log(gameStrBuilder.buildGuestLobbyStr());
-
 const io = require('socket.io')(serv,{});
 //array of sockets
 var socketList = [];

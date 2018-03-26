@@ -229,7 +229,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
-updateGameBoardStr = function(character, playerList, gameManager) {
+var updateGameBoardStr = function(character, playerList, gameManager) {
     var gameBoardStr;
     var partyDisplayStr = "none";
     var firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
@@ -382,7 +382,7 @@ updateGameBoardStr = function(character, playerList, gameManager) {
         <hr>`;
     }
 }
-updateActionPanelStr = function(character, playerList, gameManager) {
+var updateActionPanelStr = function(character, playerList, gameManager) {
     //TODO NEXT: replace all the unreachable variables with passed in parameters,
     //then create the party select screen string
     var currentPhase = gameList[roomNum].phase;
@@ -398,9 +398,10 @@ updateActionPanelStr = function(character, playerList, gameManager) {
         currentPhase == 12) { //party select
 		actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;">';
 		if(partyLeaderChar == character) {
-			actionPanelStr += '<div class="text-center"><div data-toggle="buttons">';
+			activeStr = `<div class="text-center"><div data-toggle="buttons">`;
 			for(i = 0; i < gameManager.playerCount - 1; i++) {
-				actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="' + roomList[roomNum][i].name + '">' + roomList[roomNum][i].name + '</input></label>';
+                currentName = playerList[0];
+				activeStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="' + roomList[roomNum][i].name + '">' + roomList[roomNum][i].name + '</input></label>';
 			}
 			actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="Submit">' + roomList[roomNum][i].name + '</input></label>';
 		}
