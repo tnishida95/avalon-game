@@ -220,23 +220,29 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
-//TODO NOW: passing in playerList is broke
 var updateGameBoardStr = function(character, playerList, gameManager) {
+    console.log(playerList);
+    console.log("\n\n");
+    console.log(gameManager.selectedParty);
+    console.log("\n\n");
+
+    console.log("\n\n");
+
     var gameBoardStr;
     var partyDisplayStr = "none";
     var firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
 
     // if a party exists, fill the string
-    if( gameManager.phase != 0 ||
-        gameManager.phase != 3 ||
-        gameManager.phase != 6 ||
-        gameManager.phase != 9 ||
-        gameManager.phase != 12 ||
-        gameManager.phase != 15 ||
+    if( gameManager.phase != 0 &&
+        gameManager.phase != 3 &&
+        gameManager.phase != 6 &&
+        gameManager.phase != 9 &&
+        gameManager.phase != 12 &&
+        gameManager.phase != 15 &&
         gameManager.phase != 16) {
         partyDisplayStr = "";
-        for(player in gameManager.selectedParty) {
-            partyDisplayStr += '[' + playerList[player] + ']';
+        for(i = 0; i < gameManager.selectedParty.length; i++) {
+            partyDisplayStr += '[' + playerList[gameManager.selectedParty[i]].name + ']';
         }
     }
     firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
@@ -387,7 +393,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 		if(partyLeaderChar == character) {
 			optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
 			for(i = 0; i < playerList.length; i++) {
-                currentName = playerList[i];
+                currentName = playerList[i].name;
 				optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
                     <input type="checkbox" autocomplete="off" name="partySelection" value="${currentName}">${currentName}</input>
                 </label>`;

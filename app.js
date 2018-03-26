@@ -117,9 +117,6 @@ function buildGameScreen(roomNum, character, charArray) {
 }
 
 function updateGameBoard(roomNum, character) {
-	//TODO NOW: fix passing in playerList
-	console.log(roomList[roomNum]);
-
 	return gameStrBuilder.updateGameBoardStr(character, roomList[roomNum], gameList[roomNum]);
 }
 function updateActionPanel(roomNum, character) {
