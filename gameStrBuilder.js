@@ -1,14 +1,5 @@
 //gameStrBuilder.js
 
-module.exports = {
-    buildHostLobbyStr: buildHostLobbyStr,
-    buildGuestLobbyStr: buildGuestLobbyStr,
-    buildFirstGameBoardStr: buildFirstGameBoardStr,
-    buildFirstActionPanelStr: buildFirstActionPanelStr,
-    buildFirstPlayerBoardStr: buildFirstPlayerBoardStr,
-    updateGameBoardStr: updateGameBoardStr
-}
-
 var buildHostLobbyStr = function() {
     return `<div class="text-center">
         <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
@@ -229,6 +220,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
+//TODO NOW: passing in playerList is broke
 var updateGameBoardStr = function(character, playerList, gameManager) {
     var gameBoardStr;
     var partyDisplayStr = "none";
@@ -381,34 +373,32 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
         </div>
         <hr>`;
     }
+    return gameBoardStr;
 }
 var updateActionPanelStr = function(character, playerList, gameManager) {
     //TODO NEXT: replace all the unreachable variables with passed in parameters,
     //then create the party select screen string
-    var currentPhase = gameList[roomNum].phase;
+    var currentPhase = gameManager.phase;
     var partyLeaderChar = playerList[gameManager.partyLeader].character;
-	var actionPanelStr = '';
-    var activeStr = '';
-    var waitingStr = '';
+	var actionPanelStr;
+    var optionsStr;
 
-	if( currentPhase == 0 ||
-        currentPhase == 3 ||
-        currentPhase == 6 ||
-        currentPhase == 9 ||
-        currentPhase == 12) { //party select
-		actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;">';
+	if( currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //party select
 		if(partyLeaderChar == character) {
-			activeStr = `<div class="text-center"><div data-toggle="buttons">`;
-			for(i = 0; i < gameManager.playerCount - 1; i++) {
-                currentName = playerList[0];
-				activeStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="' + roomList[roomNum][i].name + '">' + roomList[roomNum][i].name + '</input></label>';
+			optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
+			for(i = 0; i < playerList.length; i++) {
+                currentName = playerList[i];
+				optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
+                    <input type="checkbox" autocomplete="off" name="partySelection" value="${currentName}">${currentName}</input>
+                </label>`;
 			}
-			actionPanelStr += '<label class="btn btn-default" style="width: 82.5%;"><input type="checkbox" autocomplete="off" name="charSelection" value="Submit">' + roomList[roomNum][i].name + '</input></label>';
+			optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
+                <input type="checkbox" autocomplete="off" name="partySelection" value="Submit">Submit</input>
+            </label>`;
 		}
 		else {
-			actionPanelStr += '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>';
+			optionsStr = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>';
 		}
-		actionPanelStr += '<p></p></div><hr>';
 	}
 	//TODO NEXT-NEXT: continue filling in actionPanelStrs with toggle buttons
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
@@ -432,4 +422,22 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 	else { //game end
 		//buttons to restart game, return to main menu
 	}
+
+    actionPanelStr = `<h2>Actions</h2>
+    <div class="well">
+        ${optionsStr}
+        <p></p>
+    </div>
+    <hr>`;
+    return actionPanelStr;
+}
+
+module.exports = {
+    buildHostLobbyStr: buildHostLobbyStr,
+    buildGuestLobbyStr: buildGuestLobbyStr,
+    buildFirstGameBoardStr: buildFirstGameBoardStr,
+    buildFirstActionPanelStr: buildFirstActionPanelStr,
+    buildFirstPlayerBoardStr: buildFirstPlayerBoardStr,
+    updateGameBoardStr: updateGameBoardStr,
+    updateActionPanelStr: updateActionPanelStr
 }

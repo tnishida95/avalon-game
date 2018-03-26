@@ -67,6 +67,17 @@
     roomNum = -1;
     loadMainMenu();
   }
+  var btnPressPartySubmit = function(){
+    var partySelections = [];
+    $.each($("input[name='partySelection']:checked"), function(){
+      partySelections.push($(this).val());
+    });
+    console.log(partySelections);
+    socket.emit('btnPressPartySubmit',{
+      partySelection: partySelection,
+      room: roomNum
+    });
+  };
 
   function loadMainMenu() {
     document.getElementById("title").innerHTML = 'Avalon';

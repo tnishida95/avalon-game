@@ -112,26 +112,24 @@ function buildGameScreen(roomNum, character, charArray) {
 	var firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize);
 	var firstActionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
 	var firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
-
 	var firstGameScreenStr = firstGameBoardStr + firstActionPanelStr + firstPlayerBoardStr;
 	return firstGameScreenStr;
 }
 
 function updateGameBoard(roomNum, character) {
-	var gameBoardStr = gameStrBuilder.updateGameBoardStr(character, roomList[roomNum], gameList[roomNum]);
-	return gameBoardStr;
+	//TODO NOW: fix passing in playerList
+	console.log(roomList[roomNum]);
+
+	return gameStrBuilder.updateGameBoardStr(character, roomList[roomNum], gameList[roomNum]);
 }
 function updateActionPanel(roomNum, character) {
-	//TODO: left off here, fill the rest in
-	//determine actions from character, partyLeader, and currentPhase
-
-	return actionPanelStr;
+	return gameStrBuilder.updateActionPanelStr(character, roomList[roomNum], gameList[roomNum]);
 }
 function updatePlayerBoard(roomNum, character) {
 	//TODO: this one will NOT replace the actionPanelDiv
 	//it will change the text at status inside the status buttons only
 	//consider making this function handle only one status button at a time, and have it loop and to update each player
-	return gameStrBuilder.updateActionPanelStr(character, gameList[roomNum]);
+	return;
 }
 
 
@@ -389,5 +387,15 @@ io.sockets.on('connection', function(socket){
 		console.log("game started");
 
 	}); //end btnPressStartGame()
+
+	socket.on('btnPressPartySubmit',function(data){
+		var partySelection = data.partySelection;
+		var roomNum = data.room;
+		console.log(`Received btnPressPartySubmit from client, here's the list: ${partySelection}`);
+		if(partySelection.length != roomList[roomNum].length) {
+			console.log(`Bad party select at ${roomNum}...${partySelection.length} selected, ${roomList[roomNum].length} in the room`);
+			return;
+		}
+	});
 
 });
