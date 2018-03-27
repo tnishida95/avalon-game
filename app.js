@@ -391,11 +391,17 @@ io.sockets.on('connection', function(socket){
 	}); //end btnPressStartGame()
 
 	socket.on('btnPressPartySubmit',function(data){
-		var partySelection = data.partySelection;
+		var partySelections = data.partySelections;
 		var roomNum = data.room;
-		console.log(`Received btnPressPartySubmit from client, here's the list: ${partySelection}`);
-		if(partySelection.length != roomList[roomNum].length) {
-			console.log(`Bad party select at ${roomNum}...${partySelection.length} selected, ${roomList[roomNum].length} in the room`);
+		var currentQuest;
+		if(gameList[roomNum].phase == 0) {currentQuest = 0;}
+		if(gameList[roomNum].phase == 3) {currentQuest = 1;}
+		if(gameList[roomNum].phase == 6) {currentQuest = 2;}
+		if(gameList[roomNum].phase == 9) {currentQuest = 3;}
+		if(gameList[roomNum].phase == 12) {currentQuest = 4;}
+		console.log(`Received btnPressPartySubmit from client, here's the list: ${partySelections}`);
+		if(partySelections.length != gameList[roomNum].questSize[currentQuest]) {
+			console.log(`Bad party select at ${roomNum}...${partySelections.length} selected, ${roomList[roomNum].length} in the room`);
 			return;
 		}
 	});

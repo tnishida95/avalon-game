@@ -391,9 +391,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
                     <input type="checkbox" autocomplete="off" name="partySelection" value="${currentName}">${currentName}</input>
                 </label>`;
 			}
-			optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
-                <input type="checkbox" autocomplete="off" name="partySelection" value="Submit">Submit</input>
-            </label>`;
+			optionsStr += `<button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressPartySubmit()">Submit</button>`;
 		}
 		else {
 			optionsStr = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>';

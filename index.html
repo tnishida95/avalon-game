@@ -8,10 +8,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title id="title">Avalon</title>
 
-<!--
-<script src="handlebars-v4.0.10.js"></script>
--->
-
 <!-- Google font, Amethysta -->
 <link href='https://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet'>
 <!-- jquery -->
@@ -70,7 +66,7 @@
     });
     console.log(partySelections);
     socket.emit('btnPressPartySubmit',{
-      partySelection: partySelection,
+      partySelections: partySelections,
       room: roomNum
     });
   };
