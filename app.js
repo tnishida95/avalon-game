@@ -112,7 +112,12 @@ function buildGameScreen(roomNum, character, charArray) {
 	var firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize);
 	var firstActionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
 	var firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
-	var firstGameScreenStr = firstGameBoardStr + firstActionPanelStr + firstPlayerBoardStr;
+	var firstGameScreenStr = firstGameBoardStr +
+	`<div id="progressDiv" class="progress text-center">
+		<div class="progress-bar" style="width: 0%"></div>
+		<p>PARTY SELECTION</p>
+	</div>
+	<hr>` + firstActionPanelStr + firstPlayerBoardStr;
 	return firstGameScreenStr;
 }
 

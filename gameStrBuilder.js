@@ -113,7 +113,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     var firstPlayerBoardStr = `<div id="playerBoardDiv" class="text-center">
         <h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2>
         <div id="playerBoardContent" class="collapse-in">
-            <div class="well">
+            <div class="well" style="background:none;">
                 <div class="container-fluid">`;
     for(i = 0; i < playerList.length; i++) {
         currentName = playerList[i].name;
@@ -221,13 +221,6 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
 }
 
 var updateGameBoardStr = function(character, playerList, gameManager) {
-    console.log(playerList);
-    console.log("\n\n");
-    console.log(gameManager.selectedParty);
-    console.log("\n\n");
-
-    console.log("\n\n");
-
     var gameBoardStr;
     var partyDisplayStr = "none";
     var firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
@@ -430,7 +423,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 	}
 
     actionPanelStr = `<h2>Actions</h2>
-    <div class="well">
+    <div class="well" style="background:none;">
         ${optionsStr}
         <p></p>
     </div>
