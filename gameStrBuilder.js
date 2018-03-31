@@ -220,7 +220,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
-var updateGameBoardStr = function(character, playerList, gameManager) {
+var updateGameBoardStr = function(character, playerList, gameManager, selectedPartyArray) {
     var gameBoardStr;
     var partyDisplayStr = "none";
     var firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;

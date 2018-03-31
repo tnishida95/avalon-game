@@ -121,9 +121,6 @@ function buildGameScreen(roomNum, character, charArray) {
 	return firstGameScreenStr;
 }
 
-function updateGameBoard(roomNum, character) {
-	return gameStrBuilder.updateGameBoardStr(character, roomList[roomNum], gameList[roomNum]);
-}
 function updateActionPanel(roomNum, character) {
 	return gameStrBuilder.updateActionPanelStr(character, roomList[roomNum], gameList[roomNum]);
 }
@@ -375,7 +372,7 @@ io.sockets.on('connection', function(socket){
 		}
 		for(j = 0; j < roomList[roomNum].length; j++) {
 			io.to(roomList[roomNum][j].sid).emit("updateGameBoard", {
-				gameBoardStr: updateGameBoard(roomNum, roomList[roomNum][j].character),
+				gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 				});
 			io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
 				actionPanelStr: updateActionPanel(roomNum, roomList[roomNum][j].character),
@@ -404,6 +401,8 @@ io.sockets.on('connection', function(socket){
 			console.log(`Bad party select at ${roomNum}...${partySelections.length} selected, ${roomList[roomNum].length} in the room`);
 			return;
 		}
+		gameList[roomNum].phase++;
+		//TODO NEXT: set the gameManager's selectedParty list, then update clients
 	});
 
 });
