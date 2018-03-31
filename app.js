@@ -79,6 +79,8 @@ function GameManager(playerCountInt) {
 	//these numbers refer to the indices of Players in array at roomList[roomNum]
 	this.partyLeader = 0;
 	//could assign this a new array every time a new quest comes up
+	//example usage: [0,2,3] -> the first, third, and fourth player in the room
+	//	are in the party
 	this.selectedParty = [-1,-1,-1,-1,-1,-1];
 
 	//TODO NEXT NEXT: add data structure that captures the accepts/rejects from players
@@ -402,7 +404,24 @@ io.sockets.on('connection', function(socket){
 			return;
 		}
 		gameList[roomNum].phase++;
-		//TODO NEXT: set the gameManager's selectedParty list, then update clients
+
+		//filling out the selectedParty array...this could use some optimization
+		console.log("Filling out selectedParty array...");
+		var partySlot = 0;
+		gameList[roomNum].selectedParty = [-1,-1,-1,-1,-1,-1];
+		for(names in partySelections) {
+			console.log(`Looking at ${names}...`);
+			for(i = 0; i < roomList[roomNum].length; i++) {
+				if(names === roomList[roomNum][i].name) {
+					gameList[roomNum].selectedParty[partySlot] = i;
+					partySlot++;
+					console.log(`\tselectedParty[${partySlot}]: ${i}`);
+					break;
+				}
+			}
+		}
+		//TODO NOW: update clients with next phase by emitting updateGameBoard
+		//and updateActionPanel
 	});
 
 });

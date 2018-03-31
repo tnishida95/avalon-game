@@ -220,7 +220,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
-var updateGameBoardStr = function(character, playerList, gameManager, selectedPartyArray) {
+var updateGameBoardStr = function(character, playerList, gameManager) {
     var gameBoardStr;
     var partyDisplayStr = "none";
     var firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
@@ -235,7 +235,9 @@ var updateGameBoardStr = function(character, playerList, gameManager, selectedPa
         gameManager.phase != 16) {
         partyDisplayStr = "";
         for(i = 0; i < gameManager.selectedParty.length; i++) {
-            partyDisplayStr += '[' + playerList[gameManager.selectedParty[i]].name + ']';
+            if(gameManager.selectedParty[i] != -1) {
+                partyDisplayStr += '[' + playerList[gameManager.selectedParty[i]].name + ']';
+            }
         }
     }
     firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
@@ -375,8 +377,6 @@ var updateGameBoardStr = function(character, playerList, gameManager, selectedPa
     return gameBoardStr;
 }
 var updateActionPanelStr = function(character, playerList, gameManager) {
-    //TODO NEXT: replace all the unreachable variables with passed in parameters,
-    //then create the party select screen string
     var currentPhase = gameManager.phase;
     var partyLeaderChar = playerList[gameManager.partyLeader].character;
 	var actionPanelStr;
@@ -397,9 +397,12 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 			optionsStr = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>';
 		}
 	}
-	//TODO NEXT-NEXT: continue filling in actionPanelStrs with toggle buttons
+	//TODO NEXT: continue filling in actionPanelStrs with toggle buttons
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
-		//reject or accept buttons
+        optionsStr = `<div class="text-center">
+            <button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressAcceptParty()">Accept</button>
+            <button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressRejectParty()">Reject</button>
+        </div>`;
 	}
 	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {
 		//if(on the party && good)
