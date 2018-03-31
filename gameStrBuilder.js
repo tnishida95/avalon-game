@@ -399,9 +399,11 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 	}
 	//TODO NEXT: continue filling in actionPanelStrs with toggle buttons
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
-        optionsStr = `<div class="text-center">
-            <button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressAcceptParty()">Accept</button>
-            <button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressRejectParty()">Reject</button>
+        optionsStr = `<div class="well" style="background:none;">
+            <div class="container-fluid">
+                <button type="button" class="btn btn-default btn-lg" col-xs-12 onclick="btnPressAcceptParty()">Accept</button>
+                <button type="button" class="btn btn-default btn-lg" col-xs-12 onclick="btnPressRejectParty()">Reject</button>
+            </div>
         </div>`;
 	}
 	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {

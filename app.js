@@ -65,14 +65,16 @@ function GameManager(playerCountInt) {
 	16 = game end/results/stats
 	*/
 	this.phase = 0;
-	this.votesRejected = 0;
 	/*
 	0 = no status
-	1 = success
-	2 = fail
+	1 = success/accept/succeed
+	2 = fail/reject/fail
 	*/
 	this.quests = [0,0,0,0,0];
+	this.votes = [0,0,0,0,0,0,0,0,0,0];
+	this.partyActions = [0,0,0,0,0,0];
 
+	this.votesRejected = 0;
 	this.successes = 0;
 	this.failures = 0;
 
@@ -83,7 +85,6 @@ function GameManager(playerCountInt) {
 	//	are in the party
 	this.selectedParty = [-1,-1,-1,-1,-1,-1];
 
-	//TODO NEXT NEXT: add data structure that captures the accepts/rejects from players
 }
 
 function printPlayerList() {
@@ -127,9 +128,13 @@ function updateActionPanel(roomNum, character) {
 	return gameStrBuilder.updateActionPanelStr(character, roomList[roomNum], gameList[roomNum]);
 }
 function updatePlayerBoard(roomNum, character) {
-	//TODO: this one will NOT replace the actionPanelDiv
-	//it will change the text at status inside the status buttons only
-	//consider making this function handle only one status button at a time, and have it loop and to update each player
+	/*
+	TODO: change the text at status inside the status buttons only
+	consider making this function handle only one status button at a time,
+		and have it loop and to update each player
+	actually, maybe just remove the status buttons completely and only update
+		the progress bar div
+	*/
 	return;
 }
 
@@ -377,7 +382,7 @@ io.sockets.on('connection', function(socket){
 				gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 				});
 			io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
-				actionPanelStr: updateActionPanel(roomNum, roomList[roomNum][j].character),
+				actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 			});
 			/* uncomment after updateActionPanel() is done
 			io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
@@ -394,10 +399,11 @@ io.sockets.on('connection', function(socket){
 		var roomNum = data.room;
 		var currentQuest;
 		if(gameList[roomNum].phase == 0) {currentQuest = 0;}
-		if(gameList[roomNum].phase == 3) {currentQuest = 1;}
-		if(gameList[roomNum].phase == 6) {currentQuest = 2;}
-		if(gameList[roomNum].phase == 9) {currentQuest = 3;}
-		if(gameList[roomNum].phase == 12) {currentQuest = 4;}
+		else if(gameList[roomNum].phase == 3) {currentQuest = 1;}
+		else if(gameList[roomNum].phase == 6) {currentQuest = 2;}
+		else if(gameList[roomNum].phase == 9) {currentQuest = 3;}
+		else if(gameList[roomNum].phase == 12) {currentQuest = 4;}
+		else {console.error("Party submitted, but not in partySelect phase.");}
 		console.log(`Received btnPressPartySubmit from client, here's the list: ${partySelections}`);
 		if(partySelections.length != gameList[roomNum].questSize[currentQuest]) {
 			console.log(`Bad party select at ${roomNum}...${partySelections.length} selected, ${roomList[roomNum].length} in the room`);
@@ -409,19 +415,51 @@ io.sockets.on('connection', function(socket){
 		console.log("Filling out selectedParty array...");
 		var partySlot = 0;
 		gameList[roomNum].selectedParty = [-1,-1,-1,-1,-1,-1];
-		for(names in partySelections) {
-			console.log(`Looking at ${names}...`);
-			for(i = 0; i < roomList[roomNum].length; i++) {
-				if(names === roomList[roomNum][i].name) {
-					gameList[roomNum].selectedParty[partySlot] = i;
+		for(i = 0; i < partySelections.length; i++) {
+			console.log(`Looking at ${partySelections[i]}...`);
+			for(j = 0; j < roomList[roomNum].length; j++) {
+				if(partySelections[i] === roomList[roomNum][j].name) {
+					gameList[roomNum].selectedParty[partySlot] = j;
 					partySlot++;
-					console.log(`\tselectedParty[${partySlot}]: ${i}`);
+					console.log(`\tselectedParty[${partySlot}]: ${j}`);
 					break;
 				}
 			}
 		}
-		//TODO NOW: update clients with next phase by emitting updateGameBoard
-		//and updateActionPanel
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			io.to(roomList[roomNum][i].sid).emit("updateGameBoard", {
+				gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][i].character, roomList[roomNum], gameList[roomNum])
+				});
+			io.to(roomList[roomNum][i].sid).emit("updateActionPanel", {
+				actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+			});
+			/* uncomment after updatePlayerBoard() is done
+			io.to(roomList[roomNum][i].sid).emit("updatePlayerBoard", {
+				playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][i].character)
+			});
+			*/
+		}
+	});
+
+	socket.on('btnPressAcceptParty',function(data){
+		//find out which player pressed it
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			if(socket.id === roomList[roomNum][i].sid) {
+				gameList[roomNum].votes[i] = 1;
+				console.log(`[${roomList[roomNum][i].name}] ACCEPTED the party.`)
+				break;
+			}
+		}
+	});
+	socket.on('btnPressRejectParty',function(data){
+		//find out which player pressed it
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			if(socket.id === roomList[roomNum][i].sid) {
+				gameList[roomNum].votes[i] = 2;
+				console.log(`[${roomList[roomNum][i].name}] REJECTED the party.`)
+				break;
+			}
+		}
 	});
 
 });

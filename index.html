@@ -27,7 +27,7 @@
 
   var btnPressNewGame = function(){
     socket.emit('btnPressNewGame',$("#nameInput").val())
-  };
+  }
   var btnPressJoinGame = function(){
     socket.emit('btnPressJoinGame',{
       name: $("#nameInput").val(),
@@ -44,7 +44,7 @@
       charList: characterSelections,
       room: roomNum
     });
-  };
+  }
   var btnPressLeaveGame = function(){
     socket.emit('btnPressLeaveGame',{
       room: roomNum
@@ -69,7 +69,17 @@
       partySelections: partySelections,
       room: roomNum
     });
-  };
+  }
+  var btnPressAcceptParty = function(){
+    socket.emit('btnPressAcceptParty',{
+      vote: true;
+    });
+  }
+  var btnPressRejectParty = function(){
+    socket.emit('btnPressRejectParty',{
+      vote: false;
+    });
+  }
 
   function loadMainMenu() {
     document.getElementById("title").innerHTML = 'Avalon';
