@@ -71,6 +71,8 @@ var buildGuestLobbyStr = function() {
     <div id="lobbyDiv"></div>`;
 }
 
+//TODO: change the successes display...the variable isn't being used how it was
+//  intended in the UI
 var buildFirstGameBoardStr = function(questSizeArray) {
     return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
