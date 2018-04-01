@@ -267,7 +267,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
             <hr>
             <p id="currentQuestDisplay">Current Quest: 1</p>
-            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>
             <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
             <hr>
             <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
@@ -285,7 +285,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
             <hr>
             <p id="currentQuestDisplay">Current Quest: 2</p>
-            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>
             <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
             <hr>
             <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
@@ -303,7 +303,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
             <hr>
             <p id="currentQuestDisplay">Current Quest: 3</p>
-            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>
             <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
             <hr>
             <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
@@ -321,7 +321,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
             <hr>
             <p id="currentQuestDisplay">Current Quest: 4</p>
-            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>
             <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
             <hr>
             <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
@@ -339,7 +339,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[4]}</button>
             <hr>
             <p id="currentQuestDisplay">Current Quest: 5</p>
-            <p id="rejectedDisplay">Rejected Parties: ${gameManager.votesRejected}</p>
+            <p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>
             <p id="successesDisplay">Successes: ${gameManager.successes}, Failures: ${gameManager.failures}</p>
             <hr>
             <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
@@ -406,12 +406,13 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
         </div>`;
 	}
 	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {
+        var playerSlot;
         for(i = 0; i < playerList.length; i++) {
             if(playerList[i].character === character) {
-                var playerSlot = i;
+                playerSlot = i;
             }
         }
-        if(gameManager.selectedParty.includes(i)) {
+        if(gameManager.selectedParty.includes(playerSlot)) {
             if(character === "merlin" || character === "percival" ||
                 character === "goodOne" || character === "goodTwo" || character === "goodThree" || character === "goodFour" || character === "goodFive") {
                 optionsStr = `<div class="well" style="background:none;">
@@ -467,5 +468,6 @@ module.exports = {
     buildFirstActionPanelStr: buildFirstActionPanelStr,
     buildFirstPlayerBoardStr: buildFirstPlayerBoardStr,
     updateGameBoardStr: updateGameBoardStr,
-    updateActionPanelStr: updateActionPanelStr
+    updateActionPanelStr: updateActionPanelStr,
+    updateProgressBarStr: updateProgressBarStr
 }
