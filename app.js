@@ -492,7 +492,6 @@ io.sockets.on('connection', function(socket){
 		}
 	});
 
-	//TODO NOW: make this and the questAction changes the buttons after submission
 	socket.on('btnPressPartyApproval',function(data){
 		//find out which player pressed it, and save the vote
 		for(i = 0; i < roomList[roomNum].length; i++) {
@@ -508,6 +507,8 @@ io.sockets.on('connection', function(socket){
 			//count the votes
 			var accepts = 0;
 			var rejects = 0;
+			//TODO NOW: fix the premature party rejection
+			console.log(gameList[roomNum].votes);
 			for(i = 0; i < 10; i++) {
 				if(gameList[roomNum].votes[i] === 1) {
 					accepts++;
@@ -519,6 +520,8 @@ io.sockets.on('connection', function(socket){
 					break;
 				}
 			}
+			console.log(accepts);
+			console.log(rejects);
 			if(rejects >= accepts) {
 				//quest rejected, so...
 				//...move the party leader
