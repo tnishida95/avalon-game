@@ -515,7 +515,7 @@ io.sockets.on('connection', function(socket){
 				else if(gameList[roomNum].votes[i] === 2) {
 					rejects++;
 				}
-				else {
+				else if(gameList[roomNum].votes[i] === 0){
 					break;
 				}
 			}

@@ -391,7 +391,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
                     <input type="checkbox" autocomplete="off" name="partySelection" value="${currentName}">${currentName}</input>
                 </label>`;
 			}
-			optionsStr += `<button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressPartySubmit()">Submit</button>`;
+			optionsStr += `<hr><button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressPartySubmit()">Submit</button>`;
 		}
 		else {
 			optionsStr = `<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting for ${playerList[gameManager.partyLeader].name} to select a party...</button>`;
@@ -401,6 +401,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
         optionsStr = `<div class="well" style="background:none;">
             <div class="container-fluid">
                 <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressAcceptParty()">Accept</button>
+                <hr>
                 <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressRejectParty()">Reject</button>
             </div>
         </div>`;
@@ -418,6 +419,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
                 optionsStr = `<div class="well" style="background:none;">
                     <div class="container-fluid">
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
+                        <hr>
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
                     </div>
                 </div>`;
@@ -426,6 +428,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
                 optionsStr = `<div class="well" style="background:none;">
                     <div class="container-fluid">
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
+                        <hr>
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressFail()">Fail</button>
                     </div>
                 </div>`;

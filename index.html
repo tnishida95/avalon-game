@@ -74,21 +74,25 @@
     socket.emit('btnPressPartyApproval',{
       vote: 1
     });
+    document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
   }
   var btnPressRejectParty = function(){
     socket.emit('btnPressPartyApproval',{
       vote: 2
     });
+    document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
   }
   var btnPressSuccess = function(){
     socket.emit('btnPressQuestAction',{
       questAction: 1
     });
+    document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
   }
   var btnPressFail = function(){
     socket.emit('btnPressQuestAction',{
       questAction: 2
     });
+    document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
   }
 
   function loadMainMenu() {
