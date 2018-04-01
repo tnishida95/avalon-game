@@ -77,6 +77,7 @@ function GameManager(playerCountInt) {
 	this.votesRejected = 0;
 	this.successes = 0;
 	this.failures = 0;
+	this.actionsTaken = 0;
 
 	//these numbers refer to the indices of Players in array at roomList[roomNum]
 	this.partyLeader = 0;
@@ -118,15 +119,12 @@ function buildGameScreen(roomNum, character, charArray) {
 	var firstGameScreenStr = firstGameBoardStr +
 	`<div id="progressDiv" class="progress text-center">
 		<div class="progress-bar" style="width: 0%"></div>
-		<p>PARTY SELECTION</p>
+		<p>${gameList[roomNum].partyLeader} is selecting a party.</p>
 	</div>
 	<hr>` + firstActionPanelStr + firstPlayerBoardStr;
 	return firstGameScreenStr;
 }
 
-function updateActionPanel(roomNum, character) {
-	return gameStrBuilder.updateActionPanelStr(character, roomList[roomNum], gameList[roomNum]);
-}
 function updatePlayerBoard(roomNum, character) {
 	/*
 	TODO: change the text at status inside the status buttons only
@@ -136,6 +134,46 @@ function updatePlayerBoard(roomNum, character) {
 		the progress bar div
 	*/
 	return;
+}
+
+function getCurrentQuest() {
+	var currentPhase = gameList[roomNum].phase;
+	if(currentPhase < 3) {return 0;}
+	if(currentPhase < 6) {return 1;}
+	if(currentPhase < 9) {return 2;}
+	if(currentPhase < 12) {return 3;}
+	if(currentPhase < 15) {return 4;}
+}
+
+function updateProgressBar(progressType) {
+	var barWidth = 0;
+	var innerText = "";
+	var outerText = "";
+	if(progressType === "partyApproval") {
+		barWidth = (gameList[roomNum].actionsTaken / gameList[roomNum].playerCount) * 100;
+		innerText = `${gameList[roomNum].actionsTaken} players voted...`;
+		outerText = `...out of ${gameList[roomNum].playerCount}`;
+	}
+	else if (progressType === "questing") {
+		barWidth = (gameList[roomNum].actionsTaken / gameList[roomNum].playerCount) * 100;
+		innerText = `${gameList[roomNum].actionsTaken} players departed...`;
+		outerText = `...out of ${gameList[roomNum].playerCount}`;
+	}
+	else if {progressType === "questEnded") {
+		barWidth = (gameList[roomNum].successes / gameList[roomNum].playerCount) * 100;
+		if(gameList[roomNum].failures === 0) {
+			innerText = `Quest succeeded!`;
+		}
+		else {
+			innerText = `${gameList[roomNum].successes} / ${gameList[roomNum].playerCount} tried to succeed...`;
+			outerText = "...quest failed!";
+		}
+	}
+	for(j = 0; j < roomList[roomNum].length; j++) {
+		io.to(roomList[roomNum][j].sid).emit("updateProgressBar", {
+			progressBarStr: gameStrBuilder.updateProgressBar(barWidth, innerText, outerText)
+		});
+	}
 }
 
 
@@ -336,8 +374,11 @@ io.sockets.on('connection', function(socket){
 				//process.stdout.write("getting randomNum: ");
 				do {
 					/*
-					TODO: consider reducing the range of values every iteration somehow, not a big deal though
-						maybe create another array with the indexes of available characters in charArray, then splice out elements as they are selected
+					consider reducing the range of values every iteration somehow,
+						not a big deal though
+					maybe create another array with the indexes of available
+						characters in charArray, then splice out elements as they
+						are selected
 					*/
 					randomNum = Math.floor(Math.random() * 14);
 				}
@@ -426,38 +467,96 @@ io.sockets.on('connection', function(socket){
 				}
 			}
 		}
-		for(i = 0; i < roomList[roomNum].length; i++) {
-			io.to(roomList[roomNum][i].sid).emit("updateGameBoard", {
-				gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][i].character, roomList[roomNum], gameList[roomNum])
+		for(j = 0; j < roomList[roomNum].length; j++) {
+			io.to(roomList[roomNum][j].sid).emit("updateGameBoard", {
+				gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 				});
-			io.to(roomList[roomNum][i].sid).emit("updateActionPanel", {
+			io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
 				actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 			});
 			/* uncomment after updatePlayerBoard() is done
-			io.to(roomList[roomNum][i].sid).emit("updatePlayerBoard", {
-				playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][i].character)
+			io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
+				playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
 			});
 			*/
 		}
 	});
 
-	socket.on('btnPressAcceptParty',function(data){
-		//find out which player pressed it
+	socket.on('btnPressPartyApproval',function(data){
+		//find out which player pressed it, and save the vote
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(socket.id === roomList[roomNum][i].sid) {
-				gameList[roomNum].votes[i] = 1;
-				console.log(`[${roomList[roomNum][i].name}] ACCEPTED the party.`)
+				gameList[roomNum].votes[i] = data.vote;
+				console.log(`[${roomList[roomNum][i].name}] voted: ${data.vote}.`);
 				break;
 			}
 		}
+		gameList[roomNum].actionsTaken++;
+		var currentQuest = getCurrentQuest();
+		if(gameList[roomNum].actionsTaken === gameList[roomNum].playerCount) {
+			//moving to quest phase now, so reset all the relevant variables
+			gameList[roomNum].actionsTaken = 0;
+			gameList[roomNum].successes = 0;
+			gameList[roomNum].failures = 0;
+
+			gameList[roomNum].phase++;
+			console.log(`Phase ${gameList[roomNum].phase}: Going to quest!`);
+		}
+		else {
+			updateProgressBar("partyApproval");
+		}
 	});
-	socket.on('btnPressRejectParty',function(data){
-		//find out which player pressed it
+
+	socket.on('btnPressQuestAction',function(data){
+		//find out which player pressed it, and save the action
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(socket.id === roomList[roomNum][i].sid) {
-				gameList[roomNum].votes[i] = 2;
-				console.log(`[${roomList[roomNum][i].name}] REJECTED the party.`)
+				gameList[roomNum].partyActions[i] = data.questAction;
+				console.log(`[${roomList[roomNum][i].name}] quested: ${data.questAction}.`);
 				break;
+			}
+		}
+		if(data.questAction === 1) {
+			gameList[roomNum].successes++;
+		}
+		else {
+			gameList[roomNum].failures++;
+		}
+		gameList[roomNum].actionsTaken++;
+		var currentQuest = getCurrentQuest();
+		if(gameList[roomNum].actionsTaken === gameList[roomNum].questSize[currentQuest]) {
+			//quest has ended, so now...
+
+			//...save quest result
+			if(gameList[roomNum].failures === 0) {
+				gameList[roomNum].quests[currentQuest] = 1;
+			}
+			else {
+				gameList[roomNum].quests[currentQuest] = 2;
+			}
+
+			//...change party leader
+			gameList[roomNum].partyLeader++;
+			if(gameList[roomNum].partyLeader === gameList.playerCount) {
+				gameList[roomNum].partyLeader = 0;
+			}
+
+			//...update clients with next phase
+			updateProgressBar("questEnded");
+			gameList[roomNum].phase++;
+			console.log(`Phase ${gameList[roomNum].phase}!`);
+			for(j = 0; j < roomList[roomNum].length; j++) {
+				io.to(roomList[roomNum][j].sid).emit("updateGameBoard", {
+					gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+					});
+				io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
+					actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+				});
+				/* uncomment after updatePlayerBoard() is done
+				io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
+					playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
+				});
+				*/
 			}
 		}
 	});

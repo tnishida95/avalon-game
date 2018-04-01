@@ -394,24 +394,45 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 			optionsStr += `<button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressPartySubmit()">Submit</button>`;
 		}
 		else {
-			optionsStr = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>';
+			optionsStr = `<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting for ${playerList[gameManager.partyLeader].name} to select a party...</button>`;
 		}
 	}
-	//TODO NEXT: continue filling in actionPanelStrs with toggle buttons
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
         optionsStr = `<div class="well" style="background:none;">
             <div class="container-fluid">
-                <button type="button" class="btn btn-default btn-lg" col-xs-12 onclick="btnPressAcceptParty()">Accept</button>
-                <button type="button" class="btn btn-default btn-lg" col-xs-12 onclick="btnPressRejectParty()">Reject</button>
+                <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressAcceptParty()">Accept</button>
+                <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressRejectParty()">Reject</button>
             </div>
         </div>`;
 	}
 	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {
-		//if(on the party && good)
-		//else if(on the party && evil)
-		//else {
-			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
-		//}
+        for(i = 0; i < playerList.length; i++) {
+            if(playerList[i].character === character) {
+                var playerSlot = i;
+            }
+        }
+        if(gameManager.selectedParty.includes(i)) {
+            if(character === "merlin" || character === "percival" ||
+                character === "goodOne" || character === "goodTwo" || character === "goodThree" || character === "goodFour" || character === "goodFive") {
+                optionsStr = `<div class="well" style="background:none;">
+                    <div class="container-fluid">
+                        <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
+                        <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
+                    </div>
+                </div>`;
+            }
+            else {
+                optionsStr = `<div class="well" style="background:none;">
+                    <div class="container-fluid">
+                        <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
+                        <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressFail()">Fail</button>
+                    </div>
+                </div>`;
+            }
+        }
+        else {
+			optionsStr = `<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting for party to complete the quest...</button>`;
+		}
 	}
 	else if(currentPhase == 15) {
 		if(character == "assassin") {
@@ -433,6 +454,11 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
     <hr>`;
     return actionPanelStr;
 }
+function updateProgressBarStr(barWidth, innerText, outerText) {
+    return `<div class="progress-bar" style="width: ${barWidth}%">${innerText}</div>
+    <p>${outerText}</p>`;
+}
+
 
 module.exports = {
     buildHostLobbyStr: buildHostLobbyStr,

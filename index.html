@@ -71,13 +71,23 @@
     });
   }
   var btnPressAcceptParty = function(){
-    socket.emit('btnPressAcceptParty',{
-      vote: true;
+    socket.emit('btnPressPartyApproval',{
+      vote: 1
     });
   }
   var btnPressRejectParty = function(){
-    socket.emit('btnPressRejectParty',{
-      vote: false;
+    socket.emit('btnPressPartyApproval',{
+      vote: 2
+    });
+  }
+  var btnPressSuccess = function(){
+    socket.emit('btnPressQuestAction',{
+      questAction: 1
+    });
+  }
+  var btnPressFail = function(){
+    socket.emit('btnPressQuestAction'{
+      questAction: 2
     });
   }
 
@@ -175,6 +185,10 @@
     console.log("Received: [updatePlayerBoard] from server");
     lobby = data.list;
     document.getElementById("playerBoardDiv").innerHTML = data.playerBoardStr;
+  })
+  socket.on('updateProgressBar',function(data){
+    console.log("Received: [updateProgressBar] from server");
+    document.getElementById("progressDiv").innerHTML = data.progressBarStr;
   })
 
 </script>
