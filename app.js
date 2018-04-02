@@ -458,7 +458,7 @@ io.sockets.on('connection', function(socket){
 		console.log(`Client submitted party: ${partySelections}`);
 		if(partySelections.length != gameList[roomNum].questSize[currentQuest]) {
 			console.error(`\tBad party select at ${roomNum}:`);
-			console.error(`\t\t${partySelections.length} selected, ${gameList[roomNum].questSize(currentQuest)} should be on.`);
+			console.error(`\t\t${partySelections.length} selected, ${gameList[roomNum].questSize[currentQuest]} should be on.`);
 			return;
 		}
 		gameList[roomNum].phase++;
