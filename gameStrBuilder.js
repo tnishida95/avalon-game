@@ -447,6 +447,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
                 assassinSlot = i;
             }
         }
+        console.log(`assassinSlot = ${assassinSlot}`);
         if(character === "assassin") {
     		optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
     		for(i = 0; i < playerList.length; i++) {

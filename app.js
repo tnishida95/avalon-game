@@ -136,7 +136,7 @@ function updatePlayerBoard(roomNum, character) {
 	return;
 }
 
-function getCurrentQuest() {
+function getCurrentQuest(roomNum) {
 	var currentPhase = gameList[roomNum].phase;
 	if(currentPhase < 3) {return 0;}
 	if(currentPhase < 6) {return 1;}
@@ -462,7 +462,7 @@ io.sockets.on('connection', function(socket){
 			return;
 		}
 		gameList[roomNum].phase++;
-		console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Party Approval ~~~~~`);
+		console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest() + 1}, Party Approval ~~~~~`);
 
 		gameList[roomNum].actionsTaken = 0;
 
@@ -506,7 +506,7 @@ io.sockets.on('connection', function(socket){
 			}
 		}
 		gameList[roomNum].actionsTaken++;
-		var currentQuest = getCurrentQuest();
+		var currentQuest = getCurrentQuest(roomNum);
 		if(gameList[roomNum].actionsTaken === gameList[roomNum].playerCount) {
 			//count the votes
 			var accepts = 0;
@@ -540,14 +540,14 @@ io.sockets.on('connection', function(socket){
 
 				//...return to party select phase
 				gameList[roomNum].phase--;
-				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Party Select ~~~~~`);
+				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest() + 1}, Party Select ~~~~~`);
 				updateProgressBar("partyRejected");
 			}
 			else {
 				//moving to quest phase now, so...
 				//...change the game phase
 				gameList[roomNum].phase++;
-				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Questing ~~~~~`);
+				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest() + 1}, Questing ~~~~~`);
 
 				//...reset all the relevant variables
 				gameList[roomNum].actionsTaken = 0;
@@ -594,7 +594,7 @@ io.sockets.on('connection', function(socket){
 			gameList[roomNum].failures++;
 		}
 		gameList[roomNum].actionsTaken++;
-		var currentQuest = getCurrentQuest();
+		var currentQuest = getCurrentQuest(roomNum);
 		if(gameList[roomNum].actionsTaken === gameList[roomNum].questSize[currentQuest]) {
 			//quest has ended, so now...
 
@@ -610,7 +610,6 @@ io.sockets.on('connection', function(socket){
 				gameList[roomNum].quests[currentQuest] = 2;
 				console.log(`\t...Failed!`);
 			}
-			//TODO: check if good or evil has won the game
 
 			//...change party leader
 			gameList[roomNum].partyLeader++;
@@ -622,8 +621,30 @@ io.sockets.on('connection', function(socket){
 			//...update clients with next phase
 			updateProgressBar("questEnded");
 			gameList[roomNum].phase++;
+
+			//count successes and failures
+			var currentSuccesses = 0;
+			var currentFailures = 0;
+			for(i = 0; i < 5; i++) {
+				if(gameList[roomNum].quests[i] === 1) {
+					currentSuccesses++;
+				}
+				else if (gameList[roomNum].quests[i] === 2) {
+					currentFailures++;
+				}
+				else {
+					break;
+				}
+			}
+			if(currentSuccesses >= 3) {
+				gameList[roomNum].phase = 15;
+			}
+			if(currentFailures >= 3) {
+				gameList[roomNum].phase = 16;
+			}
+
 			if(gameList[roomNum].phase < 15) {
-				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Party Select ~~~~~`);
+				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest() + 1}, Party Select ~~~~~`);
 			}
 			else if(gameList[roomNum].phase === 15) {
 				console.log(`\n~~~~~ Phase 15: Assassin Phase ~~~~~`);
