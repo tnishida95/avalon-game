@@ -408,7 +408,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
             </div>
         </div>`;
 	}
-	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) {
+	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) { //questing
         var playerSlot;
         for(i = 0; i < playerList.length; i++) {
             if(playerList[i].character === character) {
@@ -440,13 +440,29 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 			optionsStr = `<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting for party to complete the quest...</button>`;
 		}
 	}
-	else if(currentPhase == 15) {
-		if(character == "assassin") {
-			//good roster to assassinate
-		}
-		else {
-			actionPanelStr += '<h2>Actions</h2><div class="well" style="background:none;"><button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button><p></p></div><hr>';
-		}
+	else if(currentPhase == 15) { //assassination
+        var assassinSlot;
+        for(i = 0; i < playerList.length; i++) {
+            if(playerList[i].character.name === "assassin") {
+                assassinSlot = i;
+            }
+        }
+        if(character === "assassin") {
+    		optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
+    		for(i = 0; i < playerList.length; i++) {
+                currentName = playerList[i].name;
+                if(playerList[i].character === "merlin" || playerList[i].character === "percival" ||
+                    playerList[i].character === "goodOne" || playerList[i].character === "goneTwo" || playerList[i].character === "goodThree" || playerList[i].character === "goodFour" || playerList[i].character === "goodFive") {
+                    optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
+                        <input type="checkbox" autocomplete="off" name="assassinSelection" value="${currentName}">${currentName}</input>
+                    </label>`;
+                }
+    		}
+    		optionsStr += `<hr><button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressAssassinSubmit()">Assassinate</button>`;
+    	}
+    	else {
+    		optionsStr = `<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">${playerList[assassinSlot].name} is attempting to assassinate Merlin!</button>`;
+    	}
 	}
 	else { //game end
 		//buttons to restart game, return to main menu

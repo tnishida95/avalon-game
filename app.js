@@ -646,5 +646,31 @@ io.sockets.on('connection', function(socket){
 			}
 		}
 	});
+	socket.on('btnPressAssassinSubmit',function(data){
+		var assassinatedPlayer = data.assassinSelection;
+		var roomNum = data.room;
+		var winningTeam = 0; //1 = Good, 2 = Evil
+		console.log(`The Assassin has chosen to assassinate ${assassinatedPlayer}.`);
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			if(roomList[roomNum][i].name === assassinatedPlayer) {
+				//have the assassin's target...was it Merlin?
+				if(roomList[roomNum][i].character === "merlin") {
+					console.log(`Merlin (${roomList[roomNum][i].name}) has been assassinated!`);
+					console.log("Evil wins the game!");
+					winningTeam = 2;
+				}
+				else {
+					console.log(`Merlin survives!`);
+					console.log("Good wins the game!");
+					winningTeam = 1;
+				}
+				break;
+			}
+		}
+		gameList[roomNum].phase = 16;
+		console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
+		//TODO NOW: create game end strings and emit to clients
+
+	});
 
 });

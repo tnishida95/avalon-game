@@ -78,6 +78,21 @@ var btnPressFail = function(){
 	});
 	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
 }
+var btnPressAssassinSubmit = function(){
+	var assassinSelection = [];
+	$.each($("input[name='assassinSelection']:checked"), function(){
+  		partySelections.push($(this).val());
+	});
+	console.log(assassinSelection);
+	if(assassinSelection.length > 1) {
+		console.log(`Bad assassin select. ${assassinSelection.length} selected.`)
+		return;
+	}
+	socket.emit('btnPressAssassinSubmit',{
+		assassinSelection: assassinSelection[0],
+		room: roomNum
+	});
+}
 
 function loadMainMenu() {
 	document.getElementById("title").innerHTML = 'Avalon';
