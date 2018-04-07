@@ -118,8 +118,8 @@ function buildGameScreen(roomNum, character, charArray) {
 	var firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
 	var firstGameScreenStr = firstGameBoardStr +
 	`<div id="progressDiv" class="progress text-center">
-		<div class="progress-bar" style="width: 0%"></div>
-		<p>${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.</p>
+		<div id="progressBarInner" class="progress-bar" style="width: 0%"></div>
+		<p id="progressBarOuter">${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.</p>
 	</div>
 	<hr>` + firstActionPanelStr + firstPlayerBoardStr;
 	return firstGameScreenStr;
@@ -181,7 +181,9 @@ function updateProgressBar(progressType) {
 	}
 	for(j = 0; j < roomList[roomNum].length; j++) {
 		io.to(roomList[roomNum][j].sid).emit("updateProgressBar", {
-			progressBarStr: gameStrBuilder.updateProgressBarStr(barWidth, innerText, outerText)
+			barWidth: barWidth.toString() + "%",
+			innerText: innerText,
+			outerText: outerText
 		});
 	}
 }
@@ -462,7 +464,7 @@ io.sockets.on('connection', function(socket){
 			return;
 		}
 		gameList[roomNum].phase++;
-		console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest() + 1}, Party Approval ~~~~~`);
+		console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Approval ~~~~~`);
 
 		gameList[roomNum].actionsTaken = 0;
 
@@ -540,14 +542,14 @@ io.sockets.on('connection', function(socket){
 
 				//...return to party select phase
 				gameList[roomNum].phase--;
-				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest() + 1}, Party Select ~~~~~`);
+				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
 				updateProgressBar("partyRejected");
 			}
 			else {
 				//moving to quest phase now, so...
 				//...change the game phase
 				gameList[roomNum].phase++;
-				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest() + 1}, Questing ~~~~~`);
+				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest(roomNum) + 1}, Questing ~~~~~`);
 
 				//...reset all the relevant variables
 				gameList[roomNum].actionsTaken = 0;
@@ -644,7 +646,7 @@ io.sockets.on('connection', function(socket){
 			}
 
 			if(gameList[roomNum].phase < 15) {
-				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest() + 1}, Party Select ~~~~~`);
+				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
 			}
 			else if(gameList[roomNum].phase === 15) {
 				console.log(`\n~~~~~ Phase 15: Assassin Phase ~~~~~`);

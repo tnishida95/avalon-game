@@ -191,5 +191,7 @@ socket.on('updatePlayerBoard',function(data){
 })
 socket.on('updateProgressBar',function(data){
 	console.log("Received: [updateProgressBar] from server");
-	document.getElementById("progressDiv").innerHTML = data.progressBarStr;
+	document.getElementById("progressBarInner").style.width = data.barWidth;
+	document.getElementById("progressBarInner").innerHTML = data.innerText;
+	document.getElementById("progressBarOuter").innerHTML = data.outerText;
 })

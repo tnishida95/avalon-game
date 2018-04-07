@@ -258,6 +258,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     if(gameManager.quests[4] == 1) {
         fifthQuestResult = "S";
     }
+    var completedQuestElement = `<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>`;
     if(gameManager.phase < 3) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
@@ -478,8 +479,8 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
     return actionPanelStr;
 }
 function updateProgressBarStr(barWidth, innerText, outerText) {
-    return `<div class="progress-bar" style="width: ${barWidth}%">${innerText}</div>
-    <p>${outerText}</p>`;
+    return `<div id="progressBarInner" class="progress-bar" style="width: ${barWidth}%">${innerText}</div>
+    <p id="progressBarOuter">${outerText}</p>`;
 }
 
 
