@@ -85,7 +85,7 @@ var btnPressAssassinSubmit = function(){
 	});
 	console.log(assassinSelection);
 	if(assassinSelection.length > 1) {
-		console.log(`Bad assassin select. ${assassinSelection.length} selected.`)
+		console.log(`Bad assassin select. ${assassinSelection.length} selected.`);
 		return;
 	}
 	socket.emit('btnPressAssassinSubmit',{
