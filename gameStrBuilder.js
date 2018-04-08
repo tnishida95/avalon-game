@@ -444,7 +444,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 	else if(currentPhase == 15) { //assassination
         var assassinSlot;
         for(i = 0; i < playerList.length; i++) {
-            if(playerList[i].character.name === "assassin") {
+            if(playerList[i].character === "assassin") {
                 assassinSlot = i;
             }
         }
@@ -454,7 +454,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
     		for(i = 0; i < playerList.length; i++) {
                 currentName = playerList[i].name;
                 if(playerList[i].character === "merlin" || playerList[i].character === "percival" ||
-                    playerList[i].character === "goodOne" || playerList[i].character === "goneTwo" || playerList[i].character === "goodThree" || playerList[i].character === "goodFour" || playerList[i].character === "goodFive") {
+                    playerList[i].character === "goodOne" || playerList[i].character === "goodTwo" || playerList[i].character === "goodThree" || playerList[i].character === "goodFour" || playerList[i].character === "goodFive") {
                     optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
                         <input type="checkbox" autocomplete="off" name="assassinSelection" value="${currentName}">${currentName}</input>
                     </label>`;

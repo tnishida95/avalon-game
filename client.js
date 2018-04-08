@@ -81,7 +81,7 @@ var btnPressFail = function(){
 var btnPressAssassinSubmit = function(){
 	var assassinSelection = [];
 	$.each($("input[name='assassinSelection']:checked"), function(){
-  		partySelections.push($(this).val());
+  		assassinSelection.push($(this).val());
 	});
 	console.log(assassinSelection);
 	if(assassinSelection.length > 1) {
