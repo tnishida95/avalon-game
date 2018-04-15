@@ -287,7 +287,6 @@ io.sockets.on('connection', function(socket){
 			}
 		}
 		socket.leave(roomNum);
-		printRoomList();
 		io.to(roomNum).emit("updateLobby", {
 			list: roomList[roomNum],
 			num: roomNum
@@ -299,6 +298,9 @@ io.sockets.on('connection', function(socket){
 			if(gameList[roomNum] != null) {
 				delete gameList[roomNum];
 			}
+		}
+		else {
+			printRoomList();
 		}
 	});
 	socket.on('btnPressDisbandGame',function(data){
@@ -656,6 +658,7 @@ io.sockets.on('connection', function(socket){
 			}
 			if(currentFailures >= 3) {
 				gameList[roomNum].phase = 16;
+				gameList[roomNum].winningTeam = 2;
 			}
 
 			if(gameList[roomNum].phase < 15) {
@@ -705,8 +708,25 @@ io.sockets.on('connection', function(socket){
 		}
 		gameList[roomNum].phase = 16;
 		console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
-		//TODO NOW: create game end strings and emit to clients
-
+		if(gameList[roomNum].winningTeam === 1) {
+			console.log("Good has defeated Evil!");
+		}
+		else {
+			console.log("Evil has defeated Good!");
+		}
+		for(j = 0; j < roomList[roomNum].length; j++) {
+			io.to(roomList[roomNum][j].sid).emit("updateGameBoard", {
+				gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+				});
+			io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
+				actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+			});
+			/* uncomment after updatePlayerBoard() is done
+			io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
+				playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
+			});
+			*/
+		}
 	});
 
 });

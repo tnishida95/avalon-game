@@ -255,8 +255,14 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     if(gameManager.quests[3] == 1) {
         fourthQuestResult = "S";
     }
+    else if(gameManager.quests[3] == 0) {
+        fourthQuestResult = "-";
+    }
     if(gameManager.quests[4] == 1) {
         fifthQuestResult = "S";
+    }
+    else if(gameManager.quests[4] == 0) {
+        fifthQuestResult = "-";
     }
     var completedQuestElement = `<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>`;
     if(gameManager.phase < 3) {
