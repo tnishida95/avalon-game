@@ -244,7 +244,7 @@ io.sockets.on('connection', function(socket){
 		roomNum = (data.room).toString();
 		console.log("Join Game button pressed with roomNum: " + roomNum);
 		if(gameList[roomNum] != null) {
-			console.log("\tGame already in progress, cannot join.").
+			console.log("\tGame already in progress, cannot join.");
 			return;
 		}
 		if(roomNum in roomList) {
@@ -294,7 +294,7 @@ io.sockets.on('connection', function(socket){
 		});
 		//if there is no one in the room, remove it
 		if(roomList[roomNum].length === 0) {
-			console.log("Room #" + roomNum + " is empty. Removing room and game manager.")
+			console.log("Room #" + roomNum + " is empty. Removing room and game manager.");
 			delete roomList[roomNum];
 			if(gameList[roomNum] != null) {
 				delete gameList[roomNum];
