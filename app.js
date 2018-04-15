@@ -67,16 +67,20 @@ function GameManager(playerCountInt) {
 	this.phase = 0;
 	/*
 	0 = no status
-	1 = success/accept/succeed
-	2 = fail/reject/fail
+	1 = success/accept/succeed/good
+	2 = fail/reject/fail/evil
 	*/
 	this.quests = [0,0,0,0,0];
 	this.votes = [0,0,0,0,0,0,0,0,0,0];
 	this.partyActions = [0,0,0,0,0,0];
+	this.winningTeam = 0;
 
-	this.partiesRejected = 0;
+	//this tracks the quest actions taken for a given quest,
+	//not the number of succeeded and failed quests
 	this.successes = 0;
 	this.failures = 0;
+
+	this.partiesRejected = 0;
 	this.actionsTaken = 0;
 
 	//these numbers refer to the indices of Players in array at roomList[roomNum]
@@ -239,6 +243,10 @@ io.sockets.on('connection', function(socket){
 	socket.on('btnPressJoinGame',function(data){
 		roomNum = (data.room).toString();
 		console.log("Join Game button pressed with roomNum: " + roomNum);
+		if(gameList[roomNum] != null) {
+			console.log("\tGame already in progress, cannot join.").
+			return;
+		}
 		if(roomNum in roomList) {
 			if(data.name == "ShoyuMordred") {
 				var player = new Player(socket.num, socket.id, "Tyler", "mordred");
@@ -284,6 +292,14 @@ io.sockets.on('connection', function(socket){
 			list: roomList[roomNum],
 			num: roomNum
 		});
+		//if there is no one in the room, remove it
+		if(roomList[roomNum].length === 0) {
+			console.log("Room #" + roomNum + " is empty. Removing room and game manager.")
+			delete roomList[roomNum];
+			if(gameList[roomNum] != null) {
+				delete gameList[roomNum];
+			}
+		}
 	});
 	socket.on('btnPressDisbandGame',function(data){
 		roomNum = data.room;
@@ -446,7 +462,6 @@ io.sockets.on('connection', function(socket){
 		console.log("\n~~~~~ Phase 0: Party Select ~~~~~");
 
 	}); //end btnPressStartGame()
-
 	socket.on('btnPressPartySubmit',function(data){
 		var partySelections = data.partySelections;
 		var roomNum = data.room;
@@ -497,7 +512,6 @@ io.sockets.on('connection', function(socket){
 			*/
 		}
 	});
-
 	socket.on('btnPressPartyApproval',function(data){
 		//find out which player pressed it, and save the vote
 		for(i = 0; i < roomList[roomNum].length; i++) {
@@ -579,7 +593,6 @@ io.sockets.on('connection', function(socket){
 			updateProgressBar("approvingParty");
 		}
 	});
-
 	socket.on('btnPressQuestAction',function(data){
 		//find out which player pressed it, and save the action
 		for(i = 0; i < roomList[roomNum].length; i++) {
@@ -672,7 +685,7 @@ io.sockets.on('connection', function(socket){
 	socket.on('btnPressAssassinSubmit',function(data){
 		var assassinatedPlayer = data.assassinSelection;
 		var roomNum = data.room;
-		var winningTeam = 0; //1 = Good, 2 = Evil
+		gameList[roomNum].winningTeam = 0; //1 = Good, 2 = Evil
 		console.log(`The Assassin has chosen to assassinate ${assassinatedPlayer}.`);
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(roomList[roomNum][i].name === assassinatedPlayer) {
@@ -680,12 +693,12 @@ io.sockets.on('connection', function(socket){
 				if(roomList[roomNum][i].character === "merlin") {
 					console.log(`Merlin (${roomList[roomNum][i].name}) has been assassinated!`);
 					console.log("Evil wins the game!");
-					winningTeam = 2;
+					gameList[roomNum].winningTeam = 2;
 				}
 				else {
 					console.log(`Merlin survives!`);
 					console.log("Good wins the game!");
-					winningTeam = 1;
+					gameList[roomNum].winningTeam = 1;
 				}
 				break;
 			}

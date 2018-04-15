@@ -72,7 +72,7 @@ var buildGuestLobbyStr = function() {
 }
 
 //TODO: change the successes display...the variable isn't being used how it was
-//  intended in the UI
+//intended in the UI
 var buildFirstGameBoardStr = function(questSizeArray) {
     return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
@@ -364,6 +364,11 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
         <hr>`;
     }
     else {
+        var winningTeamStr = 'Good has defeated Evil!';
+        if(gameManager.winningTeam == 2) {
+            winningTeamStr = 'Evil has defeated Good!';
+        }
+
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
@@ -373,7 +378,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" class="btn btn-default">${fourthQuestResult}</button>
             <button type="button" class="btn btn-default">${fifthQuestResult}</button>
             <hr>
-            <p id="currentQuestDisplay">Results</p>
+            <h3 id="currentQuestDisplay">${winningTeamStr}</h3>
         </div>
         <hr>`;
     }
@@ -467,7 +472,11 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
     	}
 	}
 	else { //game end
-		//buttons to restart game, return to main menu
+        optionsStr = `<div class="well" style="background:none;">
+            <div class="container-fluid">
+                <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressLeaveGame()">Return to Menu</button>
+            </div>
+        </div>`;
 	}
 
     actionPanelStr = `<h2>Actions</h2>
