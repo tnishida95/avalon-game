@@ -372,9 +372,8 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     else {
         var winningTeamStr = 'Good has defeated Evil!';
         if(gameManager.winningTeam == 2) {
-            winningTeamStr = 'Evil has defeated Good!';
+            winningTeamStr += 'Evil has defeated Good!';
         }
-
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
             <p>Quests</p>
@@ -384,7 +383,11 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" class="btn btn-default">${fourthQuestResult}</button>
             <button type="button" class="btn btn-default">${fifthQuestResult}</button>
             <hr>
-            <h3 id="currentQuestDisplay">${winningTeamStr}</h3>
+            <p id="currentQuestDisplay">Game End</p>`;
+        if(gameManager.assassinated != -1) {
+            gameBoardStr += `<p>The Assassin selected [${playerList[gameManager.assassinated].name}], who was ${playerList[gameManager.assassinated].character}.</p>`;
+        }
+        gameBoardStr +=`<h3>${winningTeamStr}</h3>
         </div>
         <hr>`;
     }

@@ -85,6 +85,7 @@ function GameManager(playerCountInt) {
 
 	//these numbers refer to the indices of Players in array at roomList[roomNum]
 	this.partyLeader = 0;
+	this.assassinated = -1;
 	//could assign this a new array every time a new quest comes up
 	//example usage: [0,2,3] -> the first, third, and fourth player in the room
 	//	are in the party
@@ -686,25 +687,24 @@ io.sockets.on('connection', function(socket){
 		}
 	});
 	socket.on('btnPressAssassinSubmit',function(data){
-		var assassinatedPlayer = data.assassinSelection;
+		var assassinatedName = data.assassinSelection;
+		for(i = 0; i < roomList[roomNum].length; i++) {
+			if(roomList[roomNum][i].name === assassinatedName) {
+				gameList[roomNum].assassinated = i;
+			}
+		}
 		var roomNum = data.room;
 		gameList[roomNum].winningTeam = 0; //1 = Good, 2 = Evil
-		console.log(`The Assassin has chosen to assassinate ${assassinatedPlayer}.`);
-		for(i = 0; i < roomList[roomNum].length; i++) {
-			if(roomList[roomNum][i].name === assassinatedPlayer) {
-				//have the assassin's target...was it Merlin?
-				if(roomList[roomNum][i].character === "merlin") {
-					console.log(`Merlin (${roomList[roomNum][i].name}) has been assassinated!`);
-					console.log("Evil wins the game!");
-					gameList[roomNum].winningTeam = 2;
-				}
-				else {
-					console.log(`Merlin survives!`);
-					console.log("Good wins the game!");
-					gameList[roomNum].winningTeam = 1;
-				}
-				break;
-			}
+		console.log(`The Assassin has chosen to assassinate ${assassinatedName}.`);
+		if(roomList[roomNum][gameList[roomNum].assassinated].character === "merlin") {
+			console.log(`Merlin [${roomList[roomNum][gameList[roomNum].assassinated].name}] has been assassinated!`);
+			console.log("Evil wins the game!");
+			gameList[roomNum].winningTeam = 2;
+		}
+		else {
+			console.log(`Merlin survives!`);
+			console.log("Good wins the game!");
+			gameList[roomNum].winningTeam = 1;
 		}
 		gameList[roomNum].phase = 16;
 		console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
