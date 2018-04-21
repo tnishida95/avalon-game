@@ -222,6 +222,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
+//TODO: this needs to show which players accepted/rejected the party
 var updateGameBoardStr = function(character, playerList, gameManager) {
     var gameBoardStr;
     var partyDisplayStr = "none";

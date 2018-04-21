@@ -173,7 +173,11 @@ function updateProgressBar(progressType) {
 		outerText = `...out of ${gameList[roomNum].playerCount}`;
 	}
 	else if (progressType === "questEnded") {
-		if(gameList[roomNum].failures === 0) {
+		if(gameList[roomNum].phase === 15) {
+			barWidth = 100;
+			innerText = `Three quests were successful! The Assassin is attempting to assassinate Merlin.`;
+		}
+		else if(gameList[roomNum].failures === 0) {
 			barWidth = 100;
 			innerText = `Quest succeeded! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
 		}
