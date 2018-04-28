@@ -150,7 +150,7 @@ function getCurrentQuest(roomNum) {
 	if(currentPhase < 15) {return 4;}
 }
 
-function updateProgressBar(progressType) {
+function updateProgressBar(progressType, roomNum) {
 	var barWidth = 0;
 	var innerText = "";
 	var outerText = "";
@@ -564,7 +564,7 @@ io.sockets.on('connection', function(socket){
 				//...return to party select phase
 				gameList[roomNum].phase--;
 				console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
-				updateProgressBar("partyRejected");
+				updateProgressBar("partyRejected", roomNum);
 			}
 			else {
 				//moving to quest phase now, so...
@@ -580,7 +580,7 @@ io.sockets.on('connection', function(socket){
 				gameList[roomNum].partiesRejected = 0;
 				gameList[roomNum].votes = [0,0,0,0,0,0,0,0,0,0];
 
-				updateProgressBar("partyApproved");
+				updateProgressBar("partyApproved", roomNum);
 			}
 			for(j = 0; j < roomList[roomNum].length; j++) {
 				io.to(roomList[roomNum][j].sid).emit("updateGameBoard", {
@@ -597,7 +597,7 @@ io.sockets.on('connection', function(socket){
 			}
 		}
 		else {
-			updateProgressBar("approvingParty");
+			updateProgressBar("approvingParty", roomNum);
 		}
 	});
 	socket.on('btnPressQuestAction',function(data){
@@ -641,7 +641,7 @@ io.sockets.on('connection', function(socket){
 			}
 
 			//...update clients with next phase
-			updateProgressBar("questEnded");
+			updateProgressBar("questEnded", roomNum);
 			gameList[roomNum].phase++;
 
 			//count successes and failures

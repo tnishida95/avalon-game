@@ -9,6 +9,24 @@ var socket = io();
 var lobby;
 var roomNum = -1;
 
+const mainMenuStr = `<div class="text-center">
+	<div id="inputArea">
+		<input type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
+		<p></p>
+		<input type="text" id="roomInput" maxlength="20" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
+		<h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
+		<hr>
+	</div>
+	<div class="container">
+		<div class="row">
+			<button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressNewGame()">New Game</button>
+			<button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressJoinGame()">Join Game</button>
+			<button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" data-toggle="collapse" data-target="#rulesContent">Rules</button>
+		</div>
+	</div>
+	<hr>
+</div>`;
+
 var btnPressNewGame = function(){
 	socket.emit('btnPressNewGame',$("#nameInput").val())
 }
@@ -96,23 +114,6 @@ var btnPressAssassinSubmit = function(){
 
 function loadMainMenu() {
 	document.getElementById("title").innerHTML = 'Avalon';
-	var mainMenuStr = `<div class="text-center">
-		<div id="inputArea">
-			<input type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
-			<p></p>
-			<input type="text" id="roomInput" maxlength="20" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
-			<h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
-			<hr>
-		</div>
-		<div class="container">
-			<div class="row">
-				<button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressNewGame()">New Game</button>
-				<button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" onclick="btnPressJoinGame()">Join Game</button>
-				<button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" data-toggle="collapse" data-target="#rulesContent">Rules</button>
-			</div>
-		</div>
-		<hr>
-	</div>`;
 	document.getElementById("centerDiv").innerHTML = mainMenuStr;
 	document.getElementById("topDiv").innerHTML = '<h2 id="topText">Welcome to Avalon!</h2><hr>';
 }
