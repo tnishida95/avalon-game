@@ -39,7 +39,7 @@ var btnPressJoinGame = function(){
 	});
 }
 var btnPressStartGame = function(){
-	var characterSelections = [];
+	let characterSelections = [];
 	$.each($("input[name='charSelection']:checked"), function(){
 		characterSelections.push($(this).val());
 	});
@@ -64,7 +64,7 @@ var btnPressDisbandGame = function(){
 	loadMainMenu();
 }
 var btnPressPartySubmit = function(){
-	var partySelections = [];
+	let partySelections = [];
 	$.each($("input[name='partySelection']:checked"), function(){
   		partySelections.push($(this).val());
 	});
@@ -103,7 +103,7 @@ var btnPressFail = function(){
 	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
 }
 var btnPressAssassinSubmit = function(){
-	var assassinSelection = [];
+	let assassinSelection = [];
 	$.each($("input[name='assassinSelection']:checked"), function(){
   		assassinSelection.push($(this).val());
 	});
@@ -125,9 +125,9 @@ function loadMainMenu() {
 }
 
 function updateLobby() {
-	var lobbyListStr = `<div class="text-center"><p>${lobby.length} Players - `;
+	let lobbyListStr = `<div class="text-center"><p>${lobby.length} Players - `;
 	if(lobby.length < 5) {
-		var playersNeeded = 5 - lobby.length;
+		let playersNeeded = 5 - lobby.length;
 		lobbyListStr += 'Need at least ' + playersNeeded + ' more player(s).</p>';
 	}
 	else if (lobby.length == 5) {lobbyListStr += 'There will be 3 Good and 2 Evil.</p>';}
@@ -137,7 +137,7 @@ function updateLobby() {
 	else if (lobby.length == 9) {lobbyListStr += 'There will be 6 Good and 3 Evil.</p>';}
 	else if (lobby.length == 10) {lobbyListStr += 'There will be 6 Good and 4 Evil.</p>';}
 	else {lobbyListStr += 'Too many players.</p>';}
-	for (var i = 0; i < lobby.length; i++) {
+	for (i = 0; i < lobby.length; i++) {
 		lobbyListStr += '[' + lobby[i].name + '] ';
 	}
 	lobbyListStr += '<hr></div>';
@@ -151,9 +151,9 @@ socket.on('loadLobby',function(data){
 	lobby = data.list;
 	roomNum = data.roomNum;
 
-	var hostLobbyStr = data.hostLobbyStr;
+	let hostLobbyStr = data.hostLobbyStr;
 	console.log("Here's the hostLobbyStr:\n" + hostLobbyStr);
-	var guestLobbyStr = data.guestLobbyStr;
+	let guestLobbyStr = data.guestLobbyStr;
 	console.log("Here's the guestLobbyStr:\n" + guestLobbyStr);
 	document.getElementById("title").innerHTML = `Avalon Room #${roomNum}`;
 	document.getElementById("topDiv").innerHTML = `<h2 id="topText" style="text-align:center;">Avalon Room #${roomNum}</h2><hr>`;
