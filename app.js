@@ -253,11 +253,12 @@ io.sockets.on('connection', function(socket){
 			return;
 		}
 		if(roomNum in roomList) {
+			let player;
 			if(data.name == "ShoyuMordred") {
-				let player = new Player(socket.num, socket.id, "Tyler", "mordred");
+				player = new Player(socket.num, socket.id, "Tyler", "mordred");
 			}
 			else {
-				let player = new Player(socket.num, socket.id, data.name, "none");
+				player = new Player(socket.num, socket.id, data.name, "none");
 			}
 			console.log("Created new Player:");
 			console.log("\tid: " + player.id);
@@ -324,15 +325,15 @@ io.sockets.on('connection', function(socket){
 	});
 	socket.on('btnPressStartGame',function(data){
 		let roomNum = data.roomNum;
-		var characterSelections = data.charList;
+		let characterSelections = data.charList;
 		console.log("Start Game button pressed for roomNum: " + roomNum);
 		if(characterSelections.length != roomList[roomNum].length) {
 			console.error("invalid character selection: player count does not equal character count");
 			return;
 		}
-		var goodCount = 0;
-		var evilCount = 0;
-		var charArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		let goodCount = 0;
+		let evilCount = 0;
+		let charArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
 		console.log("getting characters:")
 		//populate the charArray, showing which characters are in the game
@@ -395,13 +396,13 @@ io.sockets.on('connection', function(socket){
 		}
 
 		//this is to help buildGameScreen()
-		var charArrayCopy = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		let charArrayCopy = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 		for(i = 0; i < 14; i++) {
 			if(charArray[i] == 1) {charArrayCopy[i] = 1;}
 		}
 
 		//assign players a random character
-		var randomNum;
+		let randomNum;
 		console.log("\tthere are " + roomList[roomNum].length + " players in the room");
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(roomList[roomNum][i].character == "none") {
@@ -469,9 +470,9 @@ io.sockets.on('connection', function(socket){
 
 	}); //end btnPressStartGame()
 	socket.on('btnPressPartySubmit',function(data){
-		var partySelections = data.partySelections;
+		let partySelections = data.partySelections;
 		let roomNum = data.roomNum;
-		var currentQuest;
+		let currentQuest;
 		if(gameList[roomNum].phase == 0) {currentQuest = 0;}
 		else if(gameList[roomNum].phase == 3) {currentQuest = 1;}
 		else if(gameList[roomNum].phase == 6) {currentQuest = 2;}
@@ -490,7 +491,7 @@ io.sockets.on('connection', function(socket){
 		gameList[roomNum].actionsTaken = 0;
 
 		//filling out the selectedParty array...this could use some optimization
-		var partySlot = 0;
+		let partySlot = 0;
 		gameList[roomNum].selectedParty = [-1,-1,-1,-1,-1,-1];
 		for(i = 0; i < partySelections.length; i++) {
 			//console.log(`Looking at ${partySelections[i]}...`);
@@ -529,11 +530,11 @@ io.sockets.on('connection', function(socket){
 			}
 		}
 		gameList[roomNum].actionsTaken++;
-		var currentQuest = getCurrentQuest(roomNum);
+		let currentQuest = getCurrentQuest(roomNum);
 		if(gameList[roomNum].actionsTaken === gameList[roomNum].playerCount) {
 			//count the votes
-			var accepts = 0;
-			var rejects = 0;
+			let accepts = 0;
+			let rejects = 0;
 			console.log(`Final approval vote cast.  Votes:\n\t${gameList[roomNum].votes}`);
 			for(i = 0; i < 10; i++) {
 				if(gameList[roomNum].votes[i] === 1) {
@@ -617,7 +618,7 @@ io.sockets.on('connection', function(socket){
 			gameList[roomNum].failures++;
 		}
 		gameList[roomNum].actionsTaken++;
-		var currentQuest = getCurrentQuest(roomNum);
+		let currentQuest = getCurrentQuest(roomNum);
 		if(gameList[roomNum].actionsTaken === gameList[roomNum].questSize[currentQuest]) {
 			//quest has ended, so now...
 
@@ -646,8 +647,8 @@ io.sockets.on('connection', function(socket){
 			gameList[roomNum].phase++;
 
 			//count successes and failures
-			var currentSuccesses = 0;
-			var currentFailures = 0;
+			let currentSuccesses = 0;
+			let currentFailures = 0;
 			for(i = 0; i < 5; i++) {
 				if(gameList[roomNum].quests[i] === 1) {
 					currentSuccesses++;
@@ -693,7 +694,7 @@ io.sockets.on('connection', function(socket){
 	});
 	socket.on('btnPressAssassinSubmit',function(data){
 		let roomNum = data.roomNum;
-		var assassinatedName = data.assassinSelection;
+		let assassinatedName = data.assassinSelection;
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(roomList[roomNum][i].name === assassinatedName) {
 				gameList[roomNum].assassinated = i;
