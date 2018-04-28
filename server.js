@@ -1,5 +1,5 @@
 /*
-app.js
+server.js
 Server-side javascript for avalon-game.
 
 Tyler Nishida, tnishida95@gmail.com
