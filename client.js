@@ -44,7 +44,7 @@ var btnPressStartGame = function(){
 	console.log(characterSelections);
 	socket.emit('btnPressStartGame',{
 		charList: characterSelections,
-		room: roomNum
+		roomNum: roomNum
 	});
 }
 var btnPressLeaveGame = function(){
@@ -56,7 +56,7 @@ var btnPressLeaveGame = function(){
 }
 var btnPressDisbandGame = function(){
 	socket.emit('btnPressDisbandGame',{
-		room: roomNum
+		roomNum: roomNum
 	});
 	roomNum = -1;
 	loadMainMenu();
@@ -69,18 +69,20 @@ var btnPressPartySubmit = function(){
 	console.log(partySelections);
 	socket.emit('btnPressPartySubmit',{
 		partySelections: partySelections,
-		room: roomNum
+		roomNum: roomNum
 	});
 }
 var btnPressAcceptParty = function(){
 	socket.emit('btnPressPartyApproval',{
-  		vote: 1
+  		vote: 1,
+		roomNum: roomNum
 	});
 	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
 }
 var btnPressRejectParty = function(){
 	socket.emit('btnPressPartyApproval',{
-  		vote: 2
+  		vote: 2,
+		roomNum: roomNum
 	});
 	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
 }

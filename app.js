@@ -309,7 +309,7 @@ io.sockets.on('connection', function(socket){
 		}
 	});
 	socket.on('btnPressDisbandGame',function(data){
-		roomNum = data.room;
+		let roomNum = data.roomNum;
 		console.log("Disband Game button pressed for roomNum: " + roomNum);
 		io.to(roomNum).emit("loadMainMenu", {
 			list: roomList[roomNum],
@@ -324,7 +324,7 @@ io.sockets.on('connection', function(socket){
 		printRoomList();
 	});
 	socket.on('btnPressStartGame',function(data){
-		roomNum = data.room;
+		let roomNum = data.roomNum;
 		var characterSelections = data.charList;
 		console.log("Start Game button pressed for roomNum: " + roomNum);
 		if(characterSelections.length != roomList[roomNum].length) {
@@ -471,7 +471,7 @@ io.sockets.on('connection', function(socket){
 	}); //end btnPressStartGame()
 	socket.on('btnPressPartySubmit',function(data){
 		var partySelections = data.partySelections;
-		var roomNum = data.room;
+		let roomNum = data.roomNum;
 		var currentQuest;
 		if(gameList[roomNum].phase == 0) {currentQuest = 0;}
 		else if(gameList[roomNum].phase == 3) {currentQuest = 1;}
@@ -520,6 +520,7 @@ io.sockets.on('connection', function(socket){
 		}
 	});
 	socket.on('btnPressPartyApproval',function(data){
+		let roomNum = data.roomNum;
 		//find out which player pressed it, and save the vote
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(socket.id === roomList[roomNum][i].sid) {
