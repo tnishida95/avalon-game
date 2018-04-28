@@ -104,15 +104,15 @@ var buildFirstActionPanelStr = function() {
     </div>`;
 }
 var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNum, evilNum) {
-    var currentName;
-    var currentChar;
-    var currentIdentity;
-    var specialCharacters = '[Merlin][Morgana]';
+    let currentName;
+    let currentChar;
+    let currentIdentity;
+    let specialCharacters = '[Merlin][Morgana]';
     if(charArray[1] == 1) {firstPlayerBoardStr += '[Percival]';}
     if(charArray[8] == 1) {firstPlayerBoardStr += '[Morgana]';}
     if(charArray[9] == 1) {firstPlayerBoardStr += '[Mordred]';}
     if(charArray[10] == 1) {firstPlayerBoardStr += '[Oberon]';}
-    var firstPlayerBoardStr = `<div id="playerBoardDiv" class="text-center">
+    let firstPlayerBoardStr = `<div id="playerBoardDiv" class="text-center">
         <h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2>
         <div id="playerBoardContent" class="collapse-in">
             <div class="well" style="background:none;">
@@ -224,9 +224,9 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
 
 //TODO: this needs to show which players accepted/rejected the party
 var updateGameBoardStr = function(character, playerList, gameManager) {
-    var gameBoardStr;
-    var partyDisplayStr = "none";
-    var firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
+    let gameBoardStr;
+    let partyDisplayStr = "none";
+    let firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
 
     // if a party exists, fill the string
     if( gameManager.phase != 0 &&
@@ -265,7 +265,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     else if(gameManager.quests[4] == 0) {
         fifthQuestResult = "-";
     }
-    var completedQuestElement = `<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>`;
+    let completedQuestElement = `<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>`;
     if(gameManager.phase < 3) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
@@ -371,7 +371,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
         <hr>`;
     }
     else {
-        var winningTeamStr = 'Good has defeated Evil!';
+        let winningTeamStr = 'Good has defeated Evil!';
         if(gameManager.winningTeam == 2) {
             winningTeamStr = 'Evil has defeated Good!';
         }
@@ -395,10 +395,10 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     return gameBoardStr;
 }
 var updateActionPanelStr = function(character, playerList, gameManager) {
-    var currentPhase = gameManager.phase;
-    var partyLeaderChar = playerList[gameManager.partyLeader].character;
-	var actionPanelStr;
-    var optionsStr;
+    let currentPhase = gameManager.phase;
+    let partyLeaderChar = playerList[gameManager.partyLeader].character;
+	let actionPanelStr;
+    let optionsStr;
 
 	if( currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //party select
 		if(partyLeaderChar == character) {
@@ -425,7 +425,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
         </div>`;
 	}
 	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) { //questing
-        var playerSlot;
+        let playerSlot;
         for(i = 0; i < playerList.length; i++) {
             if(playerList[i].character === character) {
                 playerSlot = i;
@@ -457,7 +457,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 		}
 	}
 	else if(currentPhase == 15) { //assassination
-        var assassinSlot;
+        let assassinSlot;
         for(i = 0; i < playerList.length; i++) {
             if(playerList[i].character === "assassin") {
                 assassinSlot = i;
