@@ -229,6 +229,7 @@ io.sockets.on('connection', function(socket){
 		console.log("\tname: " + player.name);
 		console.log("\tcharacter: " + player.character);
 		//generate unique, four digit roomNum [1000,9999]
+		let roomNum;
 		do {
 			roomNum = Math.floor(Math.random() * 9000) + 1000;
 		}
@@ -240,13 +241,13 @@ io.sockets.on('connection', function(socket){
 		socket.join(roomNum);
 		io.to(roomNum).emit("loadLobby", {
 			list: roomList[roomNum],
-			num: roomNum,
+			roomNum: roomNum,
 			hostLobbyStr: gameStrBuilder.buildHostLobbyStr(),
 			guestLobbyStr: gameStrBuilder.buildGuestLobbyStr()
 		});
 	});
 	socket.on('btnPressJoinGame',function(data){
-		roomNum = (data.room).toString();
+		let roomNum = (data.roomNum).toString();
 		console.log("Join Game button pressed with roomNum: " + roomNum);
 		if(gameList[roomNum] != null) {
 			console.log("\tGame already in progress, cannot join.");
@@ -268,13 +269,12 @@ io.sockets.on('connection', function(socket){
 			socket.join(roomNum);
 			io.to(roomNum).emit("loadLobby", {
 				list: roomList[roomNum],
-				num: roomNum,
+				roomNum: roomNum,
 				hostLobbyStr: gameStrBuilder.buildHostLobbyStr(),
 				guestLobbyStr: gameStrBuilder.buildGuestLobbyStr()
 			});
 			io.to(roomNum).emit("updateLobby", {
-				list: roomList[roomNum],
-				num: roomNum
+				list: roomList[roomNum]
 			});
 		}
 		else {
@@ -282,7 +282,7 @@ io.sockets.on('connection', function(socket){
 		}
 	});
 	socket.on('btnPressLeaveGame',function(data){
-		roomNum = data.room;
+		let roomNum = data.roomNum;
 		//removing the player from the lobby
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(roomList[roomNum][i].sid == socket.id) {
@@ -294,7 +294,7 @@ io.sockets.on('connection', function(socket){
 		socket.leave(roomNum);
 		io.to(roomNum).emit("updateLobby", {
 			list: roomList[roomNum],
-			num: roomNum
+			roomNum: roomNum
 		});
 		//if there is no one in the room, remove it
 		if(roomList[roomNum].length === 0) {

@@ -33,7 +33,7 @@ var btnPressNewGame = function(){
 var btnPressJoinGame = function(){
 	socket.emit('btnPressJoinGame',{
 		name: $("#nameInput").val(),
-		room: $("#roomInput").val()
+		roomNum: $("#roomInput").val()
 	});
 }
 var btnPressStartGame = function(){
@@ -49,7 +49,7 @@ var btnPressStartGame = function(){
 }
 var btnPressLeaveGame = function(){
 	socket.emit('btnPressLeaveGame',{
-		room: roomNum
+		roomNum: roomNum
 	});
 	roomNum = -1;
 	loadMainMenu();
@@ -143,7 +143,8 @@ function updateLobby() {
 socket.on('loadLobby',function(data){
 	console.log("Received: [loadLobby] from server");
 	lobby = data.list;
-	roomNum = data.num;
+	roomNum = data.roomNum;
+
 	var hostLobbyStr = data.hostLobbyStr;
 	console.log("Here's the hostLobbyStr:\n" + hostLobbyStr);
 	var guestLobbyStr = data.guestLobbyStr;
