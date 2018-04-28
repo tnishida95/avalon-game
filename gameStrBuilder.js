@@ -107,11 +107,11 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     let currentName;
     let currentChar;
     let currentIdentity;
-    let specialCharacters = '[Merlin][Morgana]';
-    if(charArray[1] == 1) {firstPlayerBoardStr += '[Percival]';}
-    if(charArray[8] == 1) {firstPlayerBoardStr += '[Morgana]';}
-    if(charArray[9] == 1) {firstPlayerBoardStr += '[Mordred]';}
-    if(charArray[10] == 1) {firstPlayerBoardStr += '[Oberon]';}
+    let specialCharacters = '[Merlin][Assassin]';
+    if(charArray[1] == 1) {specialCharacters += '[Percival]';}
+    if(charArray[8] == 1) {specialCharacters += '[Morgana]';}
+    if(charArray[9] == 1) {specialCharacters += '[Mordred]';}
+    if(charArray[10] == 1) {specialCharacters += '[Oberon]';}
     let firstPlayerBoardStr = `<div id="playerBoardDiv" class="text-center">
         <h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2>
         <div id="playerBoardContent" class="collapse-in">
