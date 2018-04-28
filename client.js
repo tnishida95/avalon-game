@@ -88,13 +88,15 @@ var btnPressRejectParty = function(){
 }
 var btnPressSuccess = function(){
 	socket.emit('btnPressQuestAction',{
-  		questAction: 1
+  		questAction: 1,
+		roomNum: roomNum
 	});
 	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
 }
 var btnPressFail = function(){
 	socket.emit('btnPressQuestAction',{
-  		questAction: 2
+  		questAction: 2,
+		roomNum: roomNum
 	});
 	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
 }
@@ -110,7 +112,7 @@ var btnPressAssassinSubmit = function(){
 	}
 	socket.emit('btnPressAssassinSubmit',{
 		assassinSelection: assassinSelection[0],
-		room: roomNum
+		roomNum: roomNum
 	});
 }
 

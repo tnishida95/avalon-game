@@ -602,6 +602,7 @@ io.sockets.on('connection', function(socket){
 		}
 	});
 	socket.on('btnPressQuestAction',function(data){
+		let roomNum = data.roomNum;
 		//find out which player pressed it, and save the action
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(socket.id === roomList[roomNum][i].sid) {
@@ -692,13 +693,13 @@ io.sockets.on('connection', function(socket){
 		}
 	});
 	socket.on('btnPressAssassinSubmit',function(data){
+		let roomNum = data.roomNum;
 		var assassinatedName = data.assassinSelection;
 		for(i = 0; i < roomList[roomNum].length; i++) {
 			if(roomList[roomNum][i].name === assassinatedName) {
 				gameList[roomNum].assassinated = i;
 			}
 		}
-		var roomNum = data.room;
 		gameList[roomNum].winningTeam = 0; //1 = Good, 2 = Evil
 		console.log(`The Assassin has chosen to assassinate ${assassinatedName}.`);
 		if(roomList[roomNum][gameList[roomNum].assassinated].character === "merlin") {

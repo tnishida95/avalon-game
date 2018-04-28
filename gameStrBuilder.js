@@ -373,7 +373,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     else {
         var winningTeamStr = 'Good has defeated Evil!';
         if(gameManager.winningTeam == 2) {
-            winningTeamStr += 'Evil has defeated Good!';
+            winningTeamStr = 'Evil has defeated Good!';
         }
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
