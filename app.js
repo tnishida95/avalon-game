@@ -102,7 +102,7 @@ function printPlayerList() {
 }
 function printRoomList() {
 	console.log("-------------------------");
-	var listSize = 0;
+	let listSize = 0;
 	for(roomNums in roomList) {
 			listSize++;
 			process.stdout.write("Room #" + roomNums + ": ");
@@ -118,10 +118,10 @@ function printRoomList() {
 }
 
 function buildGameScreen(roomNum, character, charArray) {
-	var firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize);
-	var firstActionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
-	var firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
-	var firstGameScreenStr = firstGameBoardStr +
+	let firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize);
+	let firstActionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
+	let firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
+	let firstGameScreenStr = firstGameBoardStr +
 	`<div id="progressDiv" class="progress text-center">
 		<div id="progressBarInner" class="progress-bar" style="width: 0%"></div>
 		<p id="progressBarOuter">${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.</p>
@@ -142,7 +142,7 @@ function updatePlayerBoard(roomNum, character) {
 }
 
 function getCurrentQuest(roomNum) {
-	var currentPhase = gameList[roomNum].phase;
+	let currentPhase = gameList[roomNum].phase;
 	if(currentPhase < 3) {return 0;}
 	if(currentPhase < 6) {return 1;}
 	if(currentPhase < 9) {return 2;}
@@ -151,9 +151,9 @@ function getCurrentQuest(roomNum) {
 }
 
 function updateProgressBar(progressType, roomNum) {
-	var barWidth = 0;
-	var innerText = "";
-	var outerText = "";
+	let barWidth = 0;
+	let innerText = "";
+	let outerText = "";
 	if(progressType === "approvingParty") {
 		barWidth = (gameList[roomNum].actionsTaken / gameList[roomNum].playerCount) * 100;
 		innerText = `${gameList[roomNum].actionsTaken} players voted...`;
@@ -182,7 +182,7 @@ function updateProgressBar(progressType, roomNum) {
 			innerText = `Quest succeeded! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
 		}
 		else {
-			var partySize = gameList[roomNum].successes + gameList[roomNum].failures;
+			let partySize = gameList[roomNum].successes + gameList[roomNum].failures;
 			barWidth = (gameList[roomNum].successes / partySize) * 100;
 			innerText = `${gameList[roomNum].successes} / ${partySize} tried to succeed...`;
 			outerText = `...quest failed! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
@@ -196,7 +196,6 @@ function updateProgressBar(progressType, roomNum) {
 		});
 	}
 }
-
 
 //upon new socket connection
 io.sockets.on('connection', function(socket){
