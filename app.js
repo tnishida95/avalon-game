@@ -208,7 +208,7 @@ io.sockets.on('connection', function(socket){
 
 	socket.on('disconnect',function(){
 		//get the index of the socket that just dc'd, cut it out of lists
-		var index = playerList.indexOf(socket.num);
+		let index = playerList.indexOf(socket.num);
 		socketList.splice(index,1);
 		playerList.splice(index,1);
 		console.log('player #' + socket.num + ' disconnected');
@@ -217,11 +217,12 @@ io.sockets.on('connection', function(socket){
 	});
 	socket.on('btnPressNewGame',function(data){
 		console.log("New Game button pressed");
-		if(data == "ShoyuMordred") {
-			var player = new Player(socket.num, socket.id, "Tyler", "mordred");
+		let player;
+		if(data.name == "ShoyuMordred") {
+			player = new Player(socket.num, socket.id, "Tyler", "mordred");
 		}
 		else {
-			var player = new Player(socket.num, socket.id, data, "none");
+			player = new Player(socket.num, socket.id, data.name, "none");
 		}
 		console.log("Created new Player:");
 		console.log("\tid: " + player.id);
@@ -233,9 +234,8 @@ io.sockets.on('connection', function(socket){
 			roomNum = Math.floor(Math.random() * 9000) + 1000;
 		}
 		while (roomNum in roomList);
-		//making an array of players that will fill the room
-		var tmpArr = [player];
-		roomList[roomNum] = tmpArr;
+
+		roomList[roomNum] = [player];
 		printRoomList();
 		socket.join(roomNum);
 		io.to(roomNum).emit("loadLobby", {
@@ -254,10 +254,10 @@ io.sockets.on('connection', function(socket){
 		}
 		if(roomNum in roomList) {
 			if(data.name == "ShoyuMordred") {
-				var player = new Player(socket.num, socket.id, "Tyler", "mordred");
+				let player = new Player(socket.num, socket.id, "Tyler", "mordred");
 			}
 			else {
-				var player = new Player(socket.num, socket.id, data.name, "none");
+				let player = new Player(socket.num, socket.id, data.name, "none");
 			}
 			console.log("Created new Player:");
 			console.log("\tid: " + player.id);

@@ -28,7 +28,9 @@ const mainMenuStr = `<div class="text-center">
 </div>`;
 
 var btnPressNewGame = function(){
-	socket.emit('btnPressNewGame',$("#nameInput").val())
+	socket.emit('btnPressNewGame',{
+		name: $("#nameInput").val()
+	});
 }
 var btnPressJoinGame = function(){
 	socket.emit('btnPressJoinGame',{
