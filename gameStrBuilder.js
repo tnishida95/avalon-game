@@ -71,8 +71,6 @@ var buildGuestLobbyStr = function() {
     <div id="lobbyDiv"></div>`;
 }
 
-//TODO: change the successes display...the variable isn't being used how it was
-//intended in the UI
 var buildFirstGameBoardStr = function(questSizeArray) {
     return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
@@ -84,9 +82,7 @@ var buildFirstGameBoardStr = function(questSizeArray) {
             <button type="button" class="btn btn-default">${questSizeArray[3]}</button>
             <button type="button" class="btn btn-default">${questSizeArray[4]}</button>
             <hr>
-            <p id="currentQuestDisplay">Current Quest: 1</p>
             <p id="rejectedDisplay">Rejected Parties: 0</p>
-            <p id="successesDisplay">Successes: 0, Failures: 0</p>
             <hr>
             <p id="currentPartyDisplay">Current party: none</p>
         </div>
@@ -135,6 +131,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
             }
             else if(charArray[9] != 1) {
                 // no mordred (if mordred, all others are "?")
+                // TODO: pretty sure don't need the if() block here; test later
                 if(currentChar == "percival" ||
 					currentChar == "goodOne" ||
 					currentChar == "goodTwo" ||
