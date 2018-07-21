@@ -331,9 +331,31 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             }
             gameBoardStr += `</p>`;
 
+            /*
             //TODO: show the action history at the end of the game...so move it out
-            //  of here when done
+            //  of here when done;
+            //this mocks out a possible way to get the data...don't display it
+            //  this way
             gameBoardStr += `<hr>`;
+            for(let i = 0; i < gameManager.approvalHistory.length; i++) {
+                for(let j = 0; j < gameManager.approvalHistory[i].length; j++) {
+                    gameBoardStr += `<p>Quest ${i+1}, Party ${j+1}</p>`;
+                    for(let k = 0; k < gameManager.playerCount; k++) {
+                        //if the player we're looking at was in the party
+                        if(gameManager.partyHistory[i][j][k] === k) {
+                            gameBoardStr += `<button type="button" class="btn btn-default">X</button>`;
+                        }
+                        else {
+                            gameBoardStr += `<button type="button" class="btn btn-default">-</button>`;
+                        }
+                    }
+                    gameBoardStr += `<p></p>`;
+                    for(let k = 0; k < gameManager.playerCount; k++) {
+                        gameBoardStr += `<button type="button" class="btn btn-default">${gameManager.approvalHistory[i][j][k]}</button>`;
+                    }
+                }
+            }
+            */
         }
 
         gameBoardStr += `<hr>

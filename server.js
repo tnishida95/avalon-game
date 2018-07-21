@@ -249,6 +249,11 @@ io.sockets.on('connection', function(socket){
 		}
 		while (roomNum in roomList);
 
+		//TODO: aids testing, do not deploy
+		if(data.name == "1test") {
+			roomNum = 123;
+		}
+
 		roomList[roomNum] = [player];
 		printRoomList();
 		socket.join(roomNum);
