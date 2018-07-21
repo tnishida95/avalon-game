@@ -219,7 +219,6 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     return firstPlayerBoardStr;
 }
 
-//TODO: this needs to show which players accepted/rejected the party
 var updateGameBoardStr = function(character, playerList, gameManager) {
     let gameBoardStr;
     let partyDisplayStr = "none";
@@ -262,7 +261,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     else if(gameManager.quests[4] == 0) {
         fifthQuestResult = "-";
     }
-    let completedQuestElement = `<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>`;
+    //let completedQuestElement = `<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>`;
     if(gameManager.phase < 15) {
         gameBoardStr = `<h2>Game Board</h2>
         <div class="well" style="background:none;">
@@ -331,12 +330,16 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
                 }
             }
             gameBoardStr += `</p>`;
+
+            //TODO: show the action history at the end of the game...so move it out
+            //  of here when done
+            gameBoardStr += `<hr>`;
         }
 
         gameBoardStr += `<hr>
         <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
-    </div>
-    <hr>`;
+        </div>
+        <hr>`;
     }
     else if(gameManager.phase == 15) {
         gameBoardStr = `<h2>Game Board</h2>
