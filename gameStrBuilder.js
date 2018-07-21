@@ -312,8 +312,28 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 5</p>`;
         }
-        gameBoardStr += `<p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>
-        <hr>
+        gameBoardStr += `<p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>`;
+
+        //whoAccepted, whoRejected
+        if(gameManager.phase > 1 || gameManager.partiesRejected > 0) {
+            //make list of players who accepted and rejected
+            let lastApproval = gameManager.approvalHistory[gameManager.approvalHistory.length - 1][gameManager.approvalHistory[gameManager.approvalHistory.length - 1].length - 1];
+            gameBoardStr += `<p id="whoAccepted">Voted to Accept: `;
+            for(i = 0; i < lastApproval.length; i++) {
+                if(lastApproval[i] == 1) {
+                    gameBoardStr += `[${playerList[i].name}]`;
+                }
+            }
+            gameBoardStr += `</p><p id="whoRejected">Voted to Reject: `;
+            for(i = 0; i < lastApproval.length; i++) {
+                if(lastApproval[i] == 2) {
+                    gameBoardStr += `[${playerList[i].name}]`;
+                }
+            }
+            gameBoardStr += `</p>`;
+        }
+
+        gameBoardStr += `<hr>
         <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
     </div>
     <hr>`;

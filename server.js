@@ -93,6 +93,12 @@ function GameManager(playerCountInt) {
 	//	are in the party
 	this.selectedParty = [-1,-1,-1,-1,-1,-1];
 
+	//this will keep a histtory of the votes array
+	//approvalHistory[quest][party number][player]
+	//ex. approvalHistory[1][3][2] gets the approval vote of the third player for
+	//	the fourth party on the second quest
+	this.approvalHistory = [];
+
 }
 
 function printPlayerList() {
@@ -533,8 +539,20 @@ io.sockets.on('connection', function(socket){
 		}
 		gameList[roomNum].actionsTaken++;
 		let currentQuest = getCurrentQuest(roomNum);
+
+		//if everyone has voted
 		if(gameList[roomNum].actionsTaken === gameList[roomNum].playerCount) {
-			//count the votes
+			//record the votes
+			if(gameList[roomNum].partiesRejected === 0) {
+				gameList[roomNum].approvalHistory[currentQuest] = [];
+			}
+			gameList[roomNum].approvalHistory[currentQuest][gameList[roomNum].partiesRejected] = [];
+			for(i = 0; i < gameList[roomNum].playerCount; i++) {
+				gameList[roomNum].approvalHistory[currentQuest][gameList[roomNum].partiesRejected][i] = gameList[roomNum].votes[i];
+			}
+			console.log(`approvalHistory[${currentQuest}][${gameList[roomNum].partiesRejected}]: ${gameList[roomNum].approvalHistory[currentQuest][gameList[roomNum].partiesRejected]}`);
+
+			//tally the accepts and rejects
 			let accepts = 0;
 			let rejects = 0;
 			console.log(`Final approval vote cast.  Votes:\n\t${gameList[roomNum].votes}`);
