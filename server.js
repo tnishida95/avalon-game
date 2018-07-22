@@ -199,7 +199,15 @@ function updateProgressBar(progressType, roomNum) {
 			let partySize = gameList[roomNum].successes + gameList[roomNum].failures;
 			barWidth = (gameList[roomNum].successes / partySize) * 100;
 			innerText = `${gameList[roomNum].successes} / ${partySize} tried to succeed...`;
-			outerText = `...quest failed! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
+
+			//if it's the fourth quest that's ending and only one failure, it's
+			//	still a success
+			if(gameList[roomNum].phase === 11 && gameList[roomNum].failures === 1) {
+				outerText = `...quest succeeded! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
+			}
+			else {
+				outerText = `...quest failed! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
+			}
 		}
 	}
 	for(j = 0; j < roomList[roomNum].length; j++) {
@@ -663,7 +671,8 @@ io.sockets.on('connection', function(socket){
 			//...save quest result
 			//TODO: require two fails on the 4th quest of the required games
 			//	make sure to still report if a single fail was thrown
-			if(gameList[roomNum].failures === 0) {
+			if(gameList[roomNum].failures === 0 ||
+			   (currentQuest === 3 && gameList[roomNum].failures < 2) ) {
 				gameList[roomNum].quests[currentQuest] = 1;
 				console.log(`\t...Succeeded!`);
 			}
