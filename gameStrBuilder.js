@@ -66,6 +66,7 @@ var buildGuestLobbyStr = function() {
             <button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button>
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
         </div>
+        <p>Waiting for host to start the game.</p>
         <hr>
     </div>
     <div id="lobbyDiv"></div>`;
@@ -204,10 +205,18 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
                 }
             }
         }
-        firstPlayerBoardStr += `<div class="row">
-            <button type="button" class="btn btn-default col-xs-5">${currentIdentity}</button>
-            <button type="button" class="btn btn-default col-xs-7">${currentName}</button>
-        </div>`;
+        if(character === currentChar) {
+            firstPlayerBoardStr += `<div class="row">
+                <button type="button" class="btn btn-default col-xs-5" style="font-weight: bold">${currentIdentity}</button>
+                <button type="button" class="btn btn-default col-xs-7" style="font-weight: bold">${currentName}</button>
+            </div>`;
+        }
+        else {
+            firstPlayerBoardStr += `<div class="row">
+                <button type="button" class="btn btn-default col-xs-5">${currentIdentity}</button>
+                <button type="button" class="btn btn-default col-xs-7">${currentName}</button>
+            </div>`;
+        }
     }
     firstPlayerBoardStr += `</div>
         <hr>
