@@ -205,9 +205,8 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
             }
         }
         firstPlayerBoardStr += `<div class="row">
-            <button type="button" class="btn btn-default col-xs-3">${currentIdentity}</button>
-            <button type="button" class="btn btn-default col-xs-5">${currentName}</button>
-            <button type="button" class="btn btn-default col-xs-4" id="status${i}">Status</button>
+            <button type="button" class="btn btn-default col-xs-5">${currentIdentity}</button>
+            <button type="button" class="btn btn-default col-xs-7">${currentName}</button>
         </div>`;
     }
     firstPlayerBoardStr += `</div>

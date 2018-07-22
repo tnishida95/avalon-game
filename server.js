@@ -144,17 +144,6 @@ function buildGameScreen(roomNum, character, charArray) {
 	return firstGameScreenStr;
 }
 
-function updatePlayerBoard(roomNum, character) {
-	/*
-	TODO: change the text at status inside the status buttons only
-	consider making this function handle only one status button at a time,
-		and have it loop and to update each player
-	actually, maybe just remove the status buttons completely and only update
-		the progress bar div
-	*/
-	return;
-}
-
 function getCurrentQuest(roomNum) {
 	let currentPhase = gameList[roomNum].phase;
 	if(currentPhase < 3) {return 0;}
@@ -257,7 +246,7 @@ io.sockets.on('connection', function(socket){
 		}
 		while (roomNum in roomList);
 
-		//TODO: aids testing, do not deploy
+		//this is for testing purposes, remove in full release version
 		if(data.name == "1test") {
 			roomNum = 123;
 		}
@@ -487,11 +476,6 @@ io.sockets.on('connection', function(socket){
 			io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
 				actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 			});
-			/* uncomment after updateActionPanel() is done
-			io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
-				playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
-			});
-			*/
 		}
 		console.log("\n~~~~~ Phase 0: Party Select ~~~~~");
 
@@ -539,11 +523,6 @@ io.sockets.on('connection', function(socket){
 			io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
 				actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 			});
-			/* uncomment after updatePlayerBoard() is done
-			io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
-				playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
-			});
-			*/
 		}
 	});
 	socket.on('btnPressPartyApproval',function(data){
@@ -635,11 +614,6 @@ io.sockets.on('connection', function(socket){
 				io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
 					actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 				});
-				/* uncomment after updatePlayerBoard() is done
-				io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
-					playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
-				});
-				*/
 			}
 		}
 		else {
@@ -669,8 +643,6 @@ io.sockets.on('connection', function(socket){
 
 			console.log("Final quest action taken. Quest...");
 			//...save quest result
-			//TODO: require two fails on the 4th quest of the required games
-			//	make sure to still report if a single fail was thrown
 			if(gameList[roomNum].failures === 0 ||
 			   (currentQuest === 3 && gameList[roomNum].failures < 2) ) {
 				gameList[roomNum].quests[currentQuest] = 1;
@@ -730,11 +702,6 @@ io.sockets.on('connection', function(socket){
 				io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
 					actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 				});
-				/* uncomment after updatePlayerBoard() is done
-				io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
-					playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
-				});
-				*/
 			}
 		}
 	});
@@ -773,11 +740,6 @@ io.sockets.on('connection', function(socket){
 			io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
 				actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
 			});
-			/* uncomment after updatePlayerBoard() is done
-			io.to(roomList[roomNum][j].sid).emit("updatePlayerBoard", {
-				playerBoardStr: updatePlayerBoard(roomNum, roomList[roomNum][j].character)
-			});
-			*/
 		}
 	});
 
