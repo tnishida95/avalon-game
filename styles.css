@@ -1,32 +1,46 @@
-.center {
+.main-container {
     font-family: "Amethysta";
 }
+
 .btn-default {
-  border-radius: 0px !important;
+    border-radius: 0px !important;
+}
+
+.btn-group {
+    box-shadow: none !important;
 }
 
 .well {
-  background-color: white;
+    background: none !important;
 }
 
+.rules-well {
+    height: 500px;
+    overflow: scroll;
+}
+
+.quest-tile {
+    background: white !important;
+    box-shadow: none !important;
+}
+
+.waiting-button {
+    width: 82.5%;
+    height: 80px;
+}
 #topText {
-  text-align: center;
+    text-align: center;
 }
 
-#nameInput {
-  text-align: center;
-  height: auto;
-  width: 40%;
-  transparent;
-  outline-width: 0px;
-  outline-style: solid;
-}
-
+#nameInput,
 #roomInput {
-  text-align: center;
-  height: auto;
-  width: 40%;
-  transparent;
-  outline-width: 0px;
-  outline-style: solid;
+    text-align: center;
+    height: auto;
+    width: 40%;
+    outline-width: 0px;
+    outline-style: solid;
+}
+
+#footer {
+    text-align: center;
 }

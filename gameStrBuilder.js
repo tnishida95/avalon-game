@@ -2,7 +2,7 @@
 
 var buildHostLobbyStr = function() {
     return `<div class="text-center">
-        <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
+        <div class="btn-group btn-group-lg" role="group">
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invalidCharacterSelectContent" onclick="btnPressStartGame()">Start Game</button>
             <button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button>
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
@@ -61,7 +61,7 @@ var buildHostLobbyStr = function() {
 }
 var buildGuestLobbyStr = function() {
     return `<div class="text-center">
-        <div class="btn-group btn-group-lg" role="group" style="box-shadow:0px 0px 0px 0px">
+        <div class="btn-group btn-group-lg" role="group">
             <button type="button" class="btn btn-default">Waiting...</button>
             <button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button>
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
@@ -75,13 +75,13 @@ var buildGuestLobbyStr = function() {
 var buildFirstGameBoardStr = function(questSizeArray) {
     return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
-        <div class="well" style="background:none;">
+        <div class="well">
             <p>Quests</p>
-            <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${questSizeArray[0]}</button>
-            <button type="button" class="btn btn-default">${questSizeArray[1]}</button>
-            <button type="button" class="btn btn-default">${questSizeArray[2]}</button>
-            <button type="button" class="btn btn-default">${questSizeArray[3]}</button>
-            <button type="button" class="btn btn-default">${questSizeArray[4]}</button>
+            <button type="button" class="quest-tile btn-lg btn-default">${questSizeArray[0]}</button>
+            <button type="button" class="quest-tile btn btn-default">${questSizeArray[1]}</button>
+            <button type="button" class="quest-tile btn btn-default">${questSizeArray[2]}</button>
+            <button type="button" class="quest-tile btn btn-default">${questSizeArray[3]}</button>
+            <button type="button" class="quest-tile btn btn-default">${questSizeArray[4]}</button>
             <hr>
             <p id="rejectedDisplay">Rejected Parties: 0</p>
             <hr>
@@ -93,8 +93,8 @@ var buildFirstGameBoardStr = function(questSizeArray) {
 var buildFirstActionPanelStr = function() {
     return `<div id="actionPanelDiv" class="text-center">
         <h2>Actions</h2>
-        <div class="well" style="background:none;">
-            <button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting...</button>
+        <div class="well">
+            <button type="button" class="btn btn-default waiting-button">Waiting...</button>
             <p></p>
         </div>
         <hr>
@@ -112,7 +112,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
     let firstPlayerBoardStr = `<div id="playerBoardDiv" class="text-center">
         <h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2>
         <div id="playerBoardContent" class="collapse-in">
-            <div class="well" style="background:none;">
+            <div class="well">
                 <div class="container-fluid">`;
     for(i = 0; i < playerList.length; i++) {
         currentName = playerList[i].name;
@@ -269,53 +269,53 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     else if(gameManager.quests[4] == 0) {
         fifthQuestResult = "-";
     }
-    //let completedQuestElement = `<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>`;
+    //let completedQuestElement = `<button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[0]}</button>`;
     if(gameManager.phase < 15) {
         gameBoardStr = `<h2>Game Board</h2>
-        <div class="well" style="background:none;">
+        <div class="well">
             <p>Quests</p>`;
         if(gameManager.phase < 3) {
-            gameBoardStr += `<button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[0]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[1]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[2]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[3]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
+            gameBoardStr += `<button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[0]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[1]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[2]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 1</p>`;
         }
         else if(gameManager.phase < 6) {
-            gameBoardStr += `<button type="button" class="btn btn-default">${firstQuestResult}</button>
-                <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[1]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[2]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[3]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
+            gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[1]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[2]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 2</p>`;
         }
         else if(gameManager.phase < 9) {
-            gameBoardStr += `<button type="button" class="btn btn-default">${firstQuestResult}</button>
-                <button type="button" class="btn btn-default">${secondQuestResult}</button>
-                <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[2]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[3]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
+            gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[2]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 3</p>`;
         }
         else if(gameManager.phase < 12) {
-            gameBoardStr += `<button type="button" class="btn btn-default">${firstQuestResult}</button>
-                <button type="button" class="btn btn-default">${secondQuestResult}</button>
-                <button type="button" class="btn btn-default">${thirdQuestResult}</button>
-                <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[3]}</button>
-                <button type="button" class="btn btn-default">${gameManager.questSize[4]}</button>
+            gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 4</p>`;
         }
         else {
-            gameBoardStr += `<button type="button" class="btn btn-default">${firstQuestResult}</button>
-                <button type="button" class="btn btn-default">${secondQuestResult}</button>
-                <button type="button" class="btn btn-default">${thirdQuestResult}</button>
-                <button type="button" class="btn btn-default">${fourthQuestResult}</button>
-                <button type="button" style="box-shadow:0px 0px 0px 0px; background:none;" class="btn-lg btn-default">${gameManager.questSize[4]}</button>
+            gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default">${fourthQuestResult}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 5</p>`;
         }
@@ -373,7 +373,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
     }
     else if(gameManager.phase == 15) {
         gameBoardStr = `<h2>Game Board</h2>
-        <div class="well" style="background:none;">
+        <div class="well">
             <p>Quests</p>
             <button type="button" class="btn btn-default">${firstQuestResult}</button>
             <button type="button" class="btn btn-default">${secondQuestResult}</button>
@@ -391,7 +391,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             winningTeamStr = 'Evil has defeated Good!';
         }
         gameBoardStr = `<h2>Game Board</h2>
-        <div class="well" style="background:none;">
+        <div class="well">
             <p>Quests</p>
             <button type="button" class="btn btn-default">${firstQuestResult}</button>
             <button type="button" class="btn btn-default">${secondQuestResult}</button>
@@ -427,11 +427,11 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 			optionsStr += `<hr><button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressPartySubmit()">Submit</button>`;
 		}
 		else {
-			optionsStr = `<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting for ${playerList[gameManager.partyLeader].name} to select a party...</button>`;
+			optionsStr = `<button type="button" class="btn btn-default waiting-button">Waiting for ${playerList[gameManager.partyLeader].name} to select a party...</button>`;
 		}
 	}
 	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
-        optionsStr = `<div class="well" style="background:none;">
+        optionsStr = `<div class="well">
             <div class="container-fluid">
                 <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressAcceptParty()">Accept</button>
                 <hr>
@@ -449,7 +449,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
         if(gameManager.selectedParty.includes(playerSlot)) {
             if(character === "merlin" || character === "percival" ||
                 character === "goodOne" || character === "goodTwo" || character === "goodThree" || character === "goodFour" || character === "goodFive") {
-                optionsStr = `<div class="well" style="background:none;">
+                optionsStr = `<div class="well">
                     <div class="container-fluid">
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
                         <hr>
@@ -458,7 +458,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
                 </div>`;
             }
             else {
-                optionsStr = `<div class="well" style="background:none;">
+                optionsStr = `<div class="well">
                     <div class="container-fluid">
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
                         <hr>
@@ -468,7 +468,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
             }
         }
         else {
-			optionsStr = `<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Waiting for party to complete the quest...</button>`;
+			optionsStr = `<button type="button" class="btn btn-default waiting-button">Waiting for party to complete the quest...</button>`;
 		}
 	}
 	else if(currentPhase == 15) { //assassination
@@ -493,11 +493,11 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
     		optionsStr += `<hr><button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressAssassinSubmit()">Assassinate</button>`;
     	}
     	else {
-    		optionsStr = `<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">${playerList[assassinSlot].name} is attempting to assassinate Merlin!</button>`;
+    		optionsStr = `<button type="button" class="btn btn-default waiting-button">${playerList[assassinSlot].name} is attempting to assassinate Merlin!</button>`;
     	}
 	}
 	else { //game end
-        optionsStr = `<div class="well" style="background:none;">
+        optionsStr = `<div class="well">
             <div class="container-fluid">
                 <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressLeaveGame()">Return to Menu</button>
             </div>
@@ -505,7 +505,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 	}
 
     actionPanelStr = `<h2>Actions</h2>
-    <div class="well" style="background:none;">
+    <div class="well">
         ${optionsStr}
         <p></p>
     </div>

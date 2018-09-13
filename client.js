@@ -79,28 +79,28 @@ var btnPressAcceptParty = function(){
   		vote: 1,
 		roomNum: roomNum
 	});
-	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
+	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default waiting-button">Submitted</button>';
 }
 var btnPressRejectParty = function(){
 	socket.emit('btnPressPartyApproval',{
   		vote: 2,
 		roomNum: roomNum
 	});
-	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
+	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default waiting-button">Submitted</button>';
 }
 var btnPressSuccess = function(){
 	socket.emit('btnPressQuestAction',{
   		questAction: 1,
 		roomNum: roomNum
 	});
-	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
+	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default waiting-button">Submitted</button>';
 }
 var btnPressFail = function(){
 	socket.emit('btnPressQuestAction',{
   		questAction: 2,
 		roomNum: roomNum
 	});
-	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default" style="width: 82.5%; height: 80px;">Submitted</button>';
+	document.getElementById("actionPanelDiv").innerHTML = '<button type="button" class="btn btn-default waiting-button">Submitted</button>';
 }
 var btnPressAssassinSubmit = function(){
 	let assassinSelection = [];
@@ -152,11 +152,11 @@ socket.on('loadLobby',function(data){
 	roomNum = data.roomNum;
 
 	let hostLobbyStr = data.hostLobbyStr;
-	console.log("Here's the hostLobbyStr:\n" + hostLobbyStr);
+	//console.log("Here's the hostLobbyStr:\n" + hostLobbyStr);
 	let guestLobbyStr = data.guestLobbyStr;
-	console.log("Here's the guestLobbyStr:\n" + guestLobbyStr);
+	//console.log("Here's the guestLobbyStr:\n" + guestLobbyStr);
 	document.getElementById("title").innerHTML = `Avalon Room #${roomNum}`;
-	document.getElementById("topDiv").innerHTML = `<h2 id="topText" style="text-align:center;">Avalon Room #${roomNum}</h2><hr>`;
+	document.getElementById("topDiv").innerHTML = `<h2 id="topText">Avalon Room #${roomNum}</h2><hr>`;
 	if(socket.id == lobby[0].sid) { //if host
 	  document.getElementById("centerDiv").innerHTML = hostLobbyStr;
 	}
