@@ -208,6 +208,21 @@ function updateProgressBar(progressType, roomNum) {
 	}
 }
 
+function createPlayer(socket, playerName) {
+	let player;
+	if(playerName == "ShoyuMordred") {
+		player = new Player(socket.num, socket.id, "Tyler", "mordred");
+	}
+	else {
+		player = new Player(socket.num, socket.id, playerName, "none");
+	}
+	console.log("Created new Player:");
+	console.log("\tid: " + player.id);
+	console.log("\tname: " + player.name);
+	console.log("\tcharacter: " + player.character);
+	return player;
+}
+
 //upon new socket connection
 io.sockets.on('connection', function(socket){
 	socket.num = playerid;
@@ -226,19 +241,10 @@ io.sockets.on('connection', function(socket){
 		printPlayerList();
 		//TODO: update any rooms with the socket of the dc
 	});
+
 	socket.on('btnPressNewGame',function(data){
 		console.log("New Game button pressed");
-		let player;
-		if(data.name == "ShoyuMordred") {
-			player = new Player(socket.num, socket.id, "Tyler", "mordred");
-		}
-		else {
-			player = new Player(socket.num, socket.id, data.name, "none");
-		}
-		console.log("Created new Player:");
-		console.log("\tid: " + player.id);
-		console.log("\tname: " + player.name);
-		console.log("\tcharacter: " + player.character);
+
 		//generate unique, four digit roomNum [1000,9999]
 		let roomNum;
 		do {
@@ -251,7 +257,8 @@ io.sockets.on('connection', function(socket){
 			roomNum = 123;
 		}
 
-		roomList[roomNum] = [player];
+		// creating a new player and putting it into a new room
+		roomList[roomNum] = [createPlayer(socket, data.name)];
 		printRoomList();
 		socket.join(roomNum);
 		io.to(roomNum).emit("loadLobby", {
@@ -261,6 +268,7 @@ io.sockets.on('connection', function(socket){
 			guestLobbyStr: gameStrBuilder.buildGuestLobbyStr()
 		});
 	});
+
 	socket.on('btnPressJoinGame',function(data){
 		let roomNum = (data.roomNum).toString();
 		console.log("Join Game button pressed with roomNum: " + roomNum);
@@ -269,18 +277,7 @@ io.sockets.on('connection', function(socket){
 			return;
 		}
 		if(roomNum in roomList) {
-			let player;
-			if(data.name == "ShoyuMordred") {
-				player = new Player(socket.num, socket.id, "Tyler", "mordred");
-			}
-			else {
-				player = new Player(socket.num, socket.id, data.name, "none");
-			}
-			console.log("Created new Player:");
-			console.log("\tid: " + player.id);
-			console.log("\tname: " + player.name);
-			console.log("\tcharacter: " + player.character);
-			roomList[roomNum][roomList[roomNum].length] = player;
+			roomList[roomNum][roomList[roomNum].length] = createPlayer(socket, data.name);
 			printRoomList();
 			socket.join(roomNum);
 			io.to(roomNum).emit("loadLobby", {
