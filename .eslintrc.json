@@ -11,6 +11,7 @@
     "brace-style": "off",
     "keyword-spacing": "off",
     "comma-spacing": "off",
+    "comma-dangle": "off",
     "quotes": "off",
     "guard-for-in": "off",
     "max-len": "off"
