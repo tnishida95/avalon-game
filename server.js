@@ -46,24 +46,31 @@ function Player(id, socketid, name, character) {
   this.name = name;
   this.character = character;
 }
-function GameManager(playerCountInt) {
-  //how many players in the game
-  this.playerCount = playerCountInt;
-  //number of good and evil characters
-  if(playerCountInt == 5) {this.goodNum = 3; this.evilNum = 2;}
-  if(playerCountInt == 6) {this.goodNum = 4; this.evilNum = 2;}
-  if(playerCountInt == 7) {this.goodNum = 4; this.evilNum = 3;}
-  if(playerCountInt == 8) {this.goodNum = 5; this.evilNum = 3;}
-  if(playerCountInt == 9) {this.goodNum = 6; this.evilNum = 3;}
-  if(playerCountInt == 10) {this.goodNum = 6; this.evilNum = 4;}
 
-  //array with the size of each quest; remember it is base 0
-  if(playerCountInt == 5) {this.questSize = [2,3,2,3,3];}
-  if(playerCountInt == 6) {this.questSize = [2,3,4,3,4];}
-  if(playerCountInt == 7) {this.questSize = [2,3,3,4,4];}
-  if(playerCountInt == 8) {this.questSize = [3,4,4,5,5];}
-  if(playerCountInt == 9) {this.questSize = [3,4,4,5,5];}
-  if(playerCountInt == 10) {this.questSize = [3,4,4,5,5];}
+/**
+ * The GameManager object, responsible for keeping track
+ * of the variables involves in game logic.
+ * @constructor
+ * @param {int} playerCount - The number of players in the game.
+ */
+function GameManager(playerCount) {
+  this.playerCount = playerCount;
+
+  // number of good and evil characters
+  if(playerCount == 5) {this.goodNum = 3; this.evilNum = 2;}
+  if(playerCount == 6) {this.goodNum = 4; this.evilNum = 2;}
+  if(playerCount == 7) {this.goodNum = 4; this.evilNum = 3;}
+  if(playerCount == 8) {this.goodNum = 5; this.evilNum = 3;}
+  if(playerCount == 9) {this.goodNum = 6; this.evilNum = 3;}
+  if(playerCount == 10) {this.goodNum = 6; this.evilNum = 4;}
+
+  // array with the size of each quest; remember it is base 0
+  if(playerCount == 5) {this.questSize = [2,3,2,3,3];}
+  if(playerCount == 6) {this.questSize = [2,3,4,3,4];}
+  if(playerCount == 7) {this.questSize = [2,3,3,4,4];}
+  if(playerCount == 8) {this.questSize = [3,4,4,5,5];}
+  if(playerCount == 9) {this.questSize = [3,4,4,5,5];}
+  if(playerCount == 10) {this.questSize = [3,4,4,5,5];}
 
   /*
   0, 1, 2 = 1st quest: party select, voting, questing
@@ -85,53 +92,56 @@ function GameManager(playerCountInt) {
   this.partyActions = [0,0,0,0,0,0];
   this.winningTeam = 0;
 
-  //this tracks the quest actions taken for a given quest,
-  //not the number of succeeded and failed quests
+  // this tracks the quest actions taken for a given quest,
+  // not the number of succeeded and failed quests
   this.successes = 0;
   this.failures = 0;
 
   this.partiesRejected = 0;
   this.actionsTaken = 0;
 
-  //these numbers refer to the indices of Players in array at roomList[roomNum]
+  // these numbers refer to the indices of Players in array at roomList[roomNum]
   this.partyLeader = 0;
   this.assassinated = -1;
-  //could assign this a new array every time a new quest comes up
-  //example usage: [0,2,3] -> the first, third, and fourth player in the room
-  //  are in the party
+  // could assign this a new array every time a new quest comes up
+  // example usage: [0,2,3] -> the first, third, and fourth player in the room
+  //   are in the party
   this.selectedParty = [-1,-1,-1,-1,-1,-1];
 
-  //this will keep a history of the votes array
-  //approvalHistory[quest][party number][player]
-  //ex. approvalHistory[1][3][2] gets the approval vote of the third player for
-  //  the fourth party on the second quest
+  // this will keep a history of the votes array
+  // approvalHistory[quest][party number][player]
+  // ex. approvalHistory[1][3][2] gets the approval vote of the third player for
+  //   the fourth party on the second quest
   this.approvalHistory = [];
 
-  //this will keep a history of the selectedParty array
-  //approvalHistory[quest][party number][player]
-  //ex. partyHistory[1][3][2] gets the player on the the fourth party of the
-  //  second quest
+  // this will keep a history of the selectedParty array
+  // approvalHistory[quest][party number][player]
+  // ex. partyHistory[1][3][2] gets the player on the the fourth party of the
+  //   second quest
   this.partyHistory = [];
-
 }
 
+/** Prints the list of players. */
 function printPlayerList() {
   if(playerList.length < 1) return;
-  process.stdout.write("playerList: ");
-  for(i = 0; i < playerList.length; i++)
-    process.stdout.write("[" + playerList[i] + "]");
-  console.log("");
+  process.stdout.write('playerList: ');
+  for(let i = 0; i < playerList.length; i++) {
+    process.stdout.write(`[${playerList[i]}]`);
+  }
+  console.log('');
 }
+
+/** Prints the list of rooms. */
 function printRoomList() {
   console.log("-------------------------");
   let listSize = 0;
   for(roomNums in roomList) {
-      listSize++;
-      process.stdout.write("Room #" + roomNums + ": ");
-      for(i = 0; i < roomList[roomNums].length; i++) {
-        process.stdout.write("[" + roomList[roomNums][i].id + ":" + roomList[roomNums][i].name + "]");
-      }
-      console.log("");
+    listSize++;
+    process.stdout.write("Room #" + roomNums + ": ");
+    for(let i = 0; i < roomList[roomNums].length; i++) {
+      process.stdout.write("[" + roomList[roomNums][i].id + ":" + roomList[roomNums][i].name + "]");
+    }
+    console.log("");
   }
   if(listSize == 0) {
     console.log("no occupied rooms");
@@ -139,11 +149,19 @@ function printRoomList() {
   console.log("-------------------------");
 }
 
+/**
+ * Concatenates the result of the gameStrBuilder object for a given character in
+ * a game.
+ * @param {int} roomNum - The room number of the game.
+ * @param {string} character - The character to base the game screen on.
+ * @param {Array} charArray - The characters in the game.
+ * @return {string} - The HTML of the game screen component.
+ */
 function buildGameScreen(roomNum, character, charArray) {
-  let firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize);
-  let firstActionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
-  let firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
-  let firstGameScreenStr = firstGameBoardStr +
+  const firstGameBoardStr = gameStrBuilder.buildFirstGameBoardStr(gameList[roomNum].questSize);
+  const firstActionPanelStr = gameStrBuilder.buildFirstActionPanelStr();
+  const firstPlayerBoardStr = gameStrBuilder.buildFirstPlayerBoardStr(character, roomList[roomNum], charArray, gameList[roomNum].goodNum, gameList[roomNum].evilNum);
+  const firstGameScreenStr = firstGameBoardStr +
   `<div id="progressDiv" class="progress text-center">
     <div id="progressBarInner" class="progress-bar" style="width: 0%"></div>
     <p id="progressBarOuter">${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.</p>
@@ -152,8 +170,13 @@ function buildGameScreen(roomNum, character, charArray) {
   return firstGameScreenStr;
 }
 
+/**
+ * Returns the current quest based on the phase of a given room.
+ * @param {int} roomNum - The room number of the game.
+ * @return {int} - The game's current quest.
+ */
 function getCurrentQuest(roomNum) {
-  let currentPhase = gameList[roomNum].phase;
+  const currentPhase = gameList[roomNum].phase;
   if(currentPhase < 3) {return 0;}
   if(currentPhase < 6) {return 1;}
   if(currentPhase < 9) {return 2;}
@@ -161,6 +184,11 @@ function getCurrentQuest(roomNum) {
   if(currentPhase < 15) {return 4;}
 }
 
+/**
+ * Constructs and emits HTML for the progress bar.
+ * @param {string} progressType - Which progress bar will be needed.
+ * @param {int} roomNum - The room number of the game.
+ */
 function updateProgressBar(progressType, roomNum) {
   let barWidth = 0;
   let innerText = "";
@@ -193,12 +221,12 @@ function updateProgressBar(progressType, roomNum) {
       innerText = `Quest succeeded! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
     }
     else {
-      let partySize = gameList[roomNum].successes + gameList[roomNum].failures;
+      const partySize = gameList[roomNum].successes + gameList[roomNum].failures;
       barWidth = (gameList[roomNum].successes / partySize) * 100;
       innerText = `${gameList[roomNum].successes} / ${partySize} tried to succeed...`;
 
-      //if it's the fourth quest that's ending and only one failure, it's
-      //  still a success
+      // if it's the fourth quest that's ending and only one failure, it's
+      //   still a success
       if(gameList[roomNum].phase === 11 && gameList[roomNum].failures === 1) {
         outerText = `...quest succeeded! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
       }
@@ -207,11 +235,11 @@ function updateProgressBar(progressType, roomNum) {
       }
     }
   }
-  for(j = 0; j < roomList[roomNum].length; j++) {
+  for(let j = 0; j < roomList[roomNum].length; j++) {
     io.to(roomList[roomNum][j].sid).emit("updateProgressBar", {
       barWidth: barWidth.toString() + "%",
       innerText: innerText,
-      outerText: outerText
+      outerText: outerText,
     });
   }
 }

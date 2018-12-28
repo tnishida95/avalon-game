@@ -5,5 +5,14 @@
   },
   "env": {
     "node": true
+  },
+  "rules": {
+    "no-console": "off",
+    "brace-style": "off",
+    "keyword-spacing": "off",
+    "comma-spacing": "off",
+    "quotes": "off",
+    "guard-for-in": "off",
+    "max-len": "off"
   }
 }
