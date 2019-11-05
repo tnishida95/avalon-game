@@ -17,9 +17,9 @@
   },
   "homepage": "https://github.com/tnishida95/avalon-game#readme",
   "dependencies": {
-    "bootstrap": "^3.3.7",
-    "express": "^4.15.3",
-    "jquery": "^3.2.1",
+    "bootstrap": "^3.4.1",
+    "express": "^4.17.1",
+    "jquery": "^3.4.1",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {

@@ -5,6 +5,8 @@ Client-side javascript for avalon-game.
 Tyler Nishida, tnishida95@gmail.com
 */
 
+/* eslint-disable */
+
 var socket = io();
 var lobby;
 var roomNum = -1;
