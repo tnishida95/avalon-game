@@ -252,8 +252,11 @@ function updateProgressBar(progressType, roomNum) {
  */
 function createPlayer(socket, playerName) {
   let player;
-  if(playerName == "ShoyuMordred") {
+  if(playerName === process.env.MORDRED) {
     player = new Player(socket.num, socket.id, "Tyler", "mordred");
+  }
+  else if(playerName == process.env.MORGANA) {
+    player = new Player(socket.num, socket.id, "Tyler", "morgana");
   }
   else {
     player = new Player(socket.num, socket.id, playerName, "none");
@@ -294,7 +297,7 @@ io.sockets.on('connection', function(socket) {
     }
     while (roomNum in roomList);
 
-    // this is for testing purposes, remove in full release version
+    // TODO: this is for testing purposes, remove in full release version
     if(data.name == "1test") {
       roomNum = 123;
     }
@@ -539,7 +542,8 @@ io.sockets.on('connection', function(socket) {
 
     gameList[roomNum].actionsTaken = 0;
 
-    // filling out the selectedParty array...this could use some optimization
+    // filling out the selectedParty array...
+    // TODO: this could use some optimization
     let partySlot = 0;
     gameList[roomNum].selectedParty = [-1,-1,-1,-1,-1,-1];
     for(let i = 0; i < partySelections.length; i++) {
