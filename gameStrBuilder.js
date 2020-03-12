@@ -1,5 +1,6 @@
-//gameStrBuilder.js
+// gameStrBuilder.js
 
+//module.exports.buildHostLobbyStr ?
 var buildHostLobbyStr = function() {
     return `<div class="text-center">
         <div class="btn-group btn-group-lg" role="group">

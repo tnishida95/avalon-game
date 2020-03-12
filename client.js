@@ -182,6 +182,10 @@ socket.on('loadMainMenu',function(data){
 socket.on('loadGameScreen',function(data){
 	console.log("Received: [loadGameScreen] from server");
 	lobby = data.list;
+	// if rejoining a game in-progress
+	if(roomNum === -1) {
+		roomNum = data.roomNum;
+	}
 	document.getElementById("centerDiv").innerHTML = data.gameScreenStr;
 })
 

@@ -9,6 +9,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 2000;
 
+// eslint-disable-next-line
 const serv = require('http').Server(app);
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/index.html');
@@ -286,7 +287,6 @@ io.sockets.on('connection', function(socket) {
     printPlayerList();
     // TODO: update any rooms with the socket of the dc
   });
-
   socket.on('btnPressNewGame',function(data) {
     console.log("New Game button pressed");
 
@@ -313,11 +313,36 @@ io.sockets.on('connection', function(socket) {
       guestLobbyStr: gameStrBuilder.buildGuestLobbyStr()
     });
   });
-
   socket.on('btnPressJoinGame',function(data) {
     const roomNum = (data.roomNum).toString();
     console.log("Join Game button pressed with roomNum: " + roomNum);
     if(gameList[roomNum] != null) {
+      // TODO: rejoin functionality
+      for(let i = 0; i < roomList[roomNum].length; i++) {
+        console.log(`${roomList[roomNum][i].name} === ${data.name} ?`);
+        if(roomList[roomNum][i].name === data.name) {
+          console.log(`Player [${data.name}] is rejoining the game in room [${roomNum}].`);
+          socket.join(roomNum);
+          roomList[roomNum][i].id = socket.num;
+          roomList[roomNum][i].sid = socket.id;
+          const charArray = [];
+          for(let j = 0; j < roomList[roomNum].length; j++) {
+            charArray.push(roomList[roomNum][j].character);
+          }
+          io.to(roomList[roomNum][i].sid).emit("loadGameScreen", {
+            list: roomList[roomNum],
+            roomNum: roomNum,
+            gameScreenStr: buildGameScreen(roomNum, roomList[roomNum][i].character, charArray)
+          });
+          io.to(roomList[roomNum][i].sid).emit("updateGameBoard", {
+            gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][i].character, roomList[roomNum], gameList[roomNum])
+          });
+          io.to(roomList[roomNum][i].sid).emit("updateActionPanel", {
+            actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][i].character, roomList[roomNum], gameList[roomNum])
+          });
+          return;
+        }
+      }
       console.log("\tGame already in progress, cannot join.");
       return;
     }
@@ -520,7 +545,7 @@ io.sockets.on('connection', function(socket) {
       });
     }
     console.log("\n~~~~~ Phase 0: Party Select ~~~~~");
-  }); // end btnPressStartGame()
+  });
   socket.on('btnPressPartySubmit',function(data) {
     const partySelections = data.partySelections;
     const roomNum = data.roomNum;
