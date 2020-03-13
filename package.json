@@ -20,10 +20,10 @@
     "bootstrap": "^3.4.1",
     "express": "^4.17.1",
     "jquery": "^3.4.1",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "eslint": "^5.10.0",
+    "eslint": "^5.16.0",
     "eslint-config-google": "^0.11.0"
   }
 }
