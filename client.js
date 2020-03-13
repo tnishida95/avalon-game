@@ -179,6 +179,11 @@ socket.on('loadMainMenu',function(data){
 	loadMainMenu();
 })
 
+socket.on('invalidCharacterSelect',function(data){
+	console.log("Received: [invalidCharacterSelect] from server");
+	document.getElementById("invalidCharacterSelectContent").innerText = data.message;
+})
+
 socket.on('loadGameScreen',function(data){
 	console.log("Received: [loadGameScreen] from server");
 	lobby = data.list;

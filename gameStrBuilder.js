@@ -1,9 +1,8 @@
 // gameStrBuilder.js
 
-//module.exports.buildHostLobbyStr ?
-var buildHostLobbyStr = function() {
+exports.buildHostLobbyStr = function() {
     return `<div class="text-center">
-        <div class="btn-group btn-group-lg" role="group">
+      <div class="btn-group btn-group-lg" role="group">
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invalidCharacterSelectContent" onclick="btnPressStartGame()">Start Game</button>
             <button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button>
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
@@ -59,8 +58,8 @@ var buildHostLobbyStr = function() {
         <hr>
     </div>
     <div id="lobbyDiv"></div>`;
-}
-var buildGuestLobbyStr = function() {
+};
+exports.buildGuestLobbyStr = function() {
     return `<div class="text-center">
         <div class="btn-group btn-group-lg" role="group">
             <button type="button" class="btn btn-default">Waiting...</button>
@@ -71,9 +70,9 @@ var buildGuestLobbyStr = function() {
         <hr>
     </div>
     <div id="lobbyDiv"></div>`;
-}
+};
 
-var buildFirstGameBoardStr = function(questSizeArray) {
+exports.buildFirstGameBoardStr = function(questSizeArray) {
     return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
         <div class="well">
@@ -90,8 +89,8 @@ var buildFirstGameBoardStr = function(questSizeArray) {
         </div>
         <hr>
     </div>`;
-}
-var buildFirstActionPanelStr = function() {
+};
+exports.buildFirstActionPanelStr = function() {
     return `<div id="actionPanelDiv" class="text-center">
         <h2>Actions</h2>
         <div class="well">
@@ -100,8 +99,8 @@ var buildFirstActionPanelStr = function() {
         </div>
         <hr>
     </div>`;
-}
-var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNum, evilNum) {
+};
+exports.buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNum, evilNum) {
     let currentName;
     let currentChar;
     let currentIdentity;
@@ -115,7 +114,7 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
         <div id="playerBoardContent" class="collapse-in">
             <div class="well">
                 <div class="container-fluid">`;
-    for(i = 0; i < playerList.length; i++) {
+    for(let i = 0; i < playerList.length; i++) {
         currentName = playerList[i].name;
         currentChar = playerList[i].character;
         currentIdentity = "?";
@@ -226,9 +225,9 @@ var buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNu
         </div>
     </div><hr></div>`;
     return firstPlayerBoardStr;
-}
+};
 
-var updateGameBoardStr = function(character, playerList, gameManager) {
+exports.updateGameBoardStr = function(character, playerList, gameManager) {
     let gameBoardStr;
     let partyDisplayStr = "none";
     let firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
@@ -242,7 +241,7 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
         gameManager.phase != 15 &&
         gameManager.phase != 16) {
         partyDisplayStr = "";
-        for(i = 0; i < gameManager.selectedParty.length; i++) {
+        for(let i = 0; i < gameManager.selectedParty.length; i++) {
             if(gameManager.selectedParty[i] != -1) {
                 partyDisplayStr += '[' + playerList[gameManager.selectedParty[i]].name + ']';
             }
@@ -327,13 +326,13 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             //make list of players who accepted and rejected
             let lastApproval = gameManager.approvalHistory[gameManager.approvalHistory.length - 1][gameManager.approvalHistory[gameManager.approvalHistory.length - 1].length - 1];
             gameBoardStr += `<p id="whoAccepted">Voted to Accept: `;
-            for(i = 0; i < lastApproval.length; i++) {
+            for(let i = 0; i < lastApproval.length; i++) {
                 if(lastApproval[i] == 1) {
                     gameBoardStr += `[${playerList[i].name}]`;
                 }
             }
             gameBoardStr += `</p><p id="whoRejected">Voted to Reject: `;
-            for(i = 0; i < lastApproval.length; i++) {
+            for(let i = 0; i < lastApproval.length; i++) {
                 if(lastApproval[i] == 2) {
                     gameBoardStr += `[${playerList[i].name}]`;
                 }
@@ -402,15 +401,17 @@ var updateGameBoardStr = function(character, playerList, gameManager) {
             <hr>
             <p id="currentQuestDisplay">Game End</p>`;
         if(gameManager.assassinated != -1) {
-            gameBoardStr += `<p>The Assassin selected [${playerList[gameManager.assassinated].name}], who was ${playerList[gameManager.assassinated].character}.</p>`;
+          const assassinated = playerList[gameManager.assassinated].character.includes("good") ?
+              "a Servant of Arthur" : playerList[gameManager.assassinated].character;
+            gameBoardStr += `<p>The Assassin selected [${playerList[gameManager.assassinated].name}], who was ${assassinated}.</p>`;
         }
         gameBoardStr +=`<h3>${winningTeamStr}</h3>
         </div>
         <hr>`;
     }
     return gameBoardStr;
-}
-var updateActionPanelStr = function(character, playerList, gameManager) {
+};
+exports.updateActionPanelStr = function(character, playerList, gameManager) {
     let currentPhase = gameManager.phase;
     let partyLeaderChar = playerList[gameManager.partyLeader].character;
 	let actionPanelStr;
@@ -419,7 +420,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 	if( currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //party select
 		if(partyLeaderChar == character) {
 			optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
-			for(i = 0; i < playerList.length; i++) {
+			for(let i = 0; i < playerList.length; i++) {
                 currentName = playerList[i].name;
 				optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
                     <input type="checkbox" autocomplete="off" name="partySelection" value="${currentName}">${currentName}</input>
@@ -442,7 +443,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 	}
 	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) { //questing
         let playerSlot;
-        for(i = 0; i < playerList.length; i++) {
+        for(let i = 0; i < playerList.length; i++) {
             if(playerList[i].character === character) {
                 playerSlot = i;
             }
@@ -472,18 +473,17 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
 			optionsStr = `<button type="button" class="btn btn-default waiting-button">Waiting for party to complete the quest...</button>`;
 		}
 	}
-	else if(currentPhase == 15) { //assassination
+	else if(currentPhase == 15) { // assassination
         let assassinSlot;
-        for(i = 0; i < playerList.length; i++) {
+        for(let i = 0; i < playerList.length; i++) {
             if(playerList[i].character === "assassin") {
                 assassinSlot = i;
             }
         }
-        console.log(`assassinSlot = ${assassinSlot}`);
         if(character === "assassin") {
     		optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
-    		for(i = 0; i < playerList.length; i++) {
-                currentName = playerList[i].name;
+    		for(let i = 0; i < playerList.length; i++) {
+                const currentName = playerList[i].name;
                 if(playerList[i].character === "merlin" || playerList[i].character === "percival" ||
                     playerList[i].character === "goodOne" || playerList[i].character === "goodTwo" || playerList[i].character === "goodThree" || playerList[i].character === "goodFour" || playerList[i].character === "goodFive") {
                     optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
@@ -497,7 +497,7 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
     		optionsStr = `<button type="button" class="btn btn-default waiting-button">${playerList[assassinSlot].name} is attempting to assassinate Merlin!</button>`;
     	}
 	}
-	else { //game end
+	else { // game end
         optionsStr = `<div class="well">
             <div class="container-fluid">
                 <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressLeaveGame()">Return to Menu</button>
@@ -512,20 +512,10 @@ var updateActionPanelStr = function(character, playerList, gameManager) {
     </div>
     <hr>`;
     return actionPanelStr;
-}
+};
+
+/** Returns an HTML string of the progress bar **/
 function updateProgressBarStr(barWidth, innerText, outerText) {
     return `<div id="progressBarInner" class="progress-bar" style="width: ${barWidth}%">${innerText}</div>
     <p id="progressBarOuter">${outerText}</p>`;
-}
-
-
-module.exports = {
-    buildHostLobbyStr: buildHostLobbyStr,
-    buildGuestLobbyStr: buildGuestLobbyStr,
-    buildFirstGameBoardStr: buildFirstGameBoardStr,
-    buildFirstActionPanelStr: buildFirstActionPanelStr,
-    buildFirstPlayerBoardStr: buildFirstPlayerBoardStr,
-    updateGameBoardStr: updateGameBoardStr,
-    updateActionPanelStr: updateActionPanelStr,
-    updateProgressBarStr: updateProgressBarStr
 }

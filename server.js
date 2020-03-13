@@ -18,31 +18,25 @@ app.use('/', express.static(__dirname + '/'));
 serv.listen(port);
 console.log(`Server started listening on port ${port}.`);
 const gameStrBuilder = require('./gameStrBuilder');
+const utils = require('./utils');
 
 const io = require('socket.io')(serv, {});
 // array of sockets
 const socketList = [];
-// array of playerids
-const playerList = [];
 
 // key: roomNum, val: array of Player objects in the room
 const roomList = {};
 // key: roomNum, val: GameManager objects
 const gameList = {};
 
-// growing value to give unique ids to all connections
-let playerid = 0;
-
 /**
  * The player object.
  * @constructor
- * @param {int} id - The id of the player.
  * @param {int} socketid - The socket id of the player.
  * @param {string} name - The self-given player name.
  * @param {string} character - The character of the player.
  */
-function Player(id, socketid, name, character) {
-  this.id = id;
+function Player(socketid, name, character) {
   this.sid = socketid;
   this.name = name;
   this.character = character;
@@ -123,11 +117,10 @@ function GameManager(playerCount) {
 }
 
 /** Prints the list of players. */
-function printPlayerList() {
-  if(playerList.length < 1) return;
-  process.stdout.write('playerList: ');
-  for(let i = 0; i < playerList.length; i++) {
-    process.stdout.write(`[${playerList[i]}]`);
+function printSocketList() {
+  process.stdout.write('socketList: ');
+  for(let i = 0; i < socketList.length; i++) {
+    process.stdout.write(`[${socketList[i].id.substring(0,5)}...]`);
   }
   console.log('');
 }
@@ -140,7 +133,7 @@ function printRoomList() {
     listSize++;
     process.stdout.write("Room #" + roomNums + ": ");
     for(let i = 0; i < roomList[roomNums].length; i++) {
-      process.stdout.write("[" + roomList[roomNums][i].id + ":" + roomList[roomNums][i].name + "]");
+      process.stdout.write("[" + roomList[roomNums][i].sid + ":" + roomList[roomNums][i].name + "]");
     }
     console.log("");
   }
@@ -226,9 +219,13 @@ function updateProgressBar(progressType, roomNum) {
       barWidth = (gameList[roomNum].successes / partySize) * 100;
       innerText = `${gameList[roomNum].successes} / ${partySize} tried to succeed...`;
 
-      // if it's the fourth quest that's ending and only one failure, it's
+      // if it's the fourth quest that's ending,
+      //   and a 7 or more player game,
+      //   and only one failure, it's
       //   still a success
-      if(gameList[roomNum].phase === 11 && gameList[roomNum].failures === 1) {
+      if(gameList[roomNum].phase === 11 &&
+         (roomList[roomNum].length > 6) &&
+         gameList[roomNum].failures === 1) {
         outerText = `...quest succeeded! ${roomList[roomNum][gameList[roomNum].partyLeader].name} is selecting a party.`;
       }
       else {
@@ -254,16 +251,16 @@ function updateProgressBar(progressType, roomNum) {
 function createPlayer(socket, playerName) {
   let player;
   if(playerName === process.env.MORDRED) {
-    player = new Player(socket.num, socket.id, "Tyler", "mordred");
+    player = new Player(socket.id, "Tyler", "mordred");
   }
   else if(playerName == process.env.MORGANA) {
-    player = new Player(socket.num, socket.id, "Tyler", "morgana");
+    player = new Player(socket.id, "Tyler", "morgana");
   }
   else {
-    player = new Player(socket.num, socket.id, playerName, "none");
+    player = new Player(socket.id, playerName, "none");
   }
   console.log("Created new Player:");
-  console.log("\tid: " + player.id);
+  console.log("\tsocket id: " + player.sid);
   console.log("\tname: " + player.name);
   console.log("\tcharacter: " + player.character);
   return player;
@@ -271,20 +268,16 @@ function createPlayer(socket, playerName) {
 
 // upon new socket connection
 io.sockets.on('connection', function(socket) {
-  socket.num = playerid;
-  playerList[playerList.length] = playerid;
-  socketList[playerList.length] = socket;
-  console.log('new socket connection, player  #' + socket.num);
-  playerid++;
-  printPlayerList();
+  socketList[socketList.length] = socket;
+  console.log('new socket connection: ' + socket.id);
+  printSocketList();
 
   socket.on('disconnect',function() {
     // get the index of the socket that just dc'd, cut it out of lists
-    const index = playerList.indexOf(socket.num);
+    const index = socketList.indexOf(socket.id);
     socketList.splice(index,1);
-    playerList.splice(index,1);
-    console.log('player #' + socket.num + ' disconnected');
-    printPlayerList();
+    console.log('socket [' + socket.id + '] disconnected');
+    printSocketList();
     // TODO: update any rooms with the socket of the dc
   });
   socket.on('btnPressNewGame',function(data) {
@@ -317,13 +310,11 @@ io.sockets.on('connection', function(socket) {
     const roomNum = (data.roomNum).toString();
     console.log("Join Game button pressed with roomNum: " + roomNum);
     if(gameList[roomNum] != null) {
-      // TODO: rejoin functionality
+      // checking if player is rejoining a game
       for(let i = 0; i < roomList[roomNum].length; i++) {
-        console.log(`${roomList[roomNum][i].name} === ${data.name} ?`);
         if(roomList[roomNum][i].name === data.name) {
           console.log(`Player [${data.name}] is rejoining the game in room [${roomNum}].`);
           socket.join(roomNum);
-          roomList[roomNum][i].id = socket.num;
           roomList[roomNum][i].sid = socket.id;
           const charArray = [];
           for(let j = 0; j < roomList[roomNum].length; j++) {
@@ -342,7 +333,7 @@ io.sockets.on('connection', function(socket) {
           });
           return;
         }
-      }
+      } // end rejoin
       console.log("\tGame already in progress, cannot join.");
       return;
     }
@@ -368,7 +359,7 @@ io.sockets.on('connection', function(socket) {
     const roomNum = data.roomNum;
     // removing the player from the lobby
     for(let i = 0; i < roomList[roomNum].length; i++) {
-      if(roomList[roomNum][i].sid == socket.id) {
+      if(roomList[roomNum][i].sid === socket.id) {
         console.log("Leave Game button pressed by: " + roomList[roomNum][i].name);
         roomList[roomNum].splice(i,1);
         break;
@@ -410,129 +401,26 @@ io.sockets.on('connection', function(socket) {
     const roomNum = data.roomNum;
     const characterSelections = data.charList;
     console.log("Start Game button pressed for roomNum: " + roomNum);
-    if(characterSelections.length != roomList[roomNum].length) {
-      console.error("invalid character selection: player count does not equal character count");
+
+    const {isValid, message, charArray} = utils.assignCharacters(characterSelections, roomList[roomNum]);
+    if(!isValid) {
+      io.to(socket.id).emit("invalidCharacterSelect", {
+        message: message
+      });
       return;
     }
-    let goodCount = 0;
-    let evilCount = 0;
-    const charArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 
-    console.log("getting characters:");
-    // populate the charArray, showing which characters are in the game
-    for(let i = 0; i < characterSelections.length; i++) {
-      const characters = characterSelections[i];
-      console.log("\t" + characters);
-      if(characters == "merlin") {charArray[0] = 1; goodCount++;}
-      else if (characters == "percival") {charArray[1] = 1; goodCount++;}
-      else if (characters == "goodOne") {charArray[2] = 1; goodCount++;}
-      else if (characters == "goodTwo") {charArray[3] = 1; goodCount++;}
-      else if (characters == "goodThree") {charArray[4] = 1; goodCount++;}
-      else if (characters == "goodFour") {charArray[5] = 1; goodCount++;}
-      else if (characters == "goodFive") {charArray[6] = 1; goodCount++;}
-      else if (characters == "assassin") {charArray[7] = 1; evilCount++;}
-      else if (characters == "morgana") {charArray[8] = 1; evilCount++;}
-      else if (characters == "mordred") {charArray[9] = 1; evilCount++;}
-      else if (characters == "oberon") {charArray[10] = 1; evilCount++;}
-      else if (characters == "evilOne") {charArray[11] = 1; evilCount++;}
-      else if (characters == "evilTwo") {charArray[12] = 1; evilCount++;}
-      else if (characters == "evilThree") {charArray[13] = 1; evilCount++;}
-      else {
-        console.error("invalid character selection: unmatched character names");
-        return;
-      }
-    }
-    /*
-    rules check:
-      merlin and assassin must be selected
-      morgana must be selected with percival
-      good and evil player numbers align with the rules
-    */
-    console.log("\tGood: " + goodCount + ", Evil: " + evilCount);
-    if(
-      (charArray[0] == 0 || charArray[7] == 0) ||
-      (charArray[8] == 1 && charArray[1] == 0) ||
-      ((characterSelections.length == 5) && ((goodCount != 3) || (evilCount != 2))) ||
-      ((characterSelections.length == 6) && ((goodCount != 4) || (evilCount != 2))) ||
-      ((characterSelections.length == 7) && ((goodCount != 4) || (evilCount != 3))) ||
-      ((characterSelections.length == 8) && ((goodCount != 5) || (evilCount != 3))) ||
-      ((characterSelections.length == 9) && ((goodCount != 6) || (evilCount != 3))) ||
-      ((characterSelections.length == 10) && ((goodCount != 6) || (evilCount != 4)))
-    ) {
-      console.error("invalid character selection: rule breaking");
-      return;
-    }
-    // remove reserved characters from the pool; only handles a single reservation
-    for(let i = 0; i < roomList[roomNum].length; i++) {
-      if(roomList[roomNum][i].character != "none") {
-        if(roomList[roomNum][i].character == "mordred") {
-          if(charArray[9] == 1) {
-            charArray[9] = 0;
-            console.log("fulfilling mordred reservation to " + roomList[roomNum][i].name);
-            break; // remove this if more reservations added
-          }
-          console.log("modred not selected, cannot fulfill reservation");
-          roomList[roomNum][i].character = "none";
-        }
-        // add more cases here as necessary
-      }
-    }
-
-    // this is to help buildGameScreen()
-    const charArrayCopy = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-    for(let i = 0; i < 14; i++) {
-      if(charArray[i] == 1) {charArrayCopy[i] = 1;}
-    }
-
-    // assign players a random character
-    let randomNum;
-    console.log("\tthere are " + roomList[roomNum].length + " players in the room");
-    for(let i = 0; i < roomList[roomNum].length; i++) {
-      if(roomList[roomNum][i].character == "none") {
-        // process.stdout.write("getting randomNum: ");
-        do {
-          /*
-          consider reducing the range of values every iteration somehow,
-            not a big deal though
-          maybe create another array with the indexes of available
-            characters in charArray, then splice out elements as they
-            are selected
-          */
-          randomNum = Math.floor(Math.random() * 14);
-        }
-        while(charArray[randomNum] != 1);
-        if(randomNum == 0) {roomList[roomNum][i].character = "merlin";}
-        else if(randomNum == 1) {roomList[roomNum][i].character = "percival";}
-        else if(randomNum == 2) {roomList[roomNum][i].character = "goodOne";}
-        else if(randomNum == 3) {roomList[roomNum][i].character = "goodTwo";}
-        else if(randomNum == 4) {roomList[roomNum][i].character = "goodThree";}
-        else if(randomNum == 5) {roomList[roomNum][i].character = "goodFour";}
-        else if(randomNum == 6) {roomList[roomNum][i].character = "goodFive";}
-        else if(randomNum == 7) {roomList[roomNum][i].character = "assassin";}
-        else if(randomNum == 8) {roomList[roomNum][i].character = "morgana";}
-        else if(randomNum == 9) {roomList[roomNum][i].character = "mordred";}
-        else if(randomNum == 10) {roomList[roomNum][i].character = "oberon";}
-        else if(randomNum == 11) {roomList[roomNum][i].character = "evilOne";}
-        else if(randomNum == 12) {roomList[roomNum][i].character = "evilTwo";}
-        else if(randomNum == 13) {roomList[roomNum][i].character = "evilThree";}
-        charArray[randomNum] = 0;
-      }
-    }
-    console.log("assigned characters:");
-    for(let i = 0; i < roomList[roomNum].length; i++) {
-      console.log("\t[" + roomList[roomNum][i].name + "] is " + roomList[roomNum][i].character);
-    }
+    // create a new GameManager and designate the first party leader
     gameList[roomNum] = new GameManager(roomList[roomNum].length);
     gameList[roomNum].partyLeader = Math.floor(Math.random() * roomList[roomNum].length);
     console.log("Party Leader assigned to player at index [" + gameList[roomNum].partyLeader + "], [" + roomList[roomNum][gameList[roomNum].partyLeader].name + "]");
-    console.log("sending out game boards...");
 
-    // build and send out boards
+    console.log("sending out game boards...");
     for(let j = 0; j < roomList[roomNum].length; j++) {
       process.stdout.write("\tsending board to [" + roomList[roomNum][j].sid + "]...");
       io.to(roomList[roomNum][j].sid).emit("loadGameScreen", {
         list: roomList[roomNum],
-        gameScreenStr: buildGameScreen(roomNum, roomList[roomNum][j].character, charArrayCopy)
+        gameScreenStr: buildGameScreen(roomNum, roomList[roomNum][j].character, charArray)
       });
       console.log("board sent");
     }
@@ -710,8 +598,11 @@ io.sockets.on('connection', function(socket) {
 
       console.log("Final quest action taken. Quest...");
       // ...save quest result
+
+      // if no failures OR
+      //   4th quest AND more than six players AND less than two failures
       if(gameList[roomNum].failures === 0 ||
-         (currentQuest === 3 && gameList[roomNum].failures < 2) ) {
+         (currentQuest === 3 && roomList[roomNum].length > 6 && gameList[roomNum].failures < 2) ) {
         gameList[roomNum].quests[currentQuest] = 1;
         console.log(`\t...Succeeded!`);
       }
