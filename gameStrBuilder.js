@@ -1,7 +1,7 @@
 // gameStrBuilder.js
 
 exports.buildHostLobbyStr = function() {
-    return `<div class="text-center">
+  return `<div class="text-center">
       <div class="btn-group btn-group-lg" role="group">
             <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invalidCharacterSelectContent" onclick="btnPressStartGame()">Start Game</button>
             <button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button>
@@ -60,7 +60,7 @@ exports.buildHostLobbyStr = function() {
     <div id="lobbyDiv"></div>`;
 };
 exports.buildGuestLobbyStr = function() {
-    return `<div class="text-center">
+  return `<div class="text-center">
         <div class="btn-group btn-group-lg" role="group">
             <button type="button" class="btn btn-default">Waiting...</button>
             <button type="button" class="btn btn-default" onclick="btnPressLeaveGame()">Leave Game</button>
@@ -73,7 +73,7 @@ exports.buildGuestLobbyStr = function() {
 };
 
 exports.buildFirstGameBoardStr = function(questSizeArray) {
-    return `<div id="gameBoardDiv" class="text-center">
+  return `<div id="gameBoardDiv" class="text-center">
         <h2>Game Board</h2>
         <div class="well">
             <p>Quests</p>
@@ -91,7 +91,7 @@ exports.buildFirstGameBoardStr = function(questSizeArray) {
     </div>`;
 };
 exports.buildFirstActionPanelStr = function() {
-    return `<div id="actionPanelDiv" class="text-center">
+  return `<div id="actionPanelDiv" class="text-center">
         <h2>Actions</h2>
         <div class="well">
             <button type="button" class="btn btn-default waiting-button">Waiting...</button>
@@ -101,245 +101,245 @@ exports.buildFirstActionPanelStr = function() {
     </div>`;
 };
 exports.buildFirstPlayerBoardStr = function(character, playerList, charArray, goodNum, evilNum) {
-    let currentName;
-    let currentChar;
-    let currentIdentity;
-    let specialCharacters = '[Merlin][Assassin]';
-    if(charArray[1] == 1) {specialCharacters += '[Percival]';}
-    if(charArray[8] == 1) {specialCharacters += '[Morgana]';}
-    if(charArray[9] == 1) {specialCharacters += '[Mordred]';}
-    if(charArray[10] == 1) {specialCharacters += '[Oberon]';}
-    let firstPlayerBoardStr = `<div id="playerBoardDiv" class="text-center">
-        <h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2>
-        <div id="playerBoardContent" class="collapse-in">
-            <div class="well">
-                <div class="container-fluid">`;
-    for(let i = 0; i < playerList.length; i++) {
-        currentName = playerList[i].name;
-        currentChar = playerList[i].character;
-        currentIdentity = "?";
-        if(character == "merlin") {
-            if(currentChar == "merlin") {
-                currentIdentity = "Merlin";
-            }
-            else if(currentChar == "assassin" ||
-                    currentChar == "morgana" ||
-                    currentChar == "oberon" ||
-                    currentChar == "evilOne" ||
-                    currentChar == "evilTwo" ||
-                    currentChar == "evilThree") {
-                currentIdentity = "EVIL";
-            }
-            else if(charArray[9] != 1) {
-                // no mordred (if mordred, all others are "?")
-                // TODO: pretty sure don't need the if() block here; test later
-                if(currentChar == "percival" ||
-					currentChar == "goodOne" ||
-					currentChar == "goodTwo" ||
-					currentChar == "goodThree" ||
-					currentChar == "goodFour" ||
-					currentChar == "goodFive") {
-                    currentIdentity = "GOOD";
-                }
-            }
-        } // end merlin block
-        else if(character == "percival") {
-            if(currentChar == "percival") {
-                currentIdentity = "Percival";
-            }
-            else if(charArray[8] == 1) {
-                // morgana in game
-                if( currentChar == "merlin" || currentChar == "morgana") {
-                    currentIdentity = 'Merlin/Morgana';
-                }
-            }
-            else {
-                // no morgana
-                if(currentChar == "merlin") {
-                    currentIdentity = "Merlin";
-                }
-                else if(currentChar == "percival") {
-                    currentIdentity = "Percival";
-                }
-            }
-        } // end of percival block
-        else if(character == "goodOne" ||
+  let currentName;
+  let currentChar;
+  let currentIdentity;
+  let specialCharacters = '[Merlin][Assassin]';
+  if(charArray[1] == 1) {specialCharacters += '[Percival]';}
+  if(charArray[8] == 1) {specialCharacters += '[Morgana]';}
+  if(charArray[9] == 1) {specialCharacters += '[Mordred]';}
+  if(charArray[10] == 1) {specialCharacters += '[Oberon]';}
+  let firstPlayerBoardStr = `<div id="playerBoardDiv" class="text-center">
+    <h2 data-toggle="collapse" data-target="#playerBoardContent">Players</h2>
+    <div id="playerBoardContent" class="collapse-in">
+      <div class="well">
+        <div class="container-fluid">`;
+  for(let i = 0; i < playerList.length; i++) {
+    currentName = playerList[i].name;
+    currentChar = playerList[i].character;
+    currentIdentity = "?";
+    if(character == "merlin") {
+      if(currentChar == "merlin") {
+        currentIdentity = "Merlin";
+      }
+      else if(currentChar == "assassin" ||
+              currentChar == "morgana" ||
+              currentChar == "oberon" ||
+              currentChar == "evilOne" ||
+              currentChar == "evilTwo" ||
+              currentChar == "evilThree") {
+        currentIdentity = "EVIL";
+      }
+      else if(charArray[9] != 1) {
+        // no mordred (if mordred, all others are "?")
+        // TODO: pretty sure don't need the if() block here; test later
+        if(currentChar == "percival" ||
+           currentChar == "goodOne" ||
+           currentChar == "goodTwo" ||
+           currentChar == "goodThree" ||
+           currentChar == "goodFour" ||
+           currentChar == "goodFive") {
+          currentIdentity = "GOOD";
+        }
+      }
+    } // end merlin block
+    else if(character == "percival") {
+      if(currentChar == "percival") {
+        currentIdentity = "Percival";
+      }
+      else if(charArray[8] == 1) {
+        // morgana in game
+        if( currentChar == "merlin" || currentChar == "morgana") {
+          currentIdentity = 'Merlin/Morgana';
+        }
+      }
+      else {
+        // no morgana
+        if(currentChar == "merlin") {
+          currentIdentity = "Merlin";
+        }
+        else if(currentChar == "percival") {
+          currentIdentity = "Percival";
+        }
+      }
+    } // end of percival block
+    else if(character == "goodOne" ||
             character == "goodTwo" ||
             character == "goodThree" ||
             character == "goodFour" ||
             character == "goodFive") {
-            if(currentChar == character) {
-                currentIdentity = "Servant of Good";
-            }
-        } // end of basic good block
-        else if(character == "oberon") {
-            if(currentChar == "oberon") {
-                currentIdentity = "Oberon";
-            }
-        } // end of oberon block
-        else { //non-Oberon Evil
-            if(currentChar == "assassin") {
-                currentIdentity = "Assassin";
-            }
-            else if(currentChar == "mordred") {
-                currentIdentity = "Mordred";
-            }
-            else if(currentChar == "morgana") {
-                currentIdentity = "Morgana";
-            }
-            else if(currentChar == "evilOne" ||
-                    currentChar == "evilTwo" ||
-                    currentChar == "evilThree") {
-                currentIdentity = "Minion of Evil";
-            }
-            if(charArray[10] != 1) {
-                // no oberon (if there is oberon, the rest are "?")
-                if( currentChar == "merlin" ||
-                    currentChar == "percival" ||
-                    currentChar == "goodOne" ||
-                    currentChar == "goodTwo" ||
-                    currentChar == "goodThree" ||
-                    currentChar == "goodFour" ||
-                    currentChar == "goodFive") {
-                    currentIdentity = "GOOD";
-                }
-            }
+      if(currentChar == character) {
+        currentIdentity = "Servant of Good";
+      }
+    } // end of basic good block
+    else if(character == "oberon") {
+      if(currentChar == "oberon") {
+        currentIdentity = "Oberon";
+      }
+    } // end of oberon block
+    else { // non-Oberon Evil
+      if(currentChar == "assassin") {
+        currentIdentity = "Assassin";
+      }
+      else if(currentChar == "mordred") {
+        currentIdentity = "Mordred";
+      }
+      else if(currentChar == "morgana") {
+        currentIdentity = "Morgana";
+      }
+      else if(currentChar == "evilOne" ||
+              currentChar == "evilTwo" ||
+              currentChar == "evilThree") {
+        currentIdentity = "Minion of Evil";
+      }
+      if(charArray[10] != 1) {
+        // no oberon (if there is oberon, the rest are "?")
+        if(currentChar == "merlin" ||
+           currentChar == "percival" ||
+           currentChar == "goodOne" ||
+           currentChar == "goodTwo" ||
+           currentChar == "goodThree" ||
+           currentChar == "goodFour" ||
+           currentChar == "goodFive") {
+          currentIdentity = "GOOD";
         }
-        if(character === currentChar) {
-            firstPlayerBoardStr += `<div class="row">
+      }
+    }
+    if(character === currentChar) {
+      firstPlayerBoardStr += `<div class="row">
                 <button type="button" class="btn btn-default col-xs-5" style="font-weight: bold">${currentIdentity}</button>
                 <button type="button" class="btn btn-default col-xs-7" style="font-weight: bold">${currentName}</button>
             </div>`;
-        }
-        else {
-            firstPlayerBoardStr += `<div class="row">
+    }
+    else {
+      firstPlayerBoardStr += `<div class="row">
                 <button type="button" class="btn btn-default col-xs-5">${currentIdentity}</button>
                 <button type="button" class="btn btn-default col-xs-7">${currentName}</button>
             </div>`;
-        }
     }
-    firstPlayerBoardStr += `</div>
+  }
+  firstPlayerBoardStr += `</div>
         <hr>
         <p>Special Characters Present: ${specialCharacters}</p>
         <p>There are ${goodNum} Agents of Good and ${evilNum} Agents of Evil.</p>
         </div>
     </div><hr></div>`;
-    return firstPlayerBoardStr;
+  return firstPlayerBoardStr;
 };
 
 exports.updateGameBoardStr = function(character, playerList, gameManager) {
-    let gameBoardStr;
-    let partyDisplayStr = "none";
-    let firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
+  let gameBoardStr;
+  let partyDisplayStr = "none";
+  let firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
 
-    // if a party exists, fill the string
-    if( gameManager.phase != 0 &&
-        gameManager.phase != 3 &&
-        gameManager.phase != 6 &&
-        gameManager.phase != 9 &&
-        gameManager.phase != 12 &&
-        gameManager.phase != 15 &&
-        gameManager.phase != 16) {
-        partyDisplayStr = "";
-        for(let i = 0; i < gameManager.selectedParty.length; i++) {
-            if(gameManager.selectedParty[i] != -1) {
-                partyDisplayStr += '[' + playerList[gameManager.selectedParty[i]].name + ']';
-            }
-        }
+  // if a party exists, fill the string
+  if( gameManager.phase != 0 &&
+      gameManager.phase != 3 &&
+      gameManager.phase != 6 &&
+      gameManager.phase != 9 &&
+      gameManager.phase != 12 &&
+      gameManager.phase != 15 &&
+      gameManager.phase != 16) {
+    partyDisplayStr = "";
+    for(let i = 0; i < gameManager.selectedParty.length; i++) {
+      if(gameManager.selectedParty[i] != -1) {
+        partyDisplayStr += '[' + playerList[gameManager.selectedParty[i]].name + ']';
+      }
     }
-    firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
-    if(gameManager.quests[0] == 1) {
-        firstQuestResult = "S";
-    }
-    if(gameManager.quests[1] == 1) {
-        secondQuestResult = "S";
-    }
-    if(gameManager.quests[2] == 1) {
-        thirdQuestResult = "S";
-    }
-    if(gameManager.quests[3] == 1) {
-        fourthQuestResult = "S";
-    }
-    else if(gameManager.quests[3] == 0) {
-        fourthQuestResult = "-";
-    }
-    if(gameManager.quests[4] == 1) {
-        fifthQuestResult = "S";
-    }
-    else if(gameManager.quests[4] == 0) {
-        fifthQuestResult = "-";
-    }
-    //let completedQuestElement = `<button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[0]}</button>`;
-    if(gameManager.phase < 15) {
-        gameBoardStr = `<h2>Game Board</h2>
+  }
+  firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
+  if(gameManager.quests[0] == 1) {
+    firstQuestResult = "S";
+  }
+  if(gameManager.quests[1] == 1) {
+    secondQuestResult = "S";
+  }
+  if(gameManager.quests[2] == 1) {
+    thirdQuestResult = "S";
+  }
+  if(gameManager.quests[3] == 1) {
+    fourthQuestResult = "S";
+  }
+  else if(gameManager.quests[3] == 0) {
+    fourthQuestResult = "-";
+  }
+  if(gameManager.quests[4] == 1) {
+    fifthQuestResult = "S";
+  }
+  else if(gameManager.quests[4] == 0) {
+    fifthQuestResult = "-";
+  }
+  // let completedQuestElement = `<button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[0]}</button>`;
+  if(gameManager.phase < 15) {
+    gameBoardStr = `<h2>Game Board</h2>
         <div class="well">
             <p>Quests</p>`;
-        if(gameManager.phase < 3) {
-            gameBoardStr += `<button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[0]}</button>
+    if(gameManager.phase < 3) {
+      gameBoardStr += `<button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[0]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[1]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[2]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 1</p>`;
-        }
-        else if(gameManager.phase < 6) {
-            gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+    }
+    else if(gameManager.phase < 6) {
+      gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[1]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[2]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 2</p>`;
-        }
-        else if(gameManager.phase < 9) {
-            gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+    }
+    else if(gameManager.phase < 9) {
+      gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[2]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 3</p>`;
-        }
-        else if(gameManager.phase < 12) {
-            gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+    }
+    else if(gameManager.phase < 12) {
+      gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[3]}</button>
                 <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 4</p>`;
-        }
-        else {
-            gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+    }
+    else {
+      gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${fourthQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 5</p>`;
+    }
+    gameBoardStr += `<p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>`;
+
+    // whoAccepted, whoRejected
+    if(gameManager.phase > 1 || gameManager.partiesRejected > 0) {
+      // make list of players who accepted and rejected
+      const lastApprovals = gameManager.approvalHistory[gameManager.approvalHistory.length - 1][gameManager.approvalHistory[gameManager.approvalHistory.length - 1].length - 1];
+      gameBoardStr += `<p id="whoAccepted">Voted to Accept: `;
+      for(let i = 0; i < lastApprovals.length; i++) {
+        if(lastApprovals[i] == 1) {
+          gameBoardStr += `[${playerList[i].name}]`;
         }
-        gameBoardStr += `<p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>`;
+      }
+      gameBoardStr += `</p><p id="whoRejected">Voted to Reject: `;
+      for(let i = 0; i < lastApprovals.length; i++) {
+        if(lastApprovals[i] == 2) {
+          gameBoardStr += `[${playerList[i].name}]`;
+        }
+      }
+      gameBoardStr += `</p>`;
 
-        //whoAccepted, whoRejected
-        if(gameManager.phase > 1 || gameManager.partiesRejected > 0) {
-            //make list of players who accepted and rejected
-            let lastApproval = gameManager.approvalHistory[gameManager.approvalHistory.length - 1][gameManager.approvalHistory[gameManager.approvalHistory.length - 1].length - 1];
-            gameBoardStr += `<p id="whoAccepted">Voted to Accept: `;
-            for(let i = 0; i < lastApproval.length; i++) {
-                if(lastApproval[i] == 1) {
-                    gameBoardStr += `[${playerList[i].name}]`;
-                }
-            }
-            gameBoardStr += `</p><p id="whoRejected">Voted to Reject: `;
-            for(let i = 0; i < lastApproval.length; i++) {
-                if(lastApproval[i] == 2) {
-                    gameBoardStr += `[${playerList[i].name}]`;
-                }
-            }
-            gameBoardStr += `</p>`;
-
-            /*
+      /*
             //TODO: show the action history at the end of the game...so move it out
             //  of here when done;
             //this mocks out a possible way to get the data...don't display it
@@ -364,15 +364,15 @@ exports.updateGameBoardStr = function(character, playerList, gameManager) {
                 }
             }
             */
-        }
+    }
 
-        gameBoardStr += `<hr>
+    gameBoardStr += `<hr>
         <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
         </div>
         <hr>`;
-    }
-    else if(gameManager.phase == 15) {
-        gameBoardStr = `<h2>Game Board</h2>
+  }
+  else if(gameManager.phase == 15) {
+    gameBoardStr = `<h2>Game Board</h2>
         <div class="well">
             <p>Quests</p>
             <button type="button" class="btn btn-default">${firstQuestResult}</button>
@@ -384,13 +384,13 @@ exports.updateGameBoardStr = function(character, playerList, gameManager) {
             <p id="currentQuestDisplay">Assassin Phase</p>
         </div>
         <hr>`;
+  }
+  else {
+    let winningTeamStr = 'Good has defeated Evil!';
+    if(gameManager.winningTeam == 2) {
+      winningTeamStr = 'Evil has defeated Good!';
     }
-    else {
-        let winningTeamStr = 'Good has defeated Evil!';
-        if(gameManager.winningTeam == 2) {
-            winningTeamStr = 'Evil has defeated Good!';
-        }
-        gameBoardStr = `<h2>Game Board</h2>
+    gameBoardStr = `<h2>Game Board</h2>
         <div class="well">
             <p>Quests</p>
             <button type="button" class="btn btn-default">${firstQuestResult}</button>
@@ -400,122 +400,115 @@ exports.updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" class="btn btn-default">${fifthQuestResult}</button>
             <hr>
             <p id="currentQuestDisplay">Game End</p>`;
-        if(gameManager.assassinated != -1) {
-          const assassinated = playerList[gameManager.assassinated].character.includes("good") ?
-              "a Servant of Arthur" : playerList[gameManager.assassinated].character;
-            gameBoardStr += `<p>The Assassin selected [${playerList[gameManager.assassinated].name}], who was ${assassinated}.</p>`;
-        }
-        gameBoardStr +=`<h3>${winningTeamStr}</h3>
+    if(gameManager.assassinated != -1) {
+      const assassinated = playerList[gameManager.assassinated].character.includes("good") ?
+        "a Servant of Arthur" : playerList[gameManager.assassinated].character;
+      gameBoardStr += `<p>The Assassin selected [${playerList[gameManager.assassinated].name}], who was ${assassinated}.</p>`;
+    }
+    gameBoardStr +=`<h3>${winningTeamStr}</h3>
         </div>
         <hr>`;
-    }
-    return gameBoardStr;
+  }
+  return gameBoardStr;
 };
 exports.updateActionPanelStr = function(character, playerList, gameManager) {
-    let currentPhase = gameManager.phase;
-    let partyLeaderChar = playerList[gameManager.partyLeader].character;
-	let actionPanelStr;
-    let optionsStr;
+  const currentPhase = gameManager.phase;
+  const partyLeaderChar = playerList[gameManager.partyLeader].character;
+  let optionsStr;
 
-	if( currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { //party select
-		if(partyLeaderChar == character) {
-			optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
-			for(let i = 0; i < playerList.length; i++) {
-                currentName = playerList[i].name;
-				optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
+  if( currentPhase == 0 || currentPhase == 3 || currentPhase == 6 || currentPhase == 9 || currentPhase == 12) { // party select
+    if(partyLeaderChar == character) {
+      optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
+      for(let i = 0; i < playerList.length; i++) {
+        const currentName = playerList[i].name;
+        optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
                     <input type="checkbox" autocomplete="off" name="partySelection" value="${currentName}">${currentName}</input>
                 </label>`;
-			}
-			optionsStr += `<hr><button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressPartySubmit()">Submit</button>`;
-		}
-		else {
-			optionsStr = `<button type="button" class="btn btn-default waiting-button">Waiting for ${playerList[gameManager.partyLeader].name} to select a party...</button>`;
-		}
-	}
-	else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { //party voting
-        optionsStr = `<div class="well">
+      }
+      optionsStr += `<hr><button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressPartySubmit()">Submit</button>`;
+    }
+    else {
+      optionsStr = `<button type="button" class="btn btn-default waiting-button">Waiting for ${playerList[gameManager.partyLeader].name} to select a party...</button>`;
+    }
+  }
+  else if(currentPhase == 1 || currentPhase == 4 || currentPhase == 7 || currentPhase == 10 || currentPhase == 13) { // party voting
+    optionsStr = `<div class="well">
             <div class="container-fluid">
                 <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressAcceptParty()">Accept</button>
                 <hr>
                 <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressRejectParty()">Reject</button>
             </div>
         </div>`;
-	}
-	else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) { //questing
-        let playerSlot;
-        for(let i = 0; i < playerList.length; i++) {
-            if(playerList[i].character === character) {
-                playerSlot = i;
-            }
-        }
-        if(gameManager.selectedParty.includes(playerSlot)) {
-            if(character === "merlin" || character === "percival" ||
+  }
+  else if(currentPhase == 2 || currentPhase == 5 || currentPhase == 8 || currentPhase == 11 || currentPhase == 14) { // questing
+    let playerSlot;
+    for(let i = 0; i < playerList.length; i++) {
+      if(playerList[i].character === character) {
+        playerSlot = i;
+      }
+    }
+    if(gameManager.selectedParty.includes(playerSlot)) {
+      if(character === "merlin" || character === "percival" ||
                 character === "goodOne" || character === "goodTwo" || character === "goodThree" || character === "goodFour" || character === "goodFive") {
-                optionsStr = `<div class="well">
+        optionsStr = `<div class="well">
                     <div class="container-fluid">
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
                         <hr>
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
                     </div>
                 </div>`;
-            }
-            else {
-                optionsStr = `<div class="well">
+      }
+      else {
+        optionsStr = `<div class="well">
                     <div class="container-fluid">
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressSuccess()">Success</button>
                         <hr>
                         <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressFail()">Fail</button>
                     </div>
                 </div>`;
-            }
-        }
-        else {
-			optionsStr = `<button type="button" class="btn btn-default waiting-button">Waiting for party to complete the quest...</button>`;
-		}
-	}
-	else if(currentPhase == 15) { // assassination
-        let assassinSlot;
-        for(let i = 0; i < playerList.length; i++) {
-            if(playerList[i].character === "assassin") {
-                assassinSlot = i;
-            }
-        }
-        if(character === "assassin") {
-    		optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
-    		for(let i = 0; i < playerList.length; i++) {
-                const currentName = playerList[i].name;
-                if(playerList[i].character === "merlin" || playerList[i].character === "percival" ||
+      }
+    }
+    else {
+      optionsStr = `<button type="button" class="btn btn-default waiting-button">Waiting for party to complete the quest...</button>`;
+    }
+  }
+  else if(currentPhase == 15) { // assassination
+    let assassinSlot;
+    for(let i = 0; i < playerList.length; i++) {
+      if(playerList[i].character === "assassin") {
+        assassinSlot = i;
+      }
+    }
+    if(character === "assassin") {
+      optionsStr = `<div class="text-center"><div data-toggle="buttons">`;
+      for(let i = 0; i < playerList.length; i++) {
+        const currentName = playerList[i].name;
+        if(playerList[i].character === "merlin" || playerList[i].character === "percival" ||
                     playerList[i].character === "goodOne" || playerList[i].character === "goodTwo" || playerList[i].character === "goodThree" || playerList[i].character === "goodFour" || playerList[i].character === "goodFive") {
-                    optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
+          optionsStr += `<label class="btn btn-default" style="width: 82.5%;">
                         <input type="checkbox" autocomplete="off" name="assassinSelection" value="${currentName}">${currentName}</input>
                     </label>`;
-                }
-    		}
-    		optionsStr += `<hr><button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressAssassinSubmit()">Assassinate</button>`;
-    	}
-    	else {
-    		optionsStr = `<button type="button" class="btn btn-default waiting-button">${playerList[assassinSlot].name} is attempting to assassinate Merlin!</button>`;
-    	}
-	}
-	else { // game end
-        optionsStr = `<div class="well">
+        }
+      }
+      optionsStr += `<hr><button type="button" class="btn btn-default btn-lg" style="width: 82.5%" onclick="btnPressAssassinSubmit()">Assassinate</button>`;
+    }
+    else {
+      optionsStr = `<button type="button" class="btn btn-default waiting-button">${playerList[assassinSlot].name} is attempting to assassinate Merlin!</button>`;
+    }
+  }
+  else { // game end
+    optionsStr = `<div class="well">
             <div class="container-fluid">
                 <button type="button" class="btn btn-default btn-lg col-xs-12" onclick="btnPressLeaveGame()">Return to Menu</button>
             </div>
         </div>`;
-	}
+  }
 
-    actionPanelStr = `<h2>Actions</h2>
+  const actionPanelStr = `<h2>Actions</h2>
     <div class="well">
         ${optionsStr}
         <p></p>
     </div>
     <hr>`;
-    return actionPanelStr;
+  return actionPanelStr;
 };
-
-/** Returns an HTML string of the progress bar **/
-function updateProgressBarStr(barWidth, innerText, outerText) {
-    return `<div id="progressBarInner" class="progress-bar" style="width: ${barWidth}%">${innerText}</div>
-    <p id="progressBarOuter">${outerText}</p>`;
-}
