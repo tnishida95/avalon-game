@@ -43,6 +43,32 @@ function Player(socketid, name, character) {
 }
 
 /**
+ * History of party selections.
+ * @constructor
+ * @param {int} partyLeader - Index of the leader in the room
+ * @param {Array} selectedParty - Array containing the room indices of selected party members
+ * @param {Array} votes - Array of approval votes
+ * @param {boolean} isApproved - True if the party was approved
+ */
+function PartyHistory(partyLeader, selectedParty, votes, isApproved) {
+  this.partyLeader = partyLeader;
+  this.selectedParty = Array.from(selectedParty);
+  this.votes = Array.from(votes);
+  this.isApproved = isApproved;
+}
+
+/**
+ * History of the actions taken on a quest.
+ * @constructor
+ * @param {Array} actions - Array of the action taken by the questing party
+ * @param {boolean} isSuccessful - True if the quest
+ */
+function QuestHistory(actions, isSuccessful) {
+  this.actions = Array.from(actions);
+  this.isSuccessful = isSuccessful;
+}
+
+/**
  * The GameManager object, responsible for keeping track
  * of the variables involves in game logic.
  * @constructor
@@ -51,6 +77,8 @@ function Player(socketid, name, character) {
 function GameManager(room) {
   this.room = room;
   this.playerCount = room.length;
+  this.partyHistories = [];
+  this.questHistories = [];
 
   // number of good and evil characters
   if(this.playerCount == 5) {this.goodNum = 3; this.evilNum = 2;}
@@ -255,7 +283,7 @@ function createPlayer(socket, playerName) {
   if(playerName === process.env.MORDRED) {
     player = new Player(socket.id, "Tyler", "mordred");
   }
-  else if(playerName == process.env.MORGANA) {
+  else if(playerName === process.env.MORGANA) {
     player = new Player(socket.id, "Tyler", "morgana");
   }
   else {
@@ -489,92 +517,104 @@ io.on('connection', function(socket) {
   });
   socket.on('btnPressPartyApproval',function(data) {
     const roomNum = data.roomNum;
+    const game = gameList[roomNum];
+    const room = roomList[roomNum];
     // find out which player pressed it, and save the vote
-    for(let i = 0; i < roomList[roomNum].length; i++) {
-      if(socket.id === roomList[roomNum][i].sid) {
-        gameList[roomNum].votes[i] = data.vote;
-        console.log(`\tParty Approval: [${roomList[roomNum][i].name}] voted: ${data.vote}.`);
+    for(let i = 0; i < room.length; i++) {
+      if(socket.id === room[i].sid) {
+        game.votes[i] = data.vote;
+        console.log(`\tParty Approval: [${room[i].name}] voted: ${data.vote}.`);
         break;
       }
     }
-    gameList[roomNum].actionsTaken++;
+    game.actionsTaken++;
     const currentQuest = getCurrentQuest(roomNum);
 
     // if everyone has voted
-    if(gameList[roomNum].actionsTaken === gameList[roomNum].playerCount) {
+    if(game.actionsTaken === game.playerCount) {
       // record the party and votes
-      if(gameList[roomNum].partiesRejected === 0) {
-        gameList[roomNum].approvalHistory[currentQuest] = [];
-        gameList[roomNum].partyHistory[currentQuest] = [];
+      if(game.partiesRejected === 0) {
+        game.approvalHistory[currentQuest] = [];
+        game.partyHistory[currentQuest] = [];
       }
-      gameList[roomNum].approvalHistory[currentQuest][gameList[roomNum].partiesRejected] = [];
-      gameList[roomNum].partyHistory[currentQuest][gameList[roomNum].partiesRejected] = [];
-      for(let i = 0; i < gameList[roomNum].playerCount; i++) {
-        gameList[roomNum].approvalHistory[currentQuest][gameList[roomNum].partiesRejected][i] = gameList[roomNum].votes[i];
+      game.approvalHistory[currentQuest][game.partiesRejected] = [];
+      game.partyHistory[currentQuest][game.partiesRejected] = [];
+      for(let i = 0; i < game.playerCount; i++) {
+        game.approvalHistory[currentQuest][game.partiesRejected][i] = game.votes[i];
       }
-      for(let i = 0; i < gameList[roomNum].questSize[currentQuest]; i++) {
-        gameList[roomNum].partyHistory[currentQuest][gameList[roomNum].partiesRejected][i] = gameList[roomNum].selectedParty[i];
+      for(let i = 0; i < game.questSize[currentQuest]; i++) {
+        game.partyHistory[currentQuest][game.partiesRejected][i] = game.selectedParty[i];
       }
-      console.log(`approvalHistory[${currentQuest}][${gameList[roomNum].partiesRejected}]: ${gameList[roomNum].approvalHistory[currentQuest][gameList[roomNum].partiesRejected]}`);
-      console.log(`partyHistory[${currentQuest}][${gameList[roomNum].partiesRejected}]: ${gameList[roomNum].partyHistory[currentQuest][gameList[roomNum].partiesRejected]}`);
+      console.log(`approvalHistory[${currentQuest}][${game.partiesRejected}]: ${game.approvalHistory[currentQuest][game.partiesRejected]}`);
+      console.log(`partyHistory[${currentQuest}][${game.partiesRejected}]: ${game.partyHistory[currentQuest][game.partiesRejected]}`);
 
       // tally the accepts and rejects
       let accepts = 0;
       let rejects = 0;
-      console.log(`Final approval vote cast.  Votes:\n\t${gameList[roomNum].votes}`);
+      console.log(`Final approval vote cast.  Votes:\n\t${game.votes}`);
       for(let i = 0; i < 10; i++) {
-        if(gameList[roomNum].votes[i] === 1) {
+        if(game.votes[i] === 1) {
           accepts++;
         }
-        else if(gameList[roomNum].votes[i] === 2) {
+        else if(game.votes[i] === 2) {
           rejects++;
         }
-        else if(gameList[roomNum].votes[i] === 0) {
+        else if(game.votes[i] === 0) {
           break;
         }
       }
       console.log(`Accepts: ${accepts}, Rejects: ${rejects}`);
+      if(game.partyHistories[currentQuest] == null) {
+        game.partyHistories[currentQuest] = [];
+      }
       if(rejects >= accepts) {
         // quest rejected, so...
+        // ...record the history
+        game.partyHistories[currentQuest].push(new PartyHistory(game.partyLeader, game.selectedParty, game.votes, false));
+
         // ...move the party leader
-        gameList[roomNum].partyLeader++;
-        if(gameList[roomNum].partyLeader === gameList[roomNum].playerCount) {
-          gameList[roomNum].partyLeader = 0;
+        game.partyLeader++;
+        if(game.partyLeader === game.playerCount) {
+          game.partyLeader = 0;
         }
 
+        // TODO: is this right?
         // ...increment partiesRejected and check if it's the fifth
-        gameList[roomNum].partiesRejected++;
-        if(gameList[roomNum].partiesRejected === 5) {
-          gameList[roomNum].phase = 15;
+        game.partiesRejected++;
+        if(game.partiesRejected === 5) {
+          game.phase = 15;
         }
 
         // ...return to party select phase
-        gameList[roomNum].phase--;
-        console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
+        game.phase--;
+        console.log(`\n~~~~~ Phase ${game.phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
         updateProgressBar("partyRejected", roomNum);
       }
       else {
-        // moving to quest phase now, so...
+        // approved and moving to quest phase now, so...
+        // ...record the history
+        game.partyHistories[currentQuest].push(new PartyHistory(game.partyLeader, game.selectedParty, game.votes, true));
+
         // ...change the game phase
-        gameList[roomNum].phase++;
-        console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest(roomNum) + 1}, Questing ~~~~~`);
+        game.phase++;
+        console.log(`\n~~~~~ Phase ${game.phase}: Quest ${getCurrentQuest(roomNum) + 1}, Questing ~~~~~`);
 
         // ...reset all the relevant variables
-        gameList[roomNum].actionsTaken = 0;
-        gameList[roomNum].successes = 0;
-        gameList[roomNum].failures = 0;
+        game.actionsTaken = 0;
+        game.successes = 0;
+        game.failures = 0;
         // maybe these go after party select?
-        gameList[roomNum].partiesRejected = 0;
-        gameList[roomNum].votes = [0,0,0,0,0,0,0,0,0,0];
+        game.partiesRejected = 0;
+        game.votes = [0,0,0,0,0,0,0,0,0,0];
 
         updateProgressBar("partyApproved", roomNum);
       }
-      for(let j = 0; j < roomList[roomNum].length; j++) {
-        io.to(roomList[roomNum][j].sid).emit("updateGameBoard", {
-          gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+      for(let j = 0; j < room.length; j++) {
+        io.to(room[j].sid).emit("updateGameBoard", {
+          gameBoardStr: gameStrBuilder.updateGameBoardStr(room[j].character, room, game)
         });
-        io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
-          actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+        io.to(room[j].sid).emit("updateActionPanel", {
+          actionPanelStr: gameStrBuilder.updateActionPanelStr(room[j].character, room, game)
         });
       }
     }
@@ -584,59 +624,66 @@ io.on('connection', function(socket) {
   });
   socket.on('btnPressQuestAction',function(data) {
     const roomNum = data.roomNum;
+    const game = gameList[roomNum];
+    const room = roomList[roomNum];
     // find out which player pressed it, and save the action
-    for(let i = 0; i < roomList[roomNum].length; i++) {
-      if(socket.id === roomList[roomNum][i].sid) {
-        gameList[roomNum].partyActions[i] = data.questAction;
-        console.log(`\tQuest Action: [${roomList[roomNum][i].name}] quested: ${data.questAction}.`);
+    for(let i = 0; i < room.length; i++) {
+      if(socket.id === room[i].sid) {
+        game.partyActions[i] = data.questAction;
+        console.log(`\tQuest Action: [${room[i].name}] quested: ${data.questAction}.`);
         break;
       }
     }
     if(data.questAction === 1) {
-      gameList[roomNum].successes++;
+      game.successes++;
     }
     else {
-      gameList[roomNum].failures++;
+      game.failures++;
     }
-    gameList[roomNum].actionsTaken++;
+    game.actionsTaken++;
     const currentQuest = getCurrentQuest(roomNum);
-    if(gameList[roomNum].actionsTaken === gameList[roomNum].questSize[currentQuest]) {
+    if(game.actionsTaken === game.questSize[currentQuest]) {
       // quest has ended, so now...
 
       console.log("Final quest action taken. Quest...");
-      // ...save quest result
+      if(game.questHistories[currentQuest] == null) {
+        game.questHistories[currentQuest] = [];
+      }
 
+      // ...determine successfulness
       // if no failures OR
       //   4th quest AND more than six players AND less than two failures
-      if(gameList[roomNum].failures === 0 ||
-         (currentQuest === 3 && roomList[roomNum].length > 6 && gameList[roomNum].failures < 2) ) {
-        gameList[roomNum].quests[currentQuest] = 1;
+      if(game.failures === 0 ||
+         (currentQuest === 3 && room.length > 6 && game.failures < 2) ) {
+        game.quests[currentQuest] = 1;
+        game.questHistories[currentQuest].push(new QuestHistory(game.partyActions, true));
         console.log(`\t...Succeeded!`);
       }
       else {
-        gameList[roomNum].quests[currentQuest] = 2;
+        game.quests[currentQuest] = 2;
+        game.questHistories[currentQuest].push(new QuestHistory(game.partyActions, false));
         console.log(`\t...Failed!`);
       }
 
       // ...change party leader
-      gameList[roomNum].partyLeader++;
-      if(gameList[roomNum].partyLeader === gameList[roomNum].playerCount) {
+      game.partyLeader++;
+      if(game.partyLeader === game.playerCount) {
         console.log(``);
-        gameList[roomNum].partyLeader = 0;
+        game.partyLeader = 0;
       }
 
       // ...update clients with next phase
       updateProgressBar("questEnded", roomNum);
-      gameList[roomNum].phase++;
+      game.phase++;
 
       // count successes and failures
       let currentSuccesses = 0;
       let currentFailures = 0;
       for(let i = 0; i < 5; i++) {
-        if(gameList[roomNum].quests[i] === 1) {
+        if(game.quests[i] === 1) {
           currentSuccesses++;
         }
-        else if (gameList[roomNum].quests[i] === 2) {
+        else if (game.quests[i] === 2) {
           currentFailures++;
         }
         else {
@@ -644,28 +691,29 @@ io.on('connection', function(socket) {
         }
       }
       if(currentSuccesses >= 3) {
-        gameList[roomNum].phase = 15;
+        game.phase = 15;
       }
       if(currentFailures >= 3) {
-        gameList[roomNum].phase = 16;
-        gameList[roomNum].winningTeam = 2;
+        game.phase = 16;
+        game.winningTeam = 2;
       }
 
-      if(gameList[roomNum].phase < 15) {
-        console.log(`\n~~~~~ Phase ${gameList[roomNum].phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
+      if(game.phase < 15) {
+        console.log(`\n~~~~~ Phase ${game.phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
       }
-      else if(gameList[roomNum].phase === 15) {
+      else if(game.phase === 15) {
         console.log(`\n~~~~~ Phase 15: Assassin Phase ~~~~~`);
       }
       else {
         console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
+        console.log("Here's the JSON of the game:", JSON.stringify(game));
       }
-      for(let j = 0; j < roomList[roomNum].length; j++) {
-        io.to(roomList[roomNum][j].sid).emit("updateGameBoard", {
-          gameBoardStr: gameStrBuilder.updateGameBoardStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+      for(let j = 0; j < room.length; j++) {
+        io.to(room[j].sid).emit("updateGameBoard", {
+          gameBoardStr: gameStrBuilder.updateGameBoardStr(room[j].character, room, game)
         });
-        io.to(roomList[roomNum][j].sid).emit("updateActionPanel", {
-          actionPanelStr: gameStrBuilder.updateActionPanelStr(roomList[roomNum][j].character, roomList[roomNum], gameList[roomNum])
+        io.to(room[j].sid).emit("updateActionPanel", {
+          actionPanelStr: gameStrBuilder.updateActionPanelStr(room[j].character, room, game)
         });
       }
     }
@@ -692,6 +740,7 @@ io.on('connection', function(socket) {
     }
     gameList[roomNum].phase = 16;
     console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
+    console.log("Here's the JSON of the game:", JSON.stringify(gameList[roomNum]));
     if(gameList[roomNum].winningTeam === 1) {
       console.log("Good has defeated Evil!");
     }
