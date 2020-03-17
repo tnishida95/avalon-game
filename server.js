@@ -60,11 +60,11 @@ function PartyHistory(partyLeader, selectedParty, votes, isApproved) {
 /**
  * History of the actions taken on a quest.
  * @constructor
- * @param {Array} actions - Array of the action taken by the questing party
+ * @param {Array} partyActions - Array of the action taken by the questing party
  * @param {boolean} isSuccessful - True if the quest
  */
-function QuestHistory(actions, isSuccessful) {
-  this.actions = Array.from(actions);
+function QuestHistory(partyActions, isSuccessful) {
+  this.partyActions = Array.from(partyActions);
   this.isSuccessful = isSuccessful;
 }
 
@@ -77,7 +77,10 @@ function QuestHistory(actions, isSuccessful) {
 function GameManager(room) {
   this.room = room;
   this.playerCount = room.length;
+
+  // contains an array of possible parties
   this.partyHistories = [];
+  // contains a single quest history per index
   this.questHistories = [];
 
   // number of good and evil characters
@@ -113,7 +116,7 @@ function GameManager(room) {
   */
   this.quests = [0,0,0,0,0];
   this.votes = [0,0,0,0,0,0,0,0,0,0];
-  this.partyActions = [0,0,0,0,0,0];
+  this.partyActions = [0,0,0,0,0,0,0,0,0,0];
   this.winningTeam = 0;
 
   // this tracks the quest actions taken for a given quest,
@@ -656,14 +659,16 @@ io.on('connection', function(socket) {
       if(game.failures === 0 ||
          (currentQuest === 3 && room.length > 6 && game.failures < 2) ) {
         game.quests[currentQuest] = 1;
-        game.questHistories[currentQuest].push(new QuestHistory(game.partyActions, true));
+        game.questHistories[currentQuest] = new QuestHistory(game.partyActions, true);
         console.log(`\t...Succeeded!`);
       }
       else {
         game.quests[currentQuest] = 2;
-        game.questHistories[currentQuest].push(new QuestHistory(game.partyActions, false));
+        game.questHistories[currentQuest] = new QuestHistory(game.partyActions, false);
         console.log(`\t...Failed!`);
       }
+      // ...reset the party actions
+      game.partyActions = [0,0,0,0,0,0,0,0,0,0];
 
       // ...change party leader
       game.partyLeader++;

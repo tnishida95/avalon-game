@@ -28,6 +28,15 @@
     width: 82.5%;
     height: 80px;
 }
+
+.good-blue {
+  background-color: #C8C8FF;
+}
+
+.evil-red {
+  background-color: #FFC8C8;
+}
+
 #topText {
     text-align: center;
 }

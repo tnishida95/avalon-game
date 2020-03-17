@@ -227,86 +227,89 @@ exports.buildFirstPlayerBoardStr = function(character, playerList, charArray, go
   return firstPlayerBoardStr;
 };
 
-exports.updateGameBoardStr = function(character, playerList, gameManager) {
+exports.updateGameBoardStr = function(character, playerList, game) {
   let gameBoardStr;
   let partyDisplayStr = "none";
-  let firstQuestResult, secondQuestResult, thirdQuestResult, fourthQuestResult, fifthQuestResult;
 
   // if a party exists, fill the string
-  if( gameManager.phase != 0 &&
-      gameManager.phase != 3 &&
-      gameManager.phase != 6 &&
-      gameManager.phase != 9 &&
-      gameManager.phase != 12 &&
-      gameManager.phase != 15 &&
-      gameManager.phase != 16) {
+  if( game.phase != 0 &&
+      game.phase != 3 &&
+      game.phase != 6 &&
+      game.phase != 9 &&
+      game.phase != 12 &&
+      game.phase != 15 &&
+      game.phase != 16) {
     partyDisplayStr = "";
-    for(let i = 0; i < gameManager.selectedParty.length; i++) {
-      if(gameManager.selectedParty[i] != -1) {
-        partyDisplayStr += '[' + playerList[gameManager.selectedParty[i]].name + ']';
+    for(let i = 0; i < game.selectedParty.length; i++) {
+      if(game.selectedParty[i] != -1) {
+        partyDisplayStr += '[' + playerList[game.selectedParty[i]].name + ']';
       }
     }
   }
+  let firstQuestResult;
+  let secondQuestResult;
+  let thirdQuestResult;
+  let fourthQuestResult;
+  let fifthQuestResult;
   firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
-  if(gameManager.quests[0] == 1) {
+  if(game.quests[0] == 1) {
     firstQuestResult = "S";
   }
-  if(gameManager.quests[1] == 1) {
+  if(game.quests[1] == 1) {
     secondQuestResult = "S";
   }
-  if(gameManager.quests[2] == 1) {
+  if(game.quests[2] == 1) {
     thirdQuestResult = "S";
   }
-  if(gameManager.quests[3] == 1) {
+  if(game.quests[3] == 1) {
     fourthQuestResult = "S";
   }
-  else if(gameManager.quests[3] == 0) {
+  else if(game.quests[3] == 0) {
     fourthQuestResult = "-";
   }
-  if(gameManager.quests[4] == 1) {
+  if(game.quests[4] == 1) {
     fifthQuestResult = "S";
   }
-  else if(gameManager.quests[4] == 0) {
+  else if(game.quests[4] == 0) {
     fifthQuestResult = "-";
   }
-  // let completedQuestElement = `<button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[0]}</button>`;
-  if(gameManager.phase < 15) {
+  if(game.phase < 15) {
     gameBoardStr = `<h2>Game Board</h2>
         <div class="well">
             <p>Quests</p>`;
-    if(gameManager.phase < 3) {
-      gameBoardStr += `<button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[0]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[1]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[2]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
+    if(game.phase < 3) {
+      gameBoardStr += `<button type="button" class="quest-tile btn-lg btn-default">${game.questSize[0]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[1]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[2]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 1</p>`;
     }
-    else if(gameManager.phase < 6) {
+    else if(game.phase < 6) {
       gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
-                <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[1]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[2]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[1]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[2]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 2</p>`;
     }
-    else if(gameManager.phase < 9) {
+    else if(game.phase < 9) {
       gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
-                <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[2]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[3]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[2]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 3</p>`;
     }
-    else if(gameManager.phase < 12) {
+    else if(game.phase < 12) {
       gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
-                <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[3]}</button>
-                <button type="button" class="quest-tile btn btn-default">${gameManager.questSize[4]}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 4</p>`;
     }
@@ -315,16 +318,16 @@ exports.updateGameBoardStr = function(character, playerList, gameManager) {
                 <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${fourthQuestResult}</button>
-                <button type="button" class="quest-tile btn-lg btn-default">${gameManager.questSize[4]}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 5</p>`;
     }
-    gameBoardStr += `<p id="rejectedDisplay">Rejected Parties: ${gameManager.partiesRejected}</p>`;
+    gameBoardStr += `<p id="rejectedDisplay">Rejected Parties: ${game.partiesRejected}</p>`;
 
     // whoAccepted, whoRejected
-    if(gameManager.phase > 1 || gameManager.partiesRejected > 0) {
+    if(game.phase > 1 || game.partiesRejected > 0) {
       // make list of players who accepted and rejected
-      const lastApprovals = gameManager.approvalHistory[gameManager.approvalHistory.length - 1][gameManager.approvalHistory[gameManager.approvalHistory.length - 1].length - 1];
+      const lastApprovals = game.approvalHistory[game.approvalHistory.length - 1][game.approvalHistory[game.approvalHistory.length - 1].length - 1];
       gameBoardStr += `<p id="whoAccepted">Voted to Accept: `;
       for(let i = 0; i < lastApprovals.length; i++) {
         if(lastApprovals[i] == 1) {
@@ -340,38 +343,53 @@ exports.updateGameBoardStr = function(character, playerList, gameManager) {
       gameBoardStr += `</p>`;
 
       /*
-            //TODO: show the action history at the end of the game...so move it out
-            //  of here when done;
-            //this mocks out a possible way to get the data...don't display it
-            //  this way
-            gameBoardStr += `<hr>`;
-            for(let i = 0; i < gameManager.approvalHistory.length; i++) {
-                for(let j = 0; j < gameManager.approvalHistory[i].length; j++) {
-                    gameBoardStr += `<p>Quest ${i+1}, Party ${j+1}</p>`;
-                    for(let k = 0; k < gameManager.playerCount; k++) {
-                        //if the player we're looking at was in the party
-                        if(gameManager.partyHistory[i][j][k] === k) {
-                            gameBoardStr += `<button type="button" class="btn btn-default">X</button>`;
-                        }
-                        else {
-                            gameBoardStr += `<button type="button" class="btn btn-default">-</button>`;
-                        }
-                    }
-                    gameBoardStr += `<p></p>`;
-                    for(let k = 0; k < gameManager.playerCount; k++) {
-                        gameBoardStr += `<button type="button" class="btn btn-default">${gameManager.approvalHistory[i][j][k]}</button>`;
-                    }
-                }
-            }
-            */
+      // TODO: uncomment after quest results are added
+      // history table
+      let historyHeader = "<thead><tr><th>Player</th>";
+      const lastQuestPartyHistories = game.partyHistories[game.partyHistories.length - 1];
+      for(let i = 0; i < lastQuestPartyHistories.length; i++) {
+        historyHeader += `<th>Q${game.partyHistories.length}-P${i+1}</th>`;
+      }
+      historyHeader += "</tr></thead>";
+      let historyRows = "";
+      for(let i = 0; i < game.playerCount; i++) {
+        historyRows += `<tr><td>${game.room[i].name}</td>`;
+        for(let j = 0; j < lastQuestPartyHistories.length; j++) {
+          // if player was in the party
+          if(lastQuestPartyHistories[j].selectedParty.includes(i)) {
+            historyRows += `<td style="background-color: #FFE164">`;
+          }
+          else {
+            historyRows += `<td>`;
+          }
+          if(lastQuestPartyHistories[j].partyLeader === i) {
+            historyRows += "&#x1f451; - ";
+          }
+          // if player approved the party
+          if(lastQuestPartyHistories[j].votes[i] === 1) {
+            historyRows += `&#x2714;</td>`;
+          }
+          else {
+            historyRows += `&#x2716;</td>`;
+          }
+        }
+        historyRows += `</tr>`;
+      }
+      gameBoardStr += `<hr>
+        <table class="text-center table table-bordered table-hover">
+          ${historyHeader}
+          ${historyRows}
+        </table>`;
+      // end history table
+      */
     }
 
     gameBoardStr += `<hr>
         <p id="currentPartyDisplay">Current party: ${partyDisplayStr}</p>
         </div>
         <hr>`;
-  }
-  else if(gameManager.phase == 15) {
+  } // end game.phase < 15
+  else if(game.phase == 15) {
     gameBoardStr = `<h2>Game Board</h2>
         <div class="well">
             <p>Quests</p>
@@ -387,7 +405,7 @@ exports.updateGameBoardStr = function(character, playerList, gameManager) {
   }
   else {
     let winningTeamStr = 'Good has defeated Evil!';
-    if(gameManager.winningTeam == 2) {
+    if(game.winningTeam == 2) {
       winningTeamStr = 'Evil has defeated Good!';
     }
     gameBoardStr = `<h2>Game Board</h2>
@@ -400,17 +418,85 @@ exports.updateGameBoardStr = function(character, playerList, gameManager) {
             <button type="button" class="btn btn-default">${fifthQuestResult}</button>
             <hr>
             <p id="currentQuestDisplay">Game End</p>`;
-    if(gameManager.assassinated != -1) {
-      const assassinated = playerList[gameManager.assassinated].character.includes("good") ?
-        "a Servant of Arthur" : playerList[gameManager.assassinated].character;
-      gameBoardStr += `<p>The Assassin selected [${playerList[gameManager.assassinated].name}], who was ${assassinated}.</p>`;
+    if(game.assassinated != -1) {
+      const assassinated = playerList[game.assassinated].character.includes("good") ?
+        "a Servant of Arthur" : playerList[game.assassinated].character;
+      gameBoardStr += `<p>The Assassin selected [${playerList[game.assassinated].name}], who was ${assassinated}.</p>`;
     }
     gameBoardStr +=`<h3>${winningTeamStr}</h3>
         </div>
         <hr>`;
+
+    // game-end history table
+    let historyHeader = "<thead><tr><th>Player</th><th>Character</th>";
+    for(let i = 0; i < game.partyHistories.length; i++) {
+      for(let j = 0; j < game.partyHistories[i].length; j++) {
+        historyHeader += `<th>Q${i+1}-P${j+1}</th>`;
+      }
+      historyHeader += `<th>Q${i+1}</th>`;
+    }
+
+    let historyRows = "";
+    // for each player
+    for(let i = 0; i < game.playerCount; i++) {
+      // TODO: use pretty name instead of "goodOne"
+      const teamColorClass = (game.room[i].character === "merlin" ||
+                            game.room[i].character === "percival" ||
+                            game.room[i].character.includes("good")) ? "good-blue" : "evil-red";
+      historyRows += `<tr><td class="${teamColorClass}">${game.room[i].name}</td><td class="${teamColorClass}">${game.room[i].character}</td>`;
+      // for each quest
+      for(let j = 0; j < game.partyHistories.length; j++) {
+        // for party histories in the quest
+        for(let k = 0; k < game.partyHistories[j].length; k++) {
+          // if player was in the party
+          if(game.partyHistories[j][k].selectedParty.includes(i)) {
+            historyRows += `<td style="background-color: #FFE164">`;
+          }
+          else {
+            historyRows += `<td>`;
+          }
+          if(game.partyHistories[j][k].partyLeader === i) {
+            historyRows += "&#x1f451; - ";
+          }
+          // if player approved the party
+          if(game.partyHistories[j][k].votes[i] === 1) {
+            historyRows += `&#x2714;</td>`;
+          }
+          else {
+            historyRows += `&#x2716;</td>`;
+          }
+        }
+        // if quest was successful
+        if(game.questHistories[j].isSuccessful) {
+          historyRows += `<td class="good-blue">`;
+        }
+        else {
+          historyRows += `<td class="evil-red">`;
+        }
+        // if player tried to succeed the quest
+        if(game.questHistories[j].partyActions[i] === 1) {
+          historyRows += `&#x1F315;</td>`;
+        }
+        else if(game.questHistories[j].partyActions[i] === 2) {
+          historyRows += `&#x1F311;</td>`;
+        }
+        else {
+          historyRows += `</td>`;
+        }
+      }
+      historyRows += `</tr>`;
+    }
+    gameBoardStr += `<hr>
+      <table class="text-center table table-bordered table-hover">
+        ${historyHeader}
+        ${historyRows}
+      </table>`;
+    // end game-end history table
   }
+
   return gameBoardStr;
 };
+
 exports.updateActionPanelStr = function(character, playerList, gameManager) {
   const currentPhase = gameManager.phase;
   const partyLeaderChar = playerList[gameManager.partyLeader].character;
