@@ -342,35 +342,61 @@ exports.updateGameBoardStr = function(character, playerList, game) {
       }
       gameBoardStr += `</p>`;
 
-      /*
-      // TODO: uncomment after quest results are added
-      // history table
+      // in-game history table
       let historyHeader = "<thead><tr><th>Player</th>";
-      const lastQuestPartyHistories = game.partyHistories[game.partyHistories.length - 1];
-      for(let i = 0; i < lastQuestPartyHistories.length; i++) {
-        historyHeader += `<th>Q${game.partyHistories.length}-P${i+1}</th>`;
+      for(let i = 0; i < game.partyHistories.length; i++) {
+        for(let j = 0; j < game.partyHistories[i].length; j++) {
+          historyHeader += `<th>Q${i+1}-P${j+1}</th>`;
+        }
+        if(game.questHistories[i] != null) {
+          historyHeader += `<th>Q${i+1}</th>`;
+        }
       }
-      historyHeader += "</tr></thead>";
+
       let historyRows = "";
+      // for each player
       for(let i = 0; i < game.playerCount; i++) {
         historyRows += `<tr><td>${game.room[i].name}</td>`;
-        for(let j = 0; j < lastQuestPartyHistories.length; j++) {
-          // if player was in the party
-          if(lastQuestPartyHistories[j].selectedParty.includes(i)) {
-            historyRows += `<td style="background-color: #FFE164">`;
+        // for each quest
+        for(let j = 0; j < game.partyHistories.length; j++) {
+          // for party histories in the quest
+          for(let k = 0; k < game.partyHistories[j].length; k++) {
+            // if player was in the party
+            if(game.partyHistories[j][k].selectedParty.includes(i)) {
+              historyRows += `<td style="background-color: #FFE164">`;
+            }
+            else {
+              historyRows += `<td>`;
+            }
+            if(game.partyHistories[j][k].partyLeader === i) {
+              historyRows += "&#x1f451; - ";
+            }
+            // if player approved the party
+            if(game.partyHistories[j][k].votes[i] === 1) {
+              historyRows += `&#x2714;</td>`;
+            }
+            else {
+              historyRows += `&#x2716;</td>`;
+            }
           }
-          else {
-            historyRows += `<td>`;
-          }
-          if(lastQuestPartyHistories[j].partyLeader === i) {
-            historyRows += "&#x1f451; - ";
-          }
-          // if player approved the party
-          if(lastQuestPartyHistories[j].votes[i] === 1) {
-            historyRows += `&#x2714;</td>`;
-          }
-          else {
-            historyRows += `&#x2716;</td>`;
+          if(game.questHistories[j] != null) {
+            // if quest was successful
+            if(game.questHistories[j].isSuccessful) {
+              historyRows += `<td class="good-blue">`;
+            }
+            else {
+              historyRows += `<td class="evil-red">`;
+            }
+            // if player tried to succeed the quest
+            if(game.questHistories[j].partyActions[i] === 1) {
+              historyRows += `&#x2B50;</td>`;
+            }
+            else if(game.questHistories[j].partyActions[i] === 2) {
+              historyRows += `&#x2B50;</td>`;
+            }
+            else {
+              historyRows += `</td>`;
+            }
           }
         }
         historyRows += `</tr>`;
@@ -380,8 +406,7 @@ exports.updateGameBoardStr = function(character, playerList, game) {
           ${historyHeader}
           ${historyRows}
         </table>`;
-      // end history table
-      */
+      // end in-game history table
     }
 
     gameBoardStr += `<hr>
