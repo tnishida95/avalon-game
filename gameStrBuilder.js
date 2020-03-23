@@ -255,11 +255,20 @@ exports.updateGameBoardStr = function(character, playerList, game) {
   if(game.quests[0] == 1) {
     firstQuestResult = "S";
   }
+  else if(game.quests[0] == 0) {
+    firstQuestResult = "-";
+  }
   if(game.quests[1] == 1) {
     secondQuestResult = "S";
   }
+  else if(game.quests[1] == 0) {
+    secondQuestResult = "-";
+  }
   if(game.quests[2] == 1) {
     thirdQuestResult = "S";
+  }
+  else if(game.quests[2] == 0) {
+    thirdQuestResult = "-";
   }
   if(game.quests[3] == 1) {
     fourthQuestResult = "S";
@@ -491,22 +500,24 @@ exports.updateGameBoardStr = function(character, playerList, game) {
             historyRows += `&#x2716;</td>`;
           }
         }
-        // if quest was successful
-        if(game.questHistories[j].isSuccessful) {
-          historyRows += `<td class="good-blue">`;
-        }
-        else {
-          historyRows += `<td class="evil-red">`;
-        }
-        // if player tried to succeed the quest
-        if(game.questHistories[j].partyActions[i] === 1) {
-          historyRows += `&#x1F315;</td>`;
-        }
-        else if(game.questHistories[j].partyActions[i] === 2) {
-          historyRows += `&#x1F311;</td>`;
-        }
-        else {
-          historyRows += `</td>`;
+        if(game.questHistories[j] != null) {
+          // if quest was successful
+          if(game.questHistories[j].isSuccessful) {
+            historyRows += `<td class="good-blue">`;
+          }
+          else {
+            historyRows += `<td class="evil-red">`;
+          }
+          // if player tried to succeed the quest
+          if(game.questHistories[j].partyActions[i] === 1) {
+            historyRows += `&#x1F315;</td>`;
+          }
+          else if(game.questHistories[j].partyActions[i] === 2) {
+            historyRows += `&#x1F311;</td>`;
+          }
+          else {
+            historyRows += `</td>`;
+          }
         }
       }
       historyRows += `</tr>`;

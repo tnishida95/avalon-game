@@ -581,11 +581,23 @@ io.on('connection', function(socket) {
           game.partyLeader = 0;
         }
 
-        // TODO: is this right?
         // ...increment partiesRejected and check if it's the fifth
         game.partiesRejected++;
         if(game.partiesRejected === 5) {
-          game.phase = 15;
+          // if five parties rejected, Evil wins
+          game.phase = 16;
+          game.winningTeam = 2;
+          console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
+          console.log("Here's the JSON of the game:", JSON.stringify(game));
+          for(let j = 0; j < room.length; j++) {
+            io.to(room[j].sid).emit("updateGameBoard", {
+              gameBoardStr: gameStrBuilder.updateGameBoardStr(room[j].character, room, game)
+            });
+            io.to(room[j].sid).emit("updateActionPanel", {
+              actionPanelStr: gameStrBuilder.updateActionPanelStr(room[j].character, room, game)
+            });
+          }
+          return;
         }
 
         // ...return to party select phase
