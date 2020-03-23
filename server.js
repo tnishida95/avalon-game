@@ -351,10 +351,11 @@ io.on('connection', function(socket) {
           console.log(`Player [${data.name}] is rejoining the game in room [${roomNum}].`);
           socket.join(roomNum);
           room[i].sid = socket.id;
-          const charArray = [];
+          const charArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
           for(let j = 0; j < room.length; j++) {
-            charArray.push(room[j].character);
+            charArray[utils.getCharacterIndexFromCharacterName(room[j].character)] = 1;
           }
+          console.log("charArray:" + charArray);
           io.to(room[i].sid).emit("loadGameScreen", {
             list: room,
             roomNum: roomNum,

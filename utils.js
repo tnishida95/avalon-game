@@ -26,21 +26,8 @@ exports.assignCharacters = function(characterSelections, room) {
   for(let i = 0; i < characterSelections.length; i++) {
     const characters = characterSelections[i];
     // console.log("\t" + characters);
-    if(characters == "merlin") {charArray[0] = 1; goodCount++;}
-    else if (characters == "percival") {charArray[1] = 1; goodCount++;}
-    else if (characters == "goodOne") {charArray[2] = 1; goodCount++;}
-    else if (characters == "goodTwo") {charArray[3] = 1; goodCount++;}
-    else if (characters == "goodThree") {charArray[4] = 1; goodCount++;}
-    else if (characters == "goodFour") {charArray[5] = 1; goodCount++;}
-    else if (characters == "goodFive") {charArray[6] = 1; goodCount++;}
-    else if (characters == "assassin") {charArray[7] = 1; evilCount++;}
-    else if (characters == "morgana") {charArray[8] = 1; evilCount++;}
-    else if (characters == "mordred") {charArray[9] = 1; evilCount++;}
-    else if (characters == "oberon") {charArray[10] = 1; evilCount++;}
-    else if (characters == "evilOne") {charArray[11] = 1; evilCount++;}
-    else if (characters == "evilTwo") {charArray[12] = 1; evilCount++;}
-    else if (characters == "evilThree") {charArray[13] = 1; evilCount++;}
-    else {
+    const charIndex = exports.getCharacterIndexFromCharacterName(characters);
+    if(charIndex === -1) {
       const message = `Unmatched character names!`;
       console.error("invalid character selection: " + message);
       return {
@@ -49,7 +36,15 @@ exports.assignCharacters = function(characterSelections, room) {
         charArray: null
       };
     }
+    else if(charIndex >= 0 && charIndex < 7) {
+      goodCount++;
+    }
+    else {
+      evilCount++;
+    }
+    charArray[charIndex] = 1;
   }
+
   /*
   rules check:
     merlin and assassin must be selected
@@ -161,4 +156,50 @@ exports.assignCharacters = function(characterSelections, room) {
     message: "Valid character selection!",
     charArray: charArrayCopy
   };
+};
+
+exports.getCharacterIndexFromCharacterName = function(characterName) {
+  if(characterName === "merlin") {
+    return 0;
+  }
+  if(characterName === "percival") {
+    return 1;
+  }
+  if(characterName === "goodOne") {
+    return 2;
+  }
+  if(characterName === "goodTwo") {
+    return 3;
+  }
+  if(characterName === "goodThree") {
+    return 4;
+  }
+  if(characterName === "goodFour") {
+    return 5;
+  }
+  if(characterName === "goodFive") {
+    return 6;
+  }
+  if(characterName === "assassin") {
+    return 7;
+  }
+  if(characterName === "morgana") {
+    return 8;
+  }
+  if(characterName === "mordred") {
+    return 9;
+  }
+  if(characterName === "oberon") {
+    return 10;
+  }
+  if(characterName === "evilOne") {
+    return 11;
+  }
+  if(characterName === "evilTwo") {
+    return 12;
+  }
+  if(characterName === "evilThree") {
+    return 13;
+  }
+  return -1;
 };
