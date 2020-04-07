@@ -252,6 +252,7 @@ exports.updateGameBoardStr = function(character, playerList, game) {
   let fourthQuestResult;
   let fifthQuestResult;
   firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
+  const fourthQuestAsterisk = (game.playerCount >= 7) ? "*" : "";
   if(game.quests[0] == 1) {
     firstQuestResult = "S";
   }
@@ -290,7 +291,7 @@ exports.updateGameBoardStr = function(character, playerList, game) {
       gameBoardStr += `<button type="button" class="quest-tile btn-lg btn-default">${game.questSize[0]}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[1]}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[2]}</button>
-                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}${fourthQuestAsterisk}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 1</p>`;
@@ -299,7 +300,7 @@ exports.updateGameBoardStr = function(character, playerList, game) {
       gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[1]}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[2]}</button>
-                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}${fourthQuestAsterisk}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 2</p>`;
@@ -308,7 +309,7 @@ exports.updateGameBoardStr = function(character, playerList, game) {
       gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[2]}</button>
-                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}</button>
+                <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}${fourthQuestAsterisk}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 3</p>`;
@@ -317,7 +318,7 @@ exports.updateGameBoardStr = function(character, playerList, game) {
       gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
                 <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
-                <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[3]}</button>
+                <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[3]}${fourthQuestAsterisk}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 4</p>`;

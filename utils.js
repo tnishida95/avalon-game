@@ -112,7 +112,6 @@ exports.assignCharacters = function(characterSelections, room) {
 
   // assign players a random character
   let randomNum;
-  // console.log("\tthere are " + room.length + " players in the room");
   for(let i = 0; i < room.length; i++) {
     if(room[i].character == "none") {
       // process.stdout.write("getting randomNum: ");
@@ -144,12 +143,11 @@ exports.assignCharacters = function(characterSelections, room) {
       charArray[randomNum] = 0;
     }
   }
-  /*
+
   console.log("assigned characters:");
   for(let i = 0; i < room.length; i++) {
     console.log("\t[" + room[i].name + "] is " + room[i].character);
   }
-  */
 
   return {
     isValid: true,
