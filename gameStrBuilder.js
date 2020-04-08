@@ -251,37 +251,53 @@ exports.updateGameBoardStr = function(character, playerList, game) {
   let thirdQuestResult;
   let fourthQuestResult;
   let fifthQuestResult;
-  firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "F";
+  firstQuestResult = secondQuestResult = thirdQuestResult = fourthQuestResult = fifthQuestResult = "-";
+  let firstQuestColor;
+  let secondQuestColor;
+  let thirdQuestColor;
+  let fourthQuestColor;
+  let fifthQuestColor;
+  firstQuestColor = secondQuestColor = thirdQuestColor = fourthQuestColor = fifthQuestColor = "";
   const fourthQuestAsterisk = (game.playerCount >= 7) ? "*" : "";
   if(game.quests[0] == 1) {
     firstQuestResult = "S";
+    firstQuestColor = "good-blue";
   }
-  else if(game.quests[0] == 0) {
-    firstQuestResult = "-";
+  else if(game.quests[0] == 2) {
+    firstQuestResult = "F";
+    firstQuestColor = "evil-red";
   }
   if(game.quests[1] == 1) {
     secondQuestResult = "S";
+    secondQuestColor = "good-blue";
   }
-  else if(game.quests[1] == 0) {
-    secondQuestResult = "-";
+  else if(game.quests[1] == 2) {
+    secondQuestResult = "F";
+    secondQuestColor = "evil-red";
   }
   if(game.quests[2] == 1) {
     thirdQuestResult = "S";
+    thirdQuestColor = "good-blue";
   }
-  else if(game.quests[2] == 0) {
-    thirdQuestResult = "-";
+  else if(game.quests[2] == 2) {
+    thirdQuestResult = "F";
+    thirdQuestColor = "evil-red";
   }
   if(game.quests[3] == 1) {
     fourthQuestResult = "S";
+    fourthQuestColor = "good-blue";
   }
-  else if(game.quests[3] == 0) {
-    fourthQuestResult = "-";
+  else if(game.quests[3] == 2) {
+    fourthQuestResult = "F";
+    fourthQuestColor = "evil-red";
   }
   if(game.quests[4] == 1) {
     fifthQuestResult = "S";
+    fifthQuestColor = "good-blue";
   }
-  else if(game.quests[4] == 0) {
-    fifthQuestResult = "-";
+  else if(game.quests[4] == 2) {
+    fifthQuestResult = "F";
+    fifthQuestColor = "evil-red";
   }
   if(game.phase < 15) {
     gameBoardStr = `<h2>Game Board</h2>
@@ -297,7 +313,7 @@ exports.updateGameBoardStr = function(character, playerList, game) {
                 <p id="currentQuestDisplay">Current Quest: 1</p>`;
     }
     else if(game.phase < 6) {
-      gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
+      gameBoardStr += `<button type="button" class="quest-tile btn btn-default ${firstQuestColor}">${firstQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[1]}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[2]}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}${fourthQuestAsterisk}</button>
@@ -306,8 +322,8 @@ exports.updateGameBoardStr = function(character, playerList, game) {
                 <p id="currentQuestDisplay">Current Quest: 2</p>`;
     }
     else if(game.phase < 9) {
-      gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
-                <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
+      gameBoardStr += `<button type="button" class="quest-tile btn btn-default ${firstQuestColor}">${firstQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default ${secondQuestColor}">${secondQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[2]}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[3]}${fourthQuestAsterisk}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
@@ -315,19 +331,19 @@ exports.updateGameBoardStr = function(character, playerList, game) {
                 <p id="currentQuestDisplay">Current Quest: 3</p>`;
     }
     else if(game.phase < 12) {
-      gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
-                <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
-                <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
+      gameBoardStr += `<button type="button" class="quest-tile btn btn-default ${firstQuestColor}">${firstQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default ${secondQuestColor}">${secondQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default ${thirdQuestColor}">${thirdQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[3]}${fourthQuestAsterisk}</button>
                 <button type="button" class="quest-tile btn btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 4</p>`;
     }
     else {
-      gameBoardStr += `<button type="button" class="quest-tile btn btn-default">${firstQuestResult}</button>
-                <button type="button" class="quest-tile btn btn-default">${secondQuestResult}</button>
-                <button type="button" class="quest-tile btn btn-default">${thirdQuestResult}</button>
-                <button type="button" class="quest-tile btn btn-default">${fourthQuestResult}</button>
+      gameBoardStr += `<button type="button" class="quest-tile btn btn-default ${firstQuestColor}">${firstQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default ${secondQuestColor}">${secondQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default ${thirdQuestColor}">${thirdQuestResult}</button>
+                <button type="button" class="quest-tile btn btn-default ${fourthQuestColor}">${fourthQuestResult}</button>
                 <button type="button" class="quest-tile btn-lg btn-default">${game.questSize[4]}</button>
                 <hr>
                 <p id="currentQuestDisplay">Current Quest: 5</p>`;
@@ -428,29 +444,26 @@ exports.updateGameBoardStr = function(character, playerList, game) {
     gameBoardStr = `<h2>Game Board</h2>
         <div class="well">
             <p>Quests</p>
-            <button type="button" class="btn btn-default">${firstQuestResult}</button>
-            <button type="button" class="btn btn-default">${secondQuestResult}</button>
-            <button type="button" class="btn btn-default">${thirdQuestResult}</button>
-            <button type="button" class="btn btn-default">${fourthQuestResult}</button>
-            <button type="button" class="btn btn-default">${fifthQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${firstQuestColor}">${firstQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${secondQuestColor}">${secondQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${thirdQuestColor}">${thirdQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${fourthQuestColor}">${fourthQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${fifthQuestColor}">${fifthQuestResult}</button>
             <hr>
             <p id="currentQuestDisplay">Assassin Phase</p>
         </div>
         <hr>`;
   }
   else {
-    let winningTeamStr = 'Good has defeated Evil!';
-    if(game.winningTeam == 2) {
-      winningTeamStr = 'Evil has defeated Good!';
-    }
+    const winningTeamStr = game.winningTeam == 1 ? 'Good has defeated Evil!' : 'Evil has defeated Good!';
     gameBoardStr = `<h2>Game Board</h2>
         <div class="well">
             <p>Quests</p>
-            <button type="button" class="btn btn-default">${firstQuestResult}</button>
-            <button type="button" class="btn btn-default">${secondQuestResult}</button>
-            <button type="button" class="btn btn-default">${thirdQuestResult}</button>
-            <button type="button" class="btn btn-default">${fourthQuestResult}</button>
-            <button type="button" class="btn btn-default">${fifthQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${firstQuestColor}">${firstQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${secondQuestColor}">${secondQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${thirdQuestColor}">${thirdQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${fourthQuestColor}">${fourthQuestResult}</button>
+            <button type="button" class="quest-tile btn btn-default ${fifthQuestColor}">${fifthQuestResult}</button>
             <hr>
             <p id="currentQuestDisplay">Game End</p>`;
     if(game.assassinated != -1) {

@@ -30,11 +30,11 @@
 }
 
 .good-blue {
-  background-color: #C8C8FF;
+  background-color: #C8C8FF !important;
 }
 
 .evil-red {
-  background-color: #FFC8C8;
+  background-color: #FFC8C8 !important;
 }
 
 #topText {
