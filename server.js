@@ -311,7 +311,8 @@ io.on('connection', function(socket) {
     socketList.splice(index,1);
     console.log('socket [' + socket.id + '] disconnected');
     printSocketList();
-    // TODO: update any rooms with the socket of the dc
+    // TODO: if the host of a party disconnects, the room should be removed
+    // TODO: if all players in a game have disconnected, the room and game should be removed
   });
   socket.on('btnPressNewGame',function(data) {
     console.log("New Game button pressed");

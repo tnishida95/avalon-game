@@ -10,6 +10,8 @@ Avalon is game of hidden identities.  Each round, players must agree on a questi
 
 This instance of **Avalon** attempts to play in accordance to the original board game's rules.  Though this web version removes some of the difficulties of managing game pieces and cards, it is still meant to be played with all players in the same room.
 
+Currently no support for Lancelot or Lady of the Lake.
+
 ### Workspace Set Up
 
 You will need Node and npm.  If you don't have these already, run the following commands:
@@ -24,4 +26,4 @@ npm install socket.io
 npm install jquery
 npm install bootstrap
 ```
-To start the server, call `node app.js` and open `localhost:2000` in a browser window.
+To start the server, call `node server.js` and open `localhost:2000` in a browser window.
