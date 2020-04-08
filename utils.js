@@ -201,3 +201,27 @@ exports.getCharacterIndexFromCharacterName = function(characterName) {
   }
   return -1;
 };
+
+exports.getTileStringFromQuestResult = function(result) {
+  if(result === 1) {
+    return "S";
+  }
+  else if(result === 2) {
+    return "F";
+  }
+  else {
+    return "-";
+  }
+};
+
+exports.getStyleClassFromQuestResult = function(result) {
+  if(result === 1) {
+    return "good-blue";
+  }
+  else if(result === 2) {
+    return "evil-red";
+  }
+  else {
+    return "";
+  }
+};
