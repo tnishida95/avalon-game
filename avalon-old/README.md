@@ -12,26 +12,18 @@ This instance of **Avalon** attempts to play in accordance to the original board
 
 Currently no support for Lancelot or Lady of the Lake.
 
-### Build Setup
+### Workspace Set Up
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run all tests
-npm test
+You will need Node and npm.  If you don't have these already, run the following commands:
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+sudo apt-get install nodejs
+sudo apt-get install npm
+```
+Call `npm init` to start up the npm package manager.  Then, get the needed packages with `npm install` or `npm install <package>`:
+```
+npm install express
+npm install socket.io
+npm install jquery
+npm install bootstrap
+```
+To start the server, call `node server.js` and open `localhost:2000` in a browser window.
