@@ -5,7 +5,7 @@ const io = require('socket.io')(http);
 io.on('connection', (socket) => {
   console.log(`socket [${socket.id}] connected`);
 
-  socket.on('disconnect',function() {
+  socket.on('disconnect', function() {
     // get the index of the socket that just dc'd, cut it out of lists
     // const index = socketList.indexOf(socket.id);
     // socketList.splice(index, 1);
@@ -15,9 +15,15 @@ io.on('connection', (socket) => {
     // TODO: if all players in a game have disconnected, the room and game should be removed
   });
 
-  socket.on('btnPressNewGame',function(data) {
+  socket.on('btnPressNewGame', function(data) {
     console.log("New Game button pressed");
+    console.log(data);
   });
+  socket.on('btnPressJoinGame', function(data) {});
+  socket.on('btnPressLeaveGame', function(data) {});
+  socket.on('btnPressDisbandGame', function(data) {});
+  socket.on('btnPressStartGame', function(data) {});
+
 });
 
 http.listen(3000, () => {

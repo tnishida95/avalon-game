@@ -1,19 +1,20 @@
 <template>
   <div id="app">
     <MainMenu/>
+    <component v-bind:is="componentName"/>
   </div>
 </template>
 
 <script>
 import MainMenu from './components/MainMenu';
-// import Lobby from './components/Lobby';
+import Lobby from './components/Lobby';
 // import Game from './components/Game';
 
 export default {
   name: 'App',
   components: {
-    MainMenu
-    // Lobby,
+    MainMenu,
+    Lobby
     // Game
   }
 };

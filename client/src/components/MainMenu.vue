@@ -3,9 +3,9 @@
     <h2 id="topText">Welcome to Avalon!</h2>
     <hr>
     <div id="inputArea" class="text-center">
-      <input type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
+      <input v-model="name" type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
       <p></p>
-      <input type="text" id="roomInput" maxlength="20" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
+      <input v-model="room" type="text" id="roomInput" maxlength="20" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
       <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
       <hr>
     </div>
@@ -34,11 +34,18 @@ export default {
   components: {
     Rules
   },
+  data: function() {
+    return {
+      name: "",
+      room: ""
+    };
+  },
   methods: {
     btnPressNewGame: function(event) {
       this.$socket.emit('btnPressNewGame', {
-        name: $("#nameInput").val()
+        name: this.name
       });
+      // TODO: now, pass event up to the App component and replace MainMenu with Lobby
     }
   }
 };
