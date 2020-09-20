@@ -7,7 +7,7 @@
 <script>
 import MainMenu from './components/MainMenu';
 // import Lobby from './components/Lobby';
-// import Game from './components/Game'
+// import Game from './components/Game';
 
 export default {
   name: 'App',

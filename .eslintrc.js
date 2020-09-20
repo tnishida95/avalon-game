@@ -29,7 +29,7 @@ module.exports = {
     "quotes": "off",
     "guard-for-in": "off",
     "max-len": "off",
-    "indent": ["error", 2]
-    //"no-undef": "off"
+    "indent": ["error", 2],
+    "no-undef": "off"
   }
-}
+};
