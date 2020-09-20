@@ -1,21 +1,40 @@
 <template>
   <div id="app">
-    <MainMenu/>
-    <component v-bind:is="componentName"/>
+    <Header v-bind:headerText="headerText"/>
+    <!-- <MainMenu/> -->
+    <component v-on:btnPressNewGame="btnPressNewGame" v-bind:is="currentView"/>
+    <Footer/>
   </div>
 </template>
 
 <script>
 import MainMenu from './components/MainMenu';
 import Lobby from './components/Lobby';
+import Header from './components/Header';
+import Footer from './components/Footer';
 // import Game from './components/Game';
 
 export default {
   name: 'App',
   components: {
+    Header,
     MainMenu,
-    Lobby
+    Lobby,
+    Footer
     // Game
+  },
+  data: function() {
+    return {
+      currentView: "MainMenu",
+      headerText: "Welcome to Avalon!"
+    };
+  },
+  methods: {
+    btnPressNewGame: function(name) {
+      console.log('gottem');
+      this.currentView = 'Lobby';
+      this.headerText = 'room #';
+    }
   }
 };
 </script>

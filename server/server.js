@@ -16,8 +16,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('btnPressNewGame', function(data) {
-    console.log("New Game button pressed");
-    console.log(data);
+    console.log(`[${data.name}] pressed New Game`);
   });
   socket.on('btnPressJoinGame', function(data) {});
   socket.on('btnPressLeaveGame', function(data) {});

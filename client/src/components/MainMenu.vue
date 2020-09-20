@@ -1,7 +1,5 @@
 <template>
   <div id="MainMenu">
-    <h2 id="topText">Welcome to Avalon!</h2>
-    <hr>
     <div id="inputArea" class="text-center">
       <input v-model="name" type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
       <p></p>
@@ -17,12 +15,7 @@
       </div>
     </div>
     <hr>
-
-  <Rules/>
-
-    <div id="footer">
-      <span>Tyler Nishida | Based on "The Resistance: Avalon" board game by Don Eskridge and published by Indie Boards & Cards | Not endorsed by or affiliated with designer or publisher | <a href="https://github.com/tnishida95/avalon-game">GitHub</a></span>
-    </div>
+    <Rules/>
   </div>
 </template>
 
@@ -45,6 +38,7 @@ export default {
       this.$socket.emit('btnPressNewGame', {
         name: this.name
       });
+      this.$emit('btnPressNewGame', this.name);
       // TODO: now, pass event up to the App component and replace MainMenu with Lobby
     }
   }
