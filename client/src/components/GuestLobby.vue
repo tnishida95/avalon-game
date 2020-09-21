@@ -35,7 +35,6 @@ export default {
       this.$socket.emit('btnPressLeaveGame', {
         roomNum: this.roomNum
       });
-      this.$emit('btnPressLeaveGame');
     },
   }
 };

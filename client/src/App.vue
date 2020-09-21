@@ -48,6 +48,7 @@ export default {
         else {
           this.currentView = 'GuestLobby';
         }
+        document.title = `Avalon - Room #${this.roomNum}`;
       });
     },
     listenLoadMainMenu: function() {
@@ -56,10 +57,6 @@ export default {
         this.headerText = "Welcome to Avalon!";
         this.currentView = 'MainMenu';
       });
-    },
-    btnPressLeaveGame: function() {
-      this.headerText = "Welcome to Avalon!";
-      this.currentView = 'MainMenu';
     }
   },
   beforeMount() {

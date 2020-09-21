@@ -1,6 +1,9 @@
 const app = require('express')();
-const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const serv = require('http').createServer(app);
+const port = process.env.PORT || 3000;
+serv.listen(port);
+const io = require('socket.io')(serv);
+console.log(`Server started listening on port ${port}.`);
 
 const socketList = [];
 
@@ -128,7 +131,7 @@ function GameManager(room) {
   this.partyHistory = [];
 }
 
-/** Prints the list of players. */
+/** Prints the list of connected sockets. */
 function printSocketList() {
   process.stdout.write('socketList: ');
   for(let i = 0; i < socketList.length; i++) {
@@ -316,7 +319,6 @@ io.on('connection', (socket) => {
       roomNum: roomNum
     });
   });
-
   socket.on('btnPressJoinGame', function(data) {
     const roomNum = (data.roomNum).toString();
     console.log(`[${data.name}] pressed Join Game with roomNum: ${data.roomNum}`);
@@ -386,7 +388,6 @@ io.on('connection', (socket) => {
     }
     io.to(socket.id).emit('loadMainMenu');
   });
-
   socket.on('btnPressDisbandGame', function(data) {
     const roomNum = data.roomNum;
     console.log("Disband Game button pressed for roomNum: " + roomNum);
@@ -406,11 +407,6 @@ io.on('connection', (socket) => {
     }
 
   });
-
   socket.on('btnPressStartGame', function(data) {});
 
-});
-
-http.listen(3000, () => {
-  console.log('listening on *:3000');
 });
