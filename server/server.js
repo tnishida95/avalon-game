@@ -284,10 +284,10 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', function() {
     // get the index of the socket that just dc'd, cut it out of lists
-    // const index = socketList.indexOf(socket.id);
-    // socketList.splice(index, 1);
+    const index = socketList.indexOf(socket.id);
+    socketList.splice(index, 1);
     console.log(`socket [${socket.id}] disconnected`);
-
+    printSocketList();
     // TODO: if the host of a party disconnects, the room should be removed
     // TODO: if all players in a game have disconnected, the room and game should be removed
   });
@@ -309,13 +309,58 @@ io.on('connection', (socket) => {
     roomList[roomNum] = [createPlayer(socket, data.name)];
     printRoomList();
     socket.join(roomNum);
-    io.to(roomNum).emit("loadLobby", {
+    io.to(roomNum).emit("updateLobby", {
+      room: roomList[roomNum],
       roomNum: roomNum
     });
-    console.log("done");
   });
 
-  socket.on('btnPressJoinGame', function(data) {});
+  socket.on('btnPressJoinGame', function(data) {
+    const roomNum = (data.roomNum).toString();
+    console.log(`[${data.name}] pressed Join Game with roomNum: ${data.roomNum}`);
+    if(gameList[roomNum] != null) {
+      // checking if player is rejoining a game
+      const game = gameList[roomNum];
+      const room = game.room;
+      for(let i = 0; i < room.length; i++) {
+        if(room[i].name === data.name) {
+          console.log(`Player [${data.name}] is rejoining the game in room [${roomNum}].`);
+          socket.join(roomNum);
+          room[i].sid = socket.id;
+          const charArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+          for(let j = 0; j < room.length; j++) {
+            charArray[utils.getCharacterIndexFromCharacterName(room[j].character)] = 1;
+          }
+          console.log("charArray:" + charArray);
+          io.to(room[i].sid).emit("loadGameScreen", {
+            list: room,
+            roomNum: roomNum,
+            gameScreenStr: buildGameScreen(roomNum, room[i].character, charArray)
+          });
+          io.to(room[i].sid).emit("updateGameBoard", {
+            gameBoardStr: gameStrBuilder.updateGameBoardStr(room[i].character, room, gameList[roomNum])
+          });
+          io.to(room[i].sid).emit("updateActionPanel", {
+            actionPanelStr: gameStrBuilder.updateActionPanelStr(room[i].character, room, gameList[roomNum])
+          });
+          return;
+        }
+      } // end rejoin
+      console.log("\tGame already in progress, cannot join.");
+    }
+    else if(roomNum in roomList) {
+      roomList[roomNum][roomList[roomNum].length] = createPlayer(socket, data.name);
+      printRoomList();
+      socket.join(roomNum);
+      io.to(roomNum).emit("updateLobby", {
+        room: roomList[roomNum],
+        roomNum: roomNum
+      });
+    }
+    else {
+      console.log(`roomNum ${roomNum} not found`);
+    }
+  });
   socket.on('btnPressLeaveGame', function(data) {});
   socket.on('btnPressDisbandGame', function(data) {});
   socket.on('btnPressStartGame', function(data) {});

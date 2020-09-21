@@ -1,16 +1,18 @@
 <template>
   <div id="app">
     <Header v-bind:headerText="headerText"/>
-    <!-- <MainMenu/> -->
-    <component v-on:btnPressNewGame="btnPressNewGame" v-bind:is="currentView"/>
+    <component v-bind:is="currentView" v-bind:room="room"/>
+    <Rules/>
     <Footer/>
   </div>
 </template>
 
 <script>
-import MainMenu from './components/MainMenu';
-import Lobby from './components/Lobby';
 import Header from './components/Header';
+import MainMenu from './components/MainMenu';
+import HostLobby from './components/HostLobby';
+import GuestLobby from './components/GuestLobby';
+import Rules from './components/Rules';
 import Footer from './components/Footer';
 // import Game from './components/Game';
 
@@ -19,7 +21,9 @@ export default {
   components: {
     Header,
     MainMenu,
-    Lobby,
+    HostLobby,
+    GuestLobby,
+    Rules,
     Footer
     // Game
   },
@@ -27,21 +31,23 @@ export default {
     return {
       currentView: "MainMenu",
       headerText: "Welcome to Avalon!",
-      roomNum: ""
+      roomNum: "",
+      room: []
     };
   },
   methods: {
-    btnPressNewGame: function(name) {
-      console.log('gottem');
-      this.currentView = 'Lobby';
-      this.headerText = 'Room #';
-    },
     listenLoadLobby: function() {
-      // TODO: separate this function into loadHostLobby and loadGuestLobby
-      this.$socket.on('loadLobby', (data) => {
-        console.log(`Received [loadLobby] with room #[${data.roomNum}]`);
+      this.$socket.on('updateLobby', (data) => {
+        console.log(`Received [updateLobby] with room #[${data.roomNum}]`);
         this.roomNum = data.roomNum;
         this.headerText = `Room #${data.roomNum}`;
+        this.room = data.room;
+        if(this.$socket.id == this.room[0].sid) {
+          this.currentView = 'HostLobby';
+        }
+        else {
+          this.currentView = 'GuestLobby';
+        }
       });
     }
   },

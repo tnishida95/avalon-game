@@ -19,8 +19,9 @@
     <label for="oberon">Oberon</label>
     <hr>
     <div id="currentParty">
-      <span>Characters Selected: {{ checkedChars }}</span>
-      <span>Lobby Members:</span>
+      <span>Characters Selected: {{ prettyCheckedChars }}</span>
+      <br>
+      <span>{{ prettyLobbyStr }}</span>
       <hr>
     </div>
   </div>
@@ -28,11 +29,34 @@
 
 <script>
 export default {
-  name: 'Lobby',
+  name: 'HostLobby',
   data: function() {
     return {
-      checkedChars: []
+      checkedChars: [],
     };
+  },
+  computed: {
+    prettyCheckedChars: function() {
+      let pretty = "";
+      if(this.checkedChars.length === 0) {
+        return "none";
+      }
+      for(const character in this.checkedChars) {
+        pretty += `[${this.checkedChars[character].toUpperCase()}]`;
+      }
+      return pretty;
+    },
+    prettyLobbyStr: function() {
+      let members = "";
+      for(let i = 0; i < this.room.length; i++) {
+        members += `[${this.room[i].name}]`;
+        console.log(`member: ${this.room[i].name}`);
+      }
+      return `Lobby Members: ${members}`;
+    }
+  },
+  props: {
+    room: Array
   },
   methods: {
     btnPressDisbandGame: function(event) {
