@@ -26,15 +26,27 @@ export default {
   data: function() {
     return {
       currentView: "MainMenu",
-      headerText: "Welcome to Avalon!"
+      headerText: "Welcome to Avalon!",
+      roomNum: ""
     };
   },
   methods: {
     btnPressNewGame: function(name) {
       console.log('gottem');
       this.currentView = 'Lobby';
-      this.headerText = 'room #';
+      this.headerText = 'Room #';
+    },
+    listenLoadLobby: function() {
+      // TODO: separate this function into loadHostLobby and loadGuestLobby
+      this.$socket.on('loadLobby', (data) => {
+        console.log(`Received [loadLobby] with room #[${data.roomNum}]`);
+        this.roomNum = data.roomNum;
+        this.headerText = `Room #${data.roomNum}`;
+      });
     }
+  },
+  beforeMount() {
+    this.listenLoadLobby();
   }
 };
 </script>

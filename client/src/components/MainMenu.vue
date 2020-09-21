@@ -1,5 +1,5 @@
 <template>
-  <div id="MainMenu">
+  <div id="mainMenu">
     <div id="inputArea" class="text-center">
       <input v-model="name" type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
       <p></p>
@@ -39,7 +39,6 @@ export default {
         name: this.name
       });
       this.$emit('btnPressNewGame', this.name);
-      // TODO: now, pass event up to the App component and replace MainMenu with Lobby
     }
   }
 };
