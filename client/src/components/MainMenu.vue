@@ -21,8 +21,6 @@
 <script>
 export default {
   name: 'MainMenu',
-  components: {
-  },
   data: function() {
     return {
       name: "",

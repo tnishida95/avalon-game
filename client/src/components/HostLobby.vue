@@ -1,9 +1,8 @@
-/* eslint-disable */
 <template>
   <div id="lobby" class="text-center">
     <div class="btn-group btn-group-lg" role="group">
       <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#invalidCharacterSelectContent" onclick="btnPressStartGame()">Start Game</button>
-      <button type="button" class="btn btn-default" onclick="btnPressDisbandGame()">Disband Game</button>
+      <button type="button" class="btn btn-default" v-on:click="btnPressDisbandGame">Disband Game</button>
       <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#rulesContent">Rules</button>
     </div>
     <h6 id="invalidCharacterSelectContent" class="collapse">Invalid character selection.</h6>
@@ -56,14 +55,15 @@ export default {
     }
   },
   props: {
-    room: Array
+    room: Array,
+    roomNum: String
   },
   methods: {
     btnPressDisbandGame: function(event) {
-
-    },
-    btnPressLeaveGame: function(event) {
-
+      this.$socket.emit('btnPressDisbandGame', {
+        roomNum: this.roomNum
+      });
+      this.$emit('btnPressDisbandGame');
     },
     btnPressStartGame: function(event) {
 

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header v-bind:headerText="headerText"/>
-    <component v-bind:is="currentView" v-bind:room="room"/>
+    <component v-bind:is="currentView" v-bind:room="room" v-bind:roomNum="roomNum"/>
     <Rules/>
     <Footer/>
   </div>
@@ -49,10 +49,22 @@ export default {
           this.currentView = 'GuestLobby';
         }
       });
+    },
+    listenLoadMainMenu: function() {
+      this.$socket.on('loadMainMenu', (data) => {
+        this.roomNum = -1;
+        this.headerText = "Welcome to Avalon!";
+        this.currentView = 'MainMenu';
+      });
+    },
+    btnPressLeaveGame: function() {
+      this.headerText = "Welcome to Avalon!";
+      this.currentView = 'MainMenu';
     }
   },
   beforeMount() {
     this.listenLoadLobby();
+    this.listenLoadMainMenu();
   }
 };
 </script>

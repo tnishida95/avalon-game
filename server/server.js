@@ -280,7 +280,9 @@ function createPlayer(socket, playerName) {
 }
 
 io.on('connection', (socket) => {
-  console.log(`socket [${socket.id}] connected`);
+  socketList[socketList.length] = socket;
+  console.log(`socket [${socket.id}] connected, there are ${socketList.length} connections`);
+  printSocketList();
 
   socket.on('disconnect', function() {
     // get the index of the socket that just dc'd, cut it out of lists
@@ -361,8 +363,50 @@ io.on('connection', (socket) => {
       console.log(`roomNum ${roomNum} not found`);
     }
   });
-  socket.on('btnPressLeaveGame', function(data) {});
-  socket.on('btnPressDisbandGame', function(data) {});
+  socket.on('btnPressLeaveGame', function(data) {
+    const roomNum = data.roomNum;
+    if(roomList[roomNum] !== undefined) {
+      // removing the player from the lobby
+      for(let i = 0; i < roomList[roomNum].length; i++) {
+        if(roomList[roomNum][i].sid === socket.id) {
+          console.log("Leave Game button pressed by: " + roomList[roomNum][i].name);
+          roomList[roomNum].splice(i, 1);
+          break;
+        }
+      }
+      socket.leave(roomNum);
+      printRoomList();
+      io.to(roomNum).emit("updateLobby", {
+        room: roomList[roomNum],
+        roomNum: roomNum
+      });
+    }
+    else {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+    }
+    io.to(socket.id).emit('loadMainMenu');
+  });
+
+  socket.on('btnPressDisbandGame', function(data) {
+    const roomNum = data.roomNum;
+    console.log("Disband Game button pressed for roomNum: " + roomNum);
+    if(roomList[roomNum] !== undefined) {
+      io.to(roomNum).emit("loadMainMenu");
+      // make all sockets leave the room
+      for(let i = 0; i < roomList[roomNum].length; i++) {
+        socket.leave(roomNum);
+        console.log("\tLeft the socket room: " + roomList[roomNum][i].name);
+      }
+      delete roomList[roomNum];
+      printRoomList();
+    }
+    else {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+      io.to(socket.id).emit('loadMainMenu');
+    }
+
+  });
+
   socket.on('btnPressStartGame', function(data) {});
 
 });
