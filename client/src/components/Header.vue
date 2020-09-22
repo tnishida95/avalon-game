@@ -37,8 +37,4 @@ export default {
     outline-width: 0px;
     outline-style: solid;
 }
-
-#footer {
-    text-align: center;
-}
 </style>

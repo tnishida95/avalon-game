@@ -12,6 +12,7 @@ import Header from './components/Header';
 import MainMenu from './components/MainMenu';
 import HostLobby from './components/HostLobby';
 import GuestLobby from './components/GuestLobby';
+import Pregame from './components/Pregame';
 import Rules from './components/Rules';
 import Footer from './components/Footer';
 // import Game from './components/Game';
@@ -23,6 +24,7 @@ export default {
     MainMenu,
     HostLobby,
     GuestLobby,
+    Pregame,
     Rules,
     Footer
     // Game

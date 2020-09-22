@@ -11,19 +11,6 @@ export default {
 </script>
 
 <style>
-#topText {
-    text-align: center;
-}
-
-#nameInput,
-#roomInput {
-    text-align: center;
-    height: auto;
-    width: 40%;
-    outline-width: 0px;
-    outline-style: solid;
-}
-
 #footer {
     text-align: center;
 }
