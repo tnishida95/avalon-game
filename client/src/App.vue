@@ -48,7 +48,7 @@ export default {
         else {
           this.currentView = 'GuestLobby';
         }
-        document.title = `Avalon - Room #${this.roomNum}`;
+        document.title = `Avalon - #${this.roomNum}`;
       });
     },
     listenLoadMainMenu: function() {

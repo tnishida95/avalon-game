@@ -1,3 +1,4 @@
+const utils = require('./utils');
 const app = require('express')();
 const serv = require('http').createServer(app);
 const port = process.env.PORT || 3000;
@@ -316,7 +317,7 @@ io.on('connection', (socket) => {
     socket.join(roomNum);
     io.to(roomNum).emit("updateLobby", {
       room: roomList[roomNum],
-      roomNum: roomNum
+      roomNum: roomNum.toString()
     });
   });
   socket.on('btnPressJoinGame', function(data) {
@@ -407,6 +408,22 @@ io.on('connection', (socket) => {
     }
 
   });
-  socket.on('btnPressStartGame', function(data) {});
+  socket.on('btnPressStartGame', function(data) {
+    const roomNum = data.roomNum;
+    const characterSelections = data.charList;
+    console.log("Start Game button pressed for roomNum: " + roomNum);
+
+    const {isValid, message} = utils.assignCharacters(characterSelections, roomList[roomNum]);
+    if(!isValid) {
+      io.to(socket.id).emit("invalidCharacterSelect", {
+        message: message
+      });
+      return;
+    }
+    else {
+      // TODO: send loadGame messages
+    }
+
+  });
 
 });
