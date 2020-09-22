@@ -1,19 +1,11 @@
 <template>
-  <div id="mainMenu">
-    <div id="inputArea" class="text-center">
-      <input v-model="name" type="text" id="nameInput" maxlength="20" spellcheck="false" placeholder="Your Name">
-      <p></p>
-      <input v-model="roomNum" type="number" id="roomInput" maxlength="20" spellcheck="false" placeholder="Room Number" data-toggle="collapse" data-target="#roomNumNotifyContent">
-      <h6 id="roomNumNotifyContent" class="collapse">No Room # needed if not trying to join.</h6>
-      <hr>
-    </div>
-    <div class="container">
-      <div class="row">
-        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" v-on:click="btnPressNewGame">New Game</button>
-        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" v-on:click="btnPressJoinGame">Join Game</button>
-        <button type="button" class="btn btn-default btn-lg col-xs-12 col-sm-4" data-toggle="collapse" data-target="#rulesContent">Rules</button>
-      </div>
-    </div>
+  <div id="mainMenu" class="text-center">
+    <v-form class="px-10">
+      <v-text-field label="Name" v-model="name"></v-text-field>
+      <v-text-field label="Room Number" v-model="roomNum"></v-text-field>
+    </v-form>
+    <v-btn v-on:click="btnPressNewGame">New Game</v-btn>
+    <v-btn v-on:click="btnPressJoinGame">Join Game</v-btn>
     <hr>
   </div>
 </template>

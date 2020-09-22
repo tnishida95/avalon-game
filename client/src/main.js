@@ -3,19 +3,18 @@
 import Vue from 'vue';
 import App from './App';
 import io from 'socket.io-client';
+import vuetify from '@/plugins/vuetify';
 
 Vue.config.productionTip = false;
 
-const socket = io('http://localhost:3000');
+const port = process.env.PORT || 3000;
+const socket = io(`http://localhost:${port}`);
 
 socket.on('connect', () => {
   console.log(socket.id);
 });
 
 Vue.prototype.$socket = socket;
-// TODO: remove this note
-// adding socket to the global scope...
-// use with this.$socket in component method blocks
 
 /* eslint-disable no-new */
 new Vue({
@@ -23,5 +22,6 @@ new Vue({
   components: {
     App
   },
-  template: '<App/>'
+  template: '<App/>',
+  vuetify
 });

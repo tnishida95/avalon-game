@@ -1,10 +1,12 @@
 <template>
-  <div id="app">
-    <Header v-bind:headerText="headerText"/>
-    <component v-bind:is="currentView" v-bind:room="room" v-bind:roomNum="roomNum"/>
-    <Rules/>
-    <Footer/>
-  </div>
+  <v-app id="app">
+    <v-container>
+      <Header v-bind:headerText="headerText"/>
+      <component v-bind:is="currentView" v-bind:room="room" v-bind:roomNum="roomNum"/>
+      <Rules/>
+      <Footer/>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
