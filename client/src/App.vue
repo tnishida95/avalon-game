@@ -1,6 +1,6 @@
 <template>
   <v-app id="app">
-    <v-container>
+    <v-container style="max-width: 1000px;">
       <Header v-bind:headerText="headerText"/>
       <component v-bind:is="currentView" v-bind:room="room" v-bind:roomNum="roomNum"/>
       <Rules/>

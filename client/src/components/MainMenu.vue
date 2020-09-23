@@ -4,9 +4,9 @@
       <v-text-field label="Name" v-model="name"></v-text-field>
       <v-text-field label="Room Number" v-model="roomNum"></v-text-field>
     </v-form>
-    <v-btn v-on:click="btnPressNewGame">New Game</v-btn>
-    <v-btn v-on:click="btnPressJoinGame">Join Game</v-btn>
-    <hr>
+    <v-btn x-large v-on:click="btnPressNewGame">New Game</v-btn>
+    <v-btn x-large v-on:click="btnPressJoinGame">Join Game</v-btn>
+    <v-divider/>
   </div>
 </template>
 
