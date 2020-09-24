@@ -3,27 +3,11 @@
     <h3>Game starting!</h3>
     <h4>{{ this.self.name }}, you are: <strong>{{ this.self.character }}</strong>.</h4>
     <h5>{{ characterDescription }}</h5>
+    <v-divider/>
     <h4>Special Characters:</h4>
     <h5>(Evil) <strong>Assassin</strong>: Attempts to kill Merlin at the end of the game.</h5>
     <h5>(Good) <strong>Percival</strong>: Can see Merlin.</h5>
-    <div class="container-fluid">
-      <v-btn x-large>Ready</v-btn>
-    </div>
-    <v-simple-table dense>
-      <thead>
-        <tr>
-          <th>Player</th>
-          <th>Character</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="player in this.room" :key="player.name">
-          <td>{{ player.name }}</td>
-          <td>{{ player.character }}</td>
-        </tr>
-      </tbody>
-    </v-simple-table>
-    <hr>
+    <v-divider/>
   </div>
 </template>
 
@@ -56,14 +40,14 @@ export default {
       else {
         return 'A loyal servant of Arthur.  No special abilities.';
       }
-    }
+    },
   },
   props: {
-    room: Array,
     self: Object
   }
 };
 </script>
 
 <style>
+
 </style>

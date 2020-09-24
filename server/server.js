@@ -130,6 +130,12 @@ function GameManager(room) {
   // ex. partyHistory[1][3][2] gets the player on the the fourth party of the
   //   second quest
   this.partyHistory = [];
+
+  // names of players that the game is waiting on to proceed
+  this.waitingOnList = [];
+  for(let i = 0; i < room.length; i++) {
+    this.waitingOnList.push(room[i].name);
+  }
 }
 
 /** Prints the list of connected sockets. */
@@ -324,37 +330,46 @@ io.on('connection', (socket) => {
     const roomNum = (data.roomNum).toString();
     console.log(`[${data.name}] pressed Join Game with roomNum: ${data.roomNum}`);
     if(gameList[roomNum] != null) {
-      // checking if player is rejoining a game
       const game = gameList[roomNum];
       const room = game.room;
+      // checking if player is rejoining a game
       for(let i = 0; i < room.length; i++) {
         if(room[i].name === data.name) {
           console.log(`Player [${data.name}] is rejoining the game in room [${roomNum}].`);
           socket.join(roomNum);
           room[i].sid = socket.id;
-          const charArray = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-          for(let j = 0; j < room.length; j++) {
-            charArray[utils.getCharacterIndexFromCharacterName(room[j].character)] = 1;
-          }
-          console.log("charArray:" + charArray);
-          io.to(room[i].sid).emit("loadGameScreen", {
-            list: room,
-            roomNum: roomNum,
-            gameScreenStr: buildGameScreen(roomNum, room[i].character, charArray)
-          });
-          io.to(room[i].sid).emit("updateGameBoard", {
-            gameBoardStr: gameStrBuilder.updateGameBoardStr(room[i].character, room, gameList[roomNum])
-          });
-          io.to(room[i].sid).emit("updateActionPanel", {
-            actionPanelStr: gameStrBuilder.updateActionPanelStr(room[i].character, room, gameList[roomNum])
+          io.to(room[i].sid).emit("loadGame", {
+            self: {
+              sid: room[i].sid,
+              name: room[i].name,
+              character: utils.getPrettyName(room[i].character)
+            },
+            room: utils.getRevealedRoom(data.charList, room, room[i].character),
+            waitingOnList: gameList[roomNum].waitingOnList
           });
           return;
         }
       } // end rejoin
-      console.log("\tGame already in progress, cannot join.");
+      console.log(`player tried to join room [${roomNum}], but game is already in progress`);
+      io.to(socket.id).emit("error", {
+        message: 'Game is already in progress, cannot join.'
+      });
+      return;
     }
     else if(roomNum in roomList) {
-      roomList[roomNum][roomList[roomNum].length] = createPlayer(socket, data.name);
+      // first, make sure there won't be duplicate names
+      for(let i = 0; i < roomList[roomNum].length; i++) {
+        console.log(`${data.name} === ${roomList[roomNum][i].name}?`);
+        if(data.name === roomList[roomNum][i].name) {
+          console.log(`player tried to join room [${roomNum}] with duplicate name [${data.name}]`);
+          io.to(socket.id).emit("error", {
+            message: 'Someone in the lobby already has that name.'
+          });
+          return;
+        }
+      }
+
+      roomList[roomNum].push(createPlayer(socket, data.name));
       printRoomList();
       socket.join(roomNum);
       io.to(roomNum).emit("updateLobby", {
@@ -363,7 +378,10 @@ io.on('connection', (socket) => {
       });
     }
     else {
-      console.log(`roomNum ${roomNum} not found`);
+      console.log(`room [${roomNum}] not found`);
+      io.to(socket.id).emit("error", {
+        message: `Room ${roomNum} not found.`
+      });
     }
   });
   socket.on('btnPressLeaveGame', function(data) {
@@ -421,7 +439,6 @@ io.on('connection', (socket) => {
     }
 
     const {isValid, message} = utils.assignCharacters(characterSelections, roomList[roomNum]);
-
     if(!isValid) {
       io.to(socket.id).emit("invalidCharacterSelect", {
         message: message
@@ -429,20 +446,45 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // send each player what they should be allowed to see
+    // create a new GameManager and designate the first party leader
+    gameList[roomNum] = new GameManager(roomList[roomNum]);
+    const game = gameList[roomNum];
+    const room = game.room;
+    game.partyLeader = Math.floor(Math.random() * room.length);
+    console.log(`Party Leader assigned to player at index [${game.partyLeader}]: [${room[game.partyLeader].name}]`);
+
+    console.log("sending out game boards...");
     for(let i = 0; i < roomList[roomNum].length; i++) {
-      io.to(roomList[roomNum][i].sid).emit("loadPregame", {
+      io.to(roomList[roomNum][i].sid).emit("loadGame", {
         self: {
           sid: roomList[roomNum][i].sid,
           name: roomList[roomNum][i].name,
           character: utils.getPrettyName(roomList[roomNum][i].character)
         },
-        room: utils.getRevealedRoom(data.charList, roomList[roomNum], roomList[roomNum][i].character)
+        room: utils.getRevealedRoom(data.charList, roomList[roomNum], roomList[roomNum][i].character),
+        waitingOnList: gameList[roomNum].waitingOnList
       });
     }
+  });
+  socket.on('btnPressReady', function(data) {
+    const roomNum = data.roomNum;
+    if(roomList[roomNum] === undefined) {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+      io.to(socket.id).emit('loadMainMenu');
+      return;
+    }
 
-
-
+    const game = gameList[roomNum];
+    const room = game.room;
+    game.waitingOnList.splice(game.waitingOnList.indexOf(data.self.name), 1);
+    if(game.waitingOnList.length === 0) {
+      // everyone is ready, move on to next part
+    }
+    else {
+      io.to(roomNum).emit("updateAction", {
+        waitingOnList: game.waitingOnList
+      });
+    }
   });
 
 });

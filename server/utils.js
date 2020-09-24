@@ -187,9 +187,6 @@ exports.getRevealedRoom = function(characterSelections, room, givenCharacter) {
       character: character
     });
   } // end iteration over players
-
-  console.log("here's reveals array:");
-  console.log(reveals);
   return reveals;
 };
 
@@ -199,17 +196,12 @@ exports.getRevealedRoom = function(characterSelections, room, givenCharacter) {
 exports.getPrettyName = function(character) {
   switch (character) {
     case 'merlin':
-      return 'Merlin';
     case 'percival':
-      return 'Percival';
     case 'assassin':
-      return 'Assassin';
-    case 'modred':
-      return 'Mordred';
+    case 'mordred':
     case 'morgana':
-      return 'Morgana';
     case 'oberon':
-      return 'Oberon';
+      return character[0].toUpperCase() + character.slice(1);
     case 'evilThree':
     case 'evilTwo':
     case 'evilOne':

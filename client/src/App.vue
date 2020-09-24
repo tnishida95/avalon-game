@@ -2,10 +2,23 @@
   <v-app id="app">
     <v-container style="max-width: 1000px;">
       <Header v-bind:headerText="headerText"/>
-      <component v-bind:is="currentView" v-bind:room="room" v-bind:roomNum="roomNum" v-bind:self="self"/>
+      <component v-bind:is="currentView"
+                 v-bind:room="room"
+                 v-bind:roomNum="roomNum"
+                 v-bind:self="self"
+                 v-bind:waitingOnList="waitingOnList"
+                 v-bind:snackbar="snackbar"/>
       <Rules/>
       <Footer/>
     </v-container>
+    <v-snackbar top v-model="snackbar" timeout="2000">
+      {{ snackbarText }}
+      <template v-slot:action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -14,10 +27,9 @@ import Header from './components/Header';
 import MainMenu from './components/MainMenu';
 import HostLobby from './components/HostLobby';
 import GuestLobby from './components/GuestLobby';
-import Pregame from './components/Pregame';
 import Rules from './components/Rules';
 import Footer from './components/Footer';
-// import Game from './components/Game';
+import Game from './components/game/Game';
 
 export default {
   name: 'App',
@@ -26,10 +38,9 @@ export default {
     MainMenu,
     HostLobby,
     GuestLobby,
-    Pregame,
+    Game,
     Rules,
     Footer
-    // Game
   },
   data: function() {
     return {
@@ -37,13 +48,15 @@ export default {
       headerText: "Welcome to Avalon!",
       roomNum: "",
       room: [],
-      self: {}
+      self: {},
+      waitingOnList: [],
+      snackbar: false,
+      snackbarText: "Oops, something went wrong."
     };
   },
   methods: {
-    listenLoadLobby: function() {
+    listenUpdateLobby: function() {
       this.$socket.on('updateLobby', (data) => {
-        console.log(`Received [updateLobby] with room #[${data.roomNum}]`);
         this.roomNum = data.roomNum;
         this.headerText = `Room #${data.roomNum}`;
         this.room = data.room;
@@ -63,18 +76,26 @@ export default {
         this.currentView = 'MainMenu';
       });
     },
-    listenLoadPregame: function() {
-      this.$socket.on('loadPregame', (data) => {
+    listenLoadGame: function() {
+      this.$socket.on('loadGame', (data) => {
         this.room = data.room;
         this.self = data.self;
-        this.currentView = 'Pregame';
+        this.waitingOnList = data.waitingOnList;
+        this.currentView = 'Game';
+      });
+    },
+    listenError: function() {
+      this.$socket.on('error', (data) => {
+        this.snackbar = true;
+        this.snackbarText = data.message;
       });
     }
   },
   beforeMount() {
-    this.listenLoadLobby();
+    this.listenUpdateLobby();
     this.listenLoadMainMenu();
-    this.listenLoadPregame();
+    this.listenLoadGame();
+    this.listenError();
   }
 };
 </script>
