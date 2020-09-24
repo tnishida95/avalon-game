@@ -2,8 +2,8 @@
 
 /**
  * Validates the character selections for a lobby is correct.
- * @param {Array} characterSelections - The array with the user-selected fields.
- * @param {Array} room - The array of the Players
+ * @param {Array} characterSelections - list of characters selected by the host
+ * @param {Array} room - the array of Players
  * @return {boolean} isValid - true if the selection is valid
  * @return {string} message - reason given for deeming a selection invalid
  */
@@ -123,6 +123,101 @@ exports.assignCharacters = function(characterSelections, room) {
     message: "Valid character selection!"
   };
 };
+
+/**
+ * Determines what a player should see given their character.
+ * @param {Array} characterSelections - list of characters selected by the host
+ * @param {Array} room - the array of Players
+ * @param {string} givenCharacter - the character to determine the reveals from
+ * @return {Array} - list of objects with player socket, name, and revealable character
+ */
+exports.getRevealedRoom = function(characterSelections, room, givenCharacter) {
+  let reveals = [];
+  for(let i = 0; i < room.length; i++) {
+    let character;
+    if(givenCharacter === room[i].character) {
+      character = exports.getPrettyName(givenCharacter);
+    }
+    else if(givenCharacter === 'merlin') {
+      if(room[i].character === 'assassin' || room[i].character === 'morgana' || room[i].character === 'oberon') {
+        character = 'Agent of Evil';
+      }
+      else {
+        if(characterSelections.includes('mordred')) {
+          character = '?';
+        }
+        else {
+          character = 'Agent of Good';
+        }
+      }
+    }
+    else if(givenCharacter === 'percival') {
+      if(room[i].character === 'merlin') {
+        console.log("here's characterSelections: ", characterSelections);
+        if(characterSelections.includes('morgana')) {
+          character = 'Merlin or Morgana';
+        }
+        else {
+          character = 'Merlin';
+        }
+      }
+      else if(room[i].character === 'morgana') {
+        character = 'Merlin or Morgana';
+      }
+      else {
+        character = '?';
+      }
+    }
+    else if(givenCharacter.includes('good') || givenCharacter === 'oberon') {
+      character = '?';
+    }
+    else {
+      // if givenCharacter is any Evil but Oberon
+      if(room[i].character === 'merlin' || room[i].character === 'percival' ||
+         room[i].character === 'oberon' || room[i].character.includes('good')) {
+          character = '?';
+      }
+      else {
+        character = exports.getPrettyName(room[i].character);
+      }
+    }
+    reveals.push({
+      sid: room[i].sid,
+      name: room[i].name,
+      character: character
+    });
+  } // end iteration over players
+
+  console.log("here's reveals array:");
+  console.log(reveals);
+  return reveals;
+};
+
+/**
+ * Returns the pretty, formatted name string for a given character
+ */
+exports.getPrettyName = function(character) {
+  switch (character) {
+    case 'merlin':
+      return 'Merlin';
+    case 'percival':
+      return 'Percival';
+    case 'assassin':
+      return 'Assassin';
+    case 'modred':
+      return 'Mordred';
+    case 'morgana':
+      return 'Morgana';
+    case 'oberon':
+      return 'Oberon';
+    case 'evilThree':
+    case 'evilTwo':
+    case 'evilOne':
+      return 'Agent of Evil';
+    default:
+      return 'Agent of Good';
+  }
+}
 
 exports.getTileStringFromQuestResult = function(result) {
   if(result === 1) {

@@ -410,19 +410,38 @@ io.on('connection', (socket) => {
   });
   socket.on('btnPressStartGame', function(data) {
     const roomNum = data.roomNum;
-    const characterSelections = data.charList;
+    const characterSelections = [...data.charList];
     console.log("Start Game button pressed for roomNum: " + roomNum);
 
+    // TODO: investigate if there's a way to handle this better...try/catch maybe?
+    if(roomList[roomNum] === undefined) {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+      io.to(socket.id).emit('loadMainMenu');
+      return;
+    }
+
     const {isValid, message} = utils.assignCharacters(characterSelections, roomList[roomNum]);
+
     if(!isValid) {
       io.to(socket.id).emit("invalidCharacterSelect", {
         message: message
       });
       return;
     }
-    else {
-      // TODO: send loadGame messages
+
+    // send each player what they should be allowed to see
+    for(let i = 0; i < roomList[roomNum].length; i++) {
+      io.to(roomList[roomNum][i].sid).emit("loadPregame", {
+        self: {
+          sid: roomList[roomNum][i].sid,
+          name: roomList[roomNum][i].name,
+          character: utils.getPrettyName(roomList[roomNum][i].character)
+        },
+        room: utils.getRevealedRoom(data.charList, roomList[roomNum], roomList[roomNum][i].character)
+      });
     }
+
+
 
   });
 

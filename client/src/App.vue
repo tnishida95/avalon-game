@@ -2,7 +2,7 @@
   <v-app id="app">
     <v-container style="max-width: 1000px;">
       <Header v-bind:headerText="headerText"/>
-      <component v-bind:is="currentView" v-bind:room="room" v-bind:roomNum="roomNum"/>
+      <component v-bind:is="currentView" v-bind:room="room" v-bind:roomNum="roomNum" v-bind:self="self"/>
       <Rules/>
       <Footer/>
     </v-container>
@@ -36,7 +36,8 @@ export default {
       currentView: "MainMenu",
       headerText: "Welcome to Avalon!",
       roomNum: "",
-      room: []
+      room: [],
+      self: {}
     };
   },
   methods: {
@@ -61,11 +62,19 @@ export default {
         this.headerText = "Welcome to Avalon!";
         this.currentView = 'MainMenu';
       });
+    },
+    listenLoadPregame: function() {
+      this.$socket.on('loadPregame', (data) => {
+        this.room = data.room;
+        this.self = data.self;
+        this.currentView = 'Pregame';
+      });
     }
   },
   beforeMount() {
     this.listenLoadLobby();
     this.listenLoadMainMenu();
+    this.listenLoadPregame();
   }
 };
 </script>

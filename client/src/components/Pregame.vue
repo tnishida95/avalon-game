@@ -1,16 +1,28 @@
 <template>
   <div id="pregame" class="text-center">
-    <h3>Game Starting!</h3>
-    <h4>You are: <strong>Merlin</strong></h4>
-    <h5>See Evil players, but lose game if killed by Assassin.</h5>
-    <h5>Mordred cannot be seen.</h5>
+    <h3>Game starting!</h3>
+    <h4>{{ this.self.name }}, you are: <strong>{{ this.self.character }}</strong>.</h4>
+    <h5>{{ characterDescription }}</h5>
     <h4>Special Characters:</h4>
     <h5>(Evil) <strong>Assassin</strong>: Attempts to kill Merlin at the end of the game.</h5>
     <h5>(Good) <strong>Percival</strong>: Can see Merlin.</h5>
     <div class="container-fluid">
-      <button type="button" class="btn btn-default btn-lg col-xs-12">Ready</button>
+      <v-btn x-large>Ready</v-btn>
     </div>
-    <h2>Show player board div here.</h2>
+    <v-simple-table dense>
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Character</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="player in this.room" :key="player.name">
+          <td>{{ player.name }}</td>
+          <td>{{ player.character }}</td>
+        </tr>
+      </tbody>
+    </v-simple-table>
     <hr>
   </div>
 </template>
@@ -18,6 +30,38 @@
 <script>
 export default {
   name: 'Pregame',
+  computed: {
+    characterDescription: function() {
+      if(this.self.character === 'Merlin') {
+        return 'See Evil players, but lose the game if killed by Assassin.';
+      }
+      else if(this.self.character === 'Percival') {
+        return 'See Merlin.  If Morgana is in play, see both but not who is who.';
+      }
+      else if(this.self.character === 'Assassin') {
+        return 'If three quests succeed, Merlin may be killed to steal the win.';
+      }
+      else if(this.self.character === 'Mordred') {
+        return 'Unseen by Merlin.';
+      }
+      else if(this.self.character === 'Morgana') {
+        return 'Percival will see you and Merlin, but not know who is who.';
+      }
+      else if(this.self.character === 'Oberon') {
+        return 'You are not revealed to other Evil players, nor they to you.';
+      }
+      else if(this.self.character === 'Agent of Evil') {
+        return 'A minion of Mordred.  No special abilities.';
+      }
+      else {
+        return 'A loyal servant of Arthur.  No special abilities.';
+      }
+    }
+  },
+  props: {
+    room: Array,
+    self: Object
+  }
 };
 </script>
 
