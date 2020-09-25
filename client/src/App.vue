@@ -8,6 +8,7 @@
                  v-bind:self="self"
                  v-bind:waitingOnList="waitingOnList"
                  v-bind:snackbar="snackbar"/>
+      <PartySelect/>
       <Rules/>
       <Footer/>
     </v-container>
@@ -30,6 +31,7 @@ import GuestLobby from './components/GuestLobby';
 import Rules from './components/Rules';
 import Footer from './components/Footer';
 import Game from './components/game/Game';
+import PartySelect from './components/game/PartySelect';
 
 export default {
   name: 'App',
@@ -40,7 +42,8 @@ export default {
     GuestLobby,
     Game,
     Rules,
-    Footer
+    Footer,
+    PartySelect
   },
   data: function() {
     return {

@@ -478,7 +478,10 @@ io.on('connection', (socket) => {
     const room = game.room;
     game.waitingOnList.splice(game.waitingOnList.indexOf(data.self.name), 1);
     if(game.waitingOnList.length === 0) {
-      // everyone is ready, move on to next part
+      // everyone is ready, move on first quest
+      game.waitingOnList.push(room[game.partyLeader].name);
+      
+
     }
     else {
       io.to(roomNum).emit("updateAction", {
