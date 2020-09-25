@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Pregame v-bind:self="self"/>
+    <!-- <BoardView/> -->
     <ActionView v-bind:waitingOnList="waitingOnList"
                 v-bind:room="room"
                 v-bind:roomNum="roomNum"
@@ -10,14 +10,14 @@
 </template>
 
 <script>
-import Pregame from './Pregame';
 import ActionView from './ActionView';
 import PlayerView from './PlayerView';
+// import BoardView from './BoardView';
 
 export default {
   name: 'Game',
   components: {
-    Pregame,
+    // BoardView,
     ActionView,
     PlayerView
   },

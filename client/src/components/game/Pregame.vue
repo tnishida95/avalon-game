@@ -7,6 +7,7 @@
     <h4>Special Characters:</h4>
     <h5>(Evil) <strong>Assassin</strong>: Attempts to kill Merlin at the end of the game.</h5>
     <h5>(Good) <strong>Percival</strong>: Can see Merlin.</h5>
+    <v-btn x-large v-on:click="btnPressReady" v-if="!isDone">Ready</v-btn>
     <v-divider/>
   </div>
 </template>
@@ -44,6 +45,15 @@ export default {
   },
   props: {
     self: Object
+  },
+  methods: {
+    btnPressReady: function(event) {
+      this.isDone = true;
+      this.$socket.emit('btnPressReady', {
+        roomNum: this.roomNum,
+        self: this.self
+      });
+    },
   }
 };
 </script>

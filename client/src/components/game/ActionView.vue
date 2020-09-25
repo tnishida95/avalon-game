@@ -1,6 +1,10 @@
 <template>
   <div class="container-fluid text-center">
-    <v-btn x-large v-on:click="btnPressReady" v-if="!isDone">Ready</v-btn>
+    <component v-bind:is="currentAction"
+               v-bind:waitingOnList="waitingOnList"
+               v-bind:room="room"
+               v-bind:roomNum="roomNum"
+               v-bind:self="self"/>
     <p/>
     <span>Waiting for:
       <v-chip outlined v-for="name in this.waitingOnList" :key="name">{{ name }}</v-chip>
@@ -11,11 +15,19 @@
 </template>
 
 <script>
+import Pregame from './Pregame';
+import PartySelect from './PartySelect';
+
 export default {
   name: 'ActionView',
+  components: {
+    Pregame,
+    PartySelect
+  },
   data: function() {
     return {
-      isDone: false
+      isDone: false,
+      currentAction: 'Pregame'
     };
   },
   computed: {
@@ -24,13 +36,7 @@ export default {
     }
   },
   methods: {
-    btnPressReady: function(event) {
-      this.isDone = true;
-      this.$socket.emit('btnPressReady', {
-        roomNum: this.roomNum,
-        self: this.self
-      });
-    },
+
   },
   props: {
     room: Array,
