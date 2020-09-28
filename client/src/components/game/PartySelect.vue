@@ -57,10 +57,6 @@ export default {
       });
     },
   },
-  props: {
-    room: Array,
-    roomNum: String
-  }
 };
 </script>
 

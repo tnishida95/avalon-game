@@ -1,8 +1,8 @@
 <template>
   <div id="mainMenu" class="text-center">
     <v-form class="px-10">
-      <v-text-field label="Name" v-model="name"></v-text-field>
-      <v-text-field label="Room Number" v-model="roomNum"></v-text-field>
+      <v-text-field label="Name" v-model="nameInput"></v-text-field>
+      <v-text-field label="Room Number" v-model="roomNumInput"></v-text-field>
     </v-form>
     <v-btn v-bind:disabled="snackbar" x-large v-on:click="btnPressNewGame">New Game</v-btn>
     <v-btn v-bind:disabled="snackbar" x-large v-on:click="btnPressJoinGame">Join Game</v-btn>
@@ -15,23 +15,23 @@ export default {
   name: 'MainMenu',
   data: function() {
     return {
-      name: "",
-      roomNum: ""
+      nameInput: "",
+      roomNumInput: ""
     };
   },
   methods: {
     btnPressNewGame: function(event) {
       this.$socket.emit('btnPressNewGame', {
-        name: this.name
+        name: this.nameInput
       });
-      this.$emit('btnPressToLobby', this.name, "new");
+      this.$emit('btnPressToLobby', this.nameInput, "new");
     },
     btnPressJoinGame: function(event) {
       this.$socket.emit('btnPressJoinGame', {
-        name: this.name,
-        roomNum: this.roomNum
+        name: this.nameInput,
+        roomNum: this.roomNumInput
       });
-      this.$emit('btnPressToLobby', this.name, this.roomNum);
+      this.$emit('btnPressToLobby', this.nameInput, this.roomNumInput);
     }
   },
   props: {

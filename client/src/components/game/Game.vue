@@ -1,11 +1,8 @@
 <template>
   <div>
     <!-- <BoardView/> -->
-    <ActionView v-bind:waitingOnList="waitingOnList"
-                v-bind:room="room"
-                v-bind:roomNum="roomNum"
-                v-bind:self="self"/>
-    <PlayerView v-bind:room="room"/>
+    <ActionView/>
+    <PlayerView/>
   </div>
 </template>
 
@@ -21,16 +18,10 @@ export default {
     ActionView,
     PlayerView
   },
-  props: {
-    roomNum: String,
-    room: Array,
-    self: Object,
-    waitingOnList: Array
-  },
   methods: {
     listenUpdateAction: function() {
       this.$socket.on('updateAction', (data) => {
-        this.waitingOnList = data.waitingOnList;
+        this.$store.commit('setWaitingOnList', data.waitingOnList);
       });
     }
   },

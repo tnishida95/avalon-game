@@ -1,7 +1,7 @@
 <template>
   <div id="pregame" class="text-center">
     <h3>Game starting!</h3>
-    <h4>{{ this.self.name }}, you are: <strong>{{ this.self.character }}</strong>.</h4>
+    <h4>{{ self.name }}, you are: <strong>{{ self.character }}</strong>.</h4>
     <h5>{{ characterDescription }}</h5>
     <v-divider/>
     <h4>Special Characters:</h4>
@@ -15,27 +15,36 @@
 <script>
 export default {
   name: 'Pregame',
+  data: function() {
+    return {
+      isDone: false
+    };
+  },
   computed: {
+    self() {
+      return this.$store.state.self;
+    },
     characterDescription: function() {
-      if(this.self.character === 'Merlin') {
+      const self = this.$store.state.self;
+      if(self.character === 'Merlin') {
         return 'See Evil players, but lose the game if killed by Assassin.';
       }
-      else if(this.self.character === 'Percival') {
+      else if(self.character === 'Percival') {
         return 'See Merlin.  If Morgana is in play, see both but not who is who.';
       }
-      else if(this.self.character === 'Assassin') {
+      else if(self.character === 'Assassin') {
         return 'If three quests succeed, Merlin may be killed to steal the win.';
       }
-      else if(this.self.character === 'Mordred') {
+      else if(self.character === 'Mordred') {
         return 'Unseen by Merlin.';
       }
-      else if(this.self.character === 'Morgana') {
+      else if(self.character === 'Morgana') {
         return 'Percival will see you and Merlin, but not know who is who.';
       }
-      else if(this.self.character === 'Oberon') {
+      else if(self.character === 'Oberon') {
         return 'You are not revealed to other Evil players, nor they to you.';
       }
-      else if(this.self.character === 'Agent of Evil') {
+      else if(self.character === 'Agent of Evil') {
         return 'A minion of Mordred.  No special abilities.';
       }
       else {
@@ -43,15 +52,12 @@ export default {
       }
     },
   },
-  props: {
-    self: Object
-  },
   methods: {
     btnPressReady: function(event) {
       this.isDone = true;
       this.$socket.emit('btnPressReady', {
-        roomNum: this.roomNum,
-        self: this.self
+        roomNum: this.$store.state.roomNum,
+        self: this.$store.state.self
       });
     },
   }

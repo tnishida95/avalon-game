@@ -1,13 +1,9 @@
 <template>
   <div class="container-fluid text-center">
-    <component v-bind:is="currentAction"
-               v-bind:waitingOnList="waitingOnList"
-               v-bind:room="room"
-               v-bind:roomNum="roomNum"
-               v-bind:self="self"/>
+    <component v-bind:is="currentAction"/>
     <p/>
     <span>Waiting for:
-      <v-chip outlined v-for="name in this.waitingOnList" :key="name">{{ name }}</v-chip>
+      <v-chip outlined v-for="name in this.$store.state.waitingOnList" :key="name">{{ name }}</v-chip>
     </span>
     <v-progress-linear height="10" class="my-5" v-bind:value="progress"></v-progress-linear>
     <v-divider/>
@@ -32,18 +28,9 @@ export default {
   },
   computed: {
     progress: function() {
-      return ((this.room.length - this.waitingOnList.length) / this.room.length) * 100;
+      return ((this.$store.state.room.length - this.$store.state.waitingOnList.length) / this.$store.state.room.length) * 100;
     }
   },
-  methods: {
-
-  },
-  props: {
-    room: Array,
-    roomNum: String,
-    self: Object,
-    waitingOnList: Array
-  }
 };
 </script>
 

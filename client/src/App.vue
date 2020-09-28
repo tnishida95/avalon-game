@@ -3,10 +3,6 @@
     <v-container style="max-width: 1000px;">
       <Header v-bind:headerText="headerText"/>
       <component v-bind:is="currentView"
-                 v-bind:room="room"
-                 v-bind:roomNum="roomNum"
-                 v-bind:self="self"
-                 v-bind:waitingOnList="waitingOnList"
                  v-bind:snackbar="snackbar"/>
       <PartySelect/>
       <Rules/>
@@ -45,14 +41,18 @@ export default {
     Footer,
     PartySelect
   },
+  computed: {
+    room() {
+      return this.$store.state.room;
+    },
+    roomNum() {
+      return this.$store.state.roomNum;
+    }
+  },
   data: function() {
     return {
       currentView: "MainMenu",
       headerText: "Welcome to Avalon!",
-      roomNum: "",
-      room: [],
-      self: {},
-      waitingOnList: [],
       snackbar: false,
       snackbarText: "Oops, something went wrong."
     };
@@ -60,30 +60,30 @@ export default {
   methods: {
     listenUpdateLobby: function() {
       this.$socket.on('updateLobby', (data) => {
-        this.roomNum = data.roomNum;
+        this.$store.commit('setRoomNum', data.roomNum);
         this.headerText = `Room #${data.roomNum}`;
-        this.room = data.room;
-        if(this.$socket.id == this.room[0].sid) {
+        this.$store.commit('setRoom', data.room);
+        if(this.$socket.id == data.room[0].sid) {
           this.currentView = 'HostLobby';
         }
         else {
           this.currentView = 'GuestLobby';
         }
-        document.title = `Avalon - #${this.roomNum}`;
+        document.title = `Avalon - #${data.roomNum}`;
       });
     },
     listenLoadMainMenu: function() {
       this.$socket.on('loadMainMenu', (data) => {
-        this.roomNum = -1;
+        this.$store.commit('setRoomNum', -1);
         this.headerText = "Welcome to Avalon!";
         this.currentView = 'MainMenu';
       });
     },
     listenLoadGame: function() {
       this.$socket.on('loadGame', (data) => {
-        this.room = data.room;
-        this.self = data.self;
-        this.waitingOnList = data.waitingOnList;
+        this.$store.commit('setRoom', data.room);
+        this.$store.commit('setSelf', data.self);
+        this.$store.commit('setWaitingOnList', data.waitingOnList);
         this.currentView = 'Game';
       });
     },
