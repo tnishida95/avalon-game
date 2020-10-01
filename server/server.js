@@ -359,7 +359,6 @@ io.on('connection', (socket) => {
     else if(roomNum in roomList) {
       // first, make sure there won't be duplicate names
       for(let i = 0; i < roomList[roomNum].length; i++) {
-        console.log(`${data.name} === ${roomList[roomNum][i].name}?`);
         if(data.name === roomList[roomNum][i].name) {
           console.log(`player tried to join room [${roomNum}] with duplicate name [${data.name}]`);
           io.to(socket.id).emit("error", {
@@ -478,9 +477,9 @@ io.on('connection', (socket) => {
     const room = game.room;
     game.waitingOnList.splice(game.waitingOnList.indexOf(data.self.name), 1);
     if(game.waitingOnList.length === 0) {
-      // everyone is ready, move on first quest
+      console.log('all players ready, starting game');
       game.waitingOnList.push(room[game.partyLeader].name);
-      
+      // TODO: start the game
 
     }
     else {

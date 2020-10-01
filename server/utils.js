@@ -79,7 +79,7 @@ exports.assignCharacters = function(characterSelections, room) {
       };
   }
 
-  console.log("characterSelections:", characterSelections);
+  // console.log("characterSelections:", characterSelections);
 
   if(characterSelections.includes('morgana') && !characterSelections.includes('percival')) {
     const message = `Morgana cannot be selected without Percival!`;
@@ -153,7 +153,6 @@ exports.getRevealedRoom = function(characterSelections, room, givenCharacter) {
     }
     else if(givenCharacter === 'percival') {
       if(room[i].character === 'merlin') {
-        console.log("here's characterSelections: ", characterSelections);
         if(characterSelections.includes('morgana')) {
           character = 'Merlin or Morgana';
         }
