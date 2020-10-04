@@ -4,7 +4,7 @@
       <Header v-bind:headerText="headerText"/>
       <component v-bind:is="currentView"
                  v-bind:snackbar="snackbar"/>
-      <PartySelect/>
+      <BoardView/>
       <Rules/>
       <Footer/>
     </v-container>
@@ -27,7 +27,7 @@ import GuestLobby from './components/GuestLobby';
 import Rules from './components/Rules';
 import Footer from './components/Footer';
 import Game from './components/game/Game';
-import PartySelect from './components/game/PartySelect';
+import BoardView from './components/game/BoardView';
 
 export default {
   name: 'App',
@@ -39,7 +39,7 @@ export default {
     Game,
     Rules,
     Footer,
-    PartySelect
+    BoardView
   },
   computed: {
     room() {
@@ -84,6 +84,7 @@ export default {
         this.$store.commit('setRoom', data.room);
         this.$store.commit('setSelf', data.self);
         this.$store.commit('setWaitingOnList', data.waitingOnList);
+        this.$store.commit('setGame', data.game);
         this.currentView = 'Game';
       });
     },

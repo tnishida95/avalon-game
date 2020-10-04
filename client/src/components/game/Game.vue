@@ -1,20 +1,20 @@
 <template>
   <div>
-    <!-- <BoardView/> -->
+    <BoardView/>
     <ActionView/>
     <PlayerView/>
   </div>
 </template>
 
 <script>
+import BoardView from './BoardView';
 import ActionView from './ActionView';
 import PlayerView from './PlayerView';
-// import BoardView from './BoardView';
 
 export default {
   name: 'Game',
   components: {
-    // BoardView,
+    BoardView,
     ActionView,
     PlayerView
   },

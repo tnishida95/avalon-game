@@ -454,14 +454,17 @@ io.on('connection', (socket) => {
 
     console.log("sending out game boards...");
     for(let i = 0; i < roomList[roomNum].length; i++) {
+      const revealedRoom = utils.getRevealedRoom(data.charList, roomList[roomNum], roomList[roomNum][i].character);
+      game.room = revealedRoom;
       io.to(roomList[roomNum][i].sid).emit("loadGame", {
         self: {
           sid: roomList[roomNum][i].sid,
           name: roomList[roomNum][i].name,
           character: utils.getPrettyName(roomList[roomNum][i].character)
         },
-        room: utils.getRevealedRoom(data.charList, roomList[roomNum], roomList[roomNum][i].character),
-        waitingOnList: gameList[roomNum].waitingOnList
+        room: revealedRoom,
+        waitingOnList: gameList[roomNum].waitingOnList,
+        game: game
       });
     }
   });
@@ -480,6 +483,7 @@ io.on('connection', (socket) => {
       console.log('all players ready, starting game');
       game.waitingOnList.push(room[game.partyLeader].name);
       // TODO: start the game
+      console.log("\n~~~~~ Phase 0: Party Select ~~~~~");
 
     }
     else {

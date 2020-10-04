@@ -18,7 +18,8 @@ const store = new Vuex.Store({
     room: [],
     roomNum: -1,
     self: {},
-    waitingOnList: []
+    waitingOnList: [],
+    game: {}
   },
   mutations: {
     setRoom(state, payload) {
@@ -32,6 +33,9 @@ const store = new Vuex.Store({
     },
     setWaitingOnList(state, payload) {
       state.waitingOnList = payload;
+    },
+    setGame(state, payload) {
+      state.game = payload;
     }
   }
 });
