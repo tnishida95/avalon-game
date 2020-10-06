@@ -2,25 +2,23 @@
   <div class="text-center">
     <h3>Game Board</h3>
     <h4>Quests:</h4>
-    <v-btn icon x-large outlined class="mx-1 good-blue">{{ this.$store.state.game.questSize[0] }}</v-btn>
-    <v-btn icon x-large outlined class="mx-1 evil-red">{{ this.$store.state.game.questSize[1] }}</v-btn>
-    <v-btn icon x-large outlined class="mx-1" elevation="5">{{ this.$store.state.game.questSize[2] }}</v-btn>
-    <v-btn icon x-large outlined class="mx-1">{{ this.$store.state.game.questSize[3] }}</v-btn>
-    <v-btn icon x-large outlined class="mx-1">{{ this.$store.state.game.questSize[4] }}</v-btn>
-    <p/>
-    <h4>Parties Rejected:</h4>
-    <v-btn icon small outlined>1</v-btn>
-    <v-btn icon small outlined>2</v-btn>
-    <v-btn icon small>3</v-btn>
-    <v-btn icon small>4</v-btn>
-    <v-btn icon small class="evil-red">5</v-btn>
+    <v-btn icon x-large outlined class="mx-1" v-for="(quest, index) in game.quests" :key="quest"
+           v-bind:class="{ [`good-blue`]: (quest === 1), [`evil-red`]: (quest === 2) }">
+      {{ game.questSize[index] }}
+    </v-btn>
+    <h4>Parties Rejected: {{ game.partiesRejected }}</h4>
     <v-divider/>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'BoardView'
+  name: 'BoardView',
+  computed: {
+    game() {
+      return this.$store.state.game;
+    }
+  },
 };
 </script>
 
