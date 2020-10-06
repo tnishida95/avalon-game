@@ -2,7 +2,7 @@
   <div class="text-center">
     <h3>Select {{ partySize }} players for the party:</h3>
     <v-btn-toggle multiple group v-bind:max="partySize" v-model="selectedParty">
-      <v-hover v-slot:default="{ hover }" v-for="player in testRoom" :key="player.name">
+      <v-hover v-slot:default="{ hover }" v-for="player in room" :key="player.name">
         <v-btn  block :elevation="hover ? 12 : 2" :class="{ 'on-hover': hover }" v-bind:value="player.name">
           {{ player.name }}
         </v-btn>
@@ -22,33 +22,33 @@ export default {
   name: 'PartySelect',
   data: function() {
     return {
-      partySize: 2,
-      selectedParty: [],
-      testRoom: [
-        {
-          name: "Tyler",
-          character: "Merlin"
-        },
-        {
-          name: "Anna",
-          chracter: "Mordred"
-        },
-        {
-          name: "David",
-          chracter: "Percival"
-        },
-        {
-          name: "Mark",
-          chracter: "Agent of Good"
-        },
-        {
-          name: "Ivan",
-          chracter: "Assassin"
-        }
-      ]
+      selectedParty: []
     };
   },
   computed: {
+    room() {
+      return this.$store.state.room;
+    },
+    partySize() {
+      const phase = this.$store.state.game.phase;
+      let currentQuest = -1;
+      if(phase < 3) {
+        currentQuest = 0;
+      }
+      else if(phase < 6) {
+        currentQuest = 1;
+      }
+      else if(phase < 9) {
+        currentQuest = 2;
+      }
+      else if(phase < 12) {
+        currentQuest = 3;
+      }
+      else {
+        currentQuest = 4;
+      }
+      return this.$store.state.game.questSize[currentQuest];
+    }
   },
   methods: {
     btnPressPartySubmit: function(event) {

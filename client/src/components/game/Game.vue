@@ -17,16 +17,6 @@ export default {
     BoardView,
     ActionView,
     PlayerView
-  },
-  methods: {
-    listenUpdateAction: function() {
-      this.$socket.on('updateAction', (data) => {
-        this.$store.commit('setWaitingOnList', data.waitingOnList);
-      });
-    }
-  },
-  beforeMount() {
-    this.listenUpdateAction();
   }
 };
 </script>

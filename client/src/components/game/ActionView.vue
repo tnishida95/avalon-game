@@ -13,12 +13,14 @@
 <script>
 import Pregame from './Pregame';
 import PartySelect from './PartySelect';
+import Waiting from './Waiting';
 
 export default {
   name: 'ActionView',
   components: {
     Pregame,
-    PartySelect
+    PartySelect,
+    Waiting
   },
   data: function() {
     return {
@@ -31,6 +33,17 @@ export default {
       return ((this.$store.state.room.length - this.$store.state.waitingOnList.length) / this.$store.state.room.length) * 100;
     }
   },
+  methods: {
+    listenUpdateAction: function() {
+      this.$socket.on('updateAction', (data) => {
+        this.$store.commit('setWaitingOnList', data.waitingOnList);
+        this.currentAction = data.currentAction;
+      });
+    }
+  },
+  beforeMount() {
+    this.listenUpdateAction();
+  }
 };
 </script>
 

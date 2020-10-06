@@ -456,7 +456,6 @@ io.on('connection', (socket) => {
     for(let i = 0; i < roomList[roomNum].length; i++) {
       const revealedRoom = utils.getRevealedRoom(data.charList, roomList[roomNum], roomList[roomNum][i].character);
       game.room = revealedRoom;
-      console.log([...data.charList]);
       io.to(roomList[roomNum][i].sid).emit("loadGame", {
         self: {
           sid: roomList[roomNum][i].sid,
@@ -485,12 +484,26 @@ io.on('connection', (socket) => {
       console.log('all players ready, starting game');
       game.waitingOnList.push(room[game.partyLeader].name);
       // TODO: start the game
+      for(let i = 0; i < roomList[roomNum].length; i++) {
+        if(i === game.partyLeader) {
+          io.to(roomList[roomNum][i].sid).emit('updateAction', {
+            waitingOnList: game.waitingOnList,
+            currentAction: 'PartySelect'
+          });
+        }
+        else {
+          io.to(roomList[roomNum][i].sid).emit('updateAction', {
+            waitingOnList: game.waitingOnList,
+            currentAction: 'Waiting'
+          });
+        }
+      }
       console.log("\n~~~~~ Phase 0: Party Select ~~~~~");
-
     }
     else {
       io.to(roomNum).emit("updateAction", {
-        waitingOnList: game.waitingOnList
+        waitingOnList: game.waitingOnList,
+        currentAction: 'Pregame'
       });
     }
   });
