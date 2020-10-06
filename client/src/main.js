@@ -36,6 +36,9 @@ const store = new Vuex.Store({
     },
     setGame(state, payload) {
       state.game = payload;
+    },
+    setCharacterSelections(state, payload) {
+      state.characterSelections = payload;
     }
   }
 });

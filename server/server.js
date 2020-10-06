@@ -456,6 +456,7 @@ io.on('connection', (socket) => {
     for(let i = 0; i < roomList[roomNum].length; i++) {
       const revealedRoom = utils.getRevealedRoom(data.charList, roomList[roomNum], roomList[roomNum][i].character);
       game.room = revealedRoom;
+      console.log([...data.charList]);
       io.to(roomList[roomNum][i].sid).emit("loadGame", {
         self: {
           sid: roomList[roomNum][i].sid,
@@ -464,7 +465,8 @@ io.on('connection', (socket) => {
         },
         room: revealedRoom,
         waitingOnList: gameList[roomNum].waitingOnList,
-        game: game
+        game: game,
+        characterSelections: [...data.charList]
       });
     }
   });

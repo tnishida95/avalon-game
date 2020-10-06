@@ -208,7 +208,7 @@ exports.getPrettyName = function(character) {
     default:
       return 'Agent of Good';
   }
-}
+};
 
 exports.getTileStringFromQuestResult = function(result) {
   if(result === 1) {

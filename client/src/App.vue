@@ -74,6 +74,7 @@ export default {
         this.$store.commit('setRoomNum', -1);
         this.headerText = "Welcome to Avalon!";
         this.currentView = 'MainMenu';
+        document.title = 'Avalon';
       });
     },
     listenLoadGame: function() {
@@ -82,6 +83,7 @@ export default {
         this.$store.commit('setSelf', data.self);
         this.$store.commit('setWaitingOnList', data.waitingOnList);
         this.$store.commit('setGame', data.game);
+        this.$store.commit('setCharacterSelections', data.characterSelections);
         this.currentView = 'Game';
       });
     },
