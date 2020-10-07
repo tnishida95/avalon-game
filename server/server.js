@@ -201,71 +201,6 @@ function getCurrentQuest(roomNum) {
 }
 
 /**
- * Constructs and emits HTML for the progress bar.
- * @param {string} progressType - Which progress bar will be needed.
- * @param {int} roomNum - The room number of the game.
- */
-function updateProgressBar(progressType, roomNum) {
-  const game = gameList[roomNum];
-  let barWidth = 0;
-  let innerText = "";
-  let outerText = "";
-  if(progressType === "approvingParty") {
-    barWidth = (game.actionsTaken / game.playerCount) * 100;
-    innerText = `${game.actionsTaken} players voted...`;
-    outerText = `...out of ${game.playerCount}`;
-  }
-  else if (progressType === "partyApproved") {
-    barWidth = 100;
-    innerText = `Party accepted!  Players are questing...`;
-  }
-  else if (progressType === "partyRejected") {
-    barWidth = 100;
-    innerText = `Party rejected.  ${game.room[game.partyLeader].name} is selecting a party.`;
-  }
-  else if (progressType === "questing") {
-    barWidth = (game.actionsTaken / game.playerCount) * 100;
-    innerText = `${game.actionsTaken} players departed...`;
-    outerText = `...out of ${game.playerCount}`;
-  }
-  else if (progressType === "questEnded") {
-    if(game.phase === 15) {
-      barWidth = 100;
-      innerText = `Three quests were successful! The Assassin is attempting to assassinate Merlin.`;
-    }
-    else if(game.failures === 0) {
-      barWidth = 100;
-      innerText = `Quest succeeded! ${game.room[game.partyLeader].name} is selecting a party.`;
-    }
-    else {
-      const partySize = game.successes + game.failures;
-      barWidth = (game.successes / partySize) * 100;
-      innerText = `${game.successes} / ${partySize} tried to succeed...`;
-
-      // if it's the fourth quest that's ending,
-      //   and a 7 or more player game,
-      //   and only one failure, it's
-      //   still a success
-      if(game.phase === 11 &&
-         (game.room.length > 6) &&
-         game.failures === 1) {
-        outerText = `...quest succeeded! ${game.room[game.partyLeader].name} is selecting a party.`;
-      }
-      else {
-        outerText = `...quest failed! ${game.room[game.partyLeader].name} is selecting a party.`;
-      }
-    }
-  }
-  for(let j = 0; j < game.room.length; j++) {
-    io.to(game.room[j].sid).emit("updateProgressBar", {
-      barWidth: barWidth.toString() + "%",
-      innerText: innerText,
-      outerText: outerText
-    });
-  }
-}
-
-/**
  * Player creation function to handle chracter reservations and console logging.
  * @param {int} socket - The socket of the player.
  * @param {string} playerName - The self-given player name.
@@ -488,12 +423,14 @@ io.on('connection', (socket) => {
         if(i === game.partyLeader) {
           io.to(roomList[roomNum][i].sid).emit('updateAction', {
             waitingOnList: game.waitingOnList,
+            game: game,
             currentAction: 'PartySelect'
           });
         }
         else {
           io.to(roomList[roomNum][i].sid).emit('updateAction', {
             waitingOnList: game.waitingOnList,
+            game: game,
             currentAction: 'Waiting'
           });
         }
@@ -503,7 +440,220 @@ io.on('connection', (socket) => {
     else {
       io.to(roomNum).emit("updateAction", {
         waitingOnList: game.waitingOnList,
+        game: game,
         currentAction: 'Pregame'
+      });
+    }
+  });
+  socket.on('btnPressPartySubmit', function(data) {
+    const roomNum = data.roomNum;
+    const partySelections = data.partySelections;
+    if(roomList[roomNum] === undefined) {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+      io.to(socket.id).emit('loadMainMenu');
+      return;
+    }
+
+    const game = gameList[roomNum];
+    const room = game.room;
+    console.log(`Client submitted party: ${partySelections}`);
+    if(partySelections.length != game.questSize[getCurrentQuest(roomNum)]) {
+      console.error(`\tBad party select at ${roomNum}:`);
+      console.error(`\t\t${partySelections.length} selected, ${game.questSize[getCurrentQuest(roomNum)]} should be on.`);
+      return;
+    }
+    game.phase++;
+    console.log(`\n~~~~~ Phase ${game.phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Approval ~~~~~`);
+    game.actionsTaken = 0;
+    game.waitingOnList = [];
+    for(let i = 0; i < room.length; i++) {
+      game.waitingOnList.push(room[i].name);
+    }
+
+    // TODO: this could use some optimization
+    let partySlot = 0;
+    game.selectedParty = [-1,-1,-1,-1,-1,-1];
+    for(let i = 0; i < partySelections.length; i++) {
+      // console.log(`Looking at ${partySelections[i]}...`);
+      for(let j = 0; j < room.length; j++) {
+        if(partySelections[i] === room[j].name) {
+          game.selectedParty[partySlot] = j;
+          partySlot++;
+          // console.log(`\tselectedParty[${partySlot}]: ${j}`);
+          break;
+        }
+      }
+    }
+    console.log(`selectedParty array: ${game.selectedParty}`);
+    io.to(roomNum).emit('updateAction', {
+      waitingOnList: game.waitingOnList,
+      game: game,
+      currentAction: 'partyApproval'
+    });
+  });
+  socket.on('btnPressPartyApproval',function(data) {
+    const roomNum = data.roomNum;
+    if(roomList[roomNum] === undefined) {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+      io.to(socket.id).emit('loadMainMenu');
+      return;
+    }
+
+    const game = gameList[roomNum];
+    const room = roomList[roomNum];
+    game.waitingOnList.splice(game.waitingOnList.indexOf(data.self.name), 1);
+    // find out which player pressed it, and save the vote
+    for(let i = 0; i < room.length; i++) {
+      if(socket.id === room[i].sid) {
+        game.votes[i] = data.vote;
+        console.log(`\tParty Approval: [${room[i].name}] voted: ${data.vote}.`);
+        break;
+      }
+    }
+    game.actionsTaken++;
+    const currentQuest = getCurrentQuest(roomNum);
+
+    // if everyone has voted
+    if(game.actionsTaken === game.playerCount) {
+      // record the party and votes
+      if(game.partiesRejected === 0) {
+        game.approvalHistory[currentQuest] = [];
+        game.partyHistory[currentQuest] = [];
+      }
+      game.approvalHistory[currentQuest][game.partiesRejected] = [];
+      game.partyHistory[currentQuest][game.partiesRejected] = [];
+      for(let i = 0; i < game.playerCount; i++) {
+        game.approvalHistory[currentQuest][game.partiesRejected][i] = game.votes[i];
+      }
+      for(let i = 0; i < game.questSize[currentQuest]; i++) {
+        game.partyHistory[currentQuest][game.partiesRejected][i] = game.selectedParty[i];
+      }
+      console.log(`approvalHistory[${currentQuest}][${game.partiesRejected}]: ${game.approvalHistory[currentQuest][game.partiesRejected]}`);
+      console.log(`partyHistory[${currentQuest}][${game.partiesRejected}]: ${game.partyHistory[currentQuest][game.partiesRejected]}`);
+
+      // tally the accepts and rejects
+      let accepts = 0;
+      let rejects = 0;
+      console.log(`Final approval vote cast.  Votes:\n\t${game.votes}`);
+      for(let i = 0; i < 10; i++) {
+        if(game.votes[i] === 1) {
+          accepts++;
+        }
+        else if(game.votes[i] === 2) {
+          rejects++;
+        }
+        else if(game.votes[i] === 0) {
+          break;
+        }
+      }
+      console.log(`Accepts: ${accepts}, Rejects: ${rejects}`);
+      if(game.partyHistories[currentQuest] == null) {
+        game.partyHistories[currentQuest] = [];
+      }
+      if(rejects >= accepts) {
+        // quest rejected, so...
+        // ...record the history
+        game.partyHistories[currentQuest].push(new PartyHistory(game.partyLeader, game.selectedParty, game.votes, false));
+
+        // ...move the party leader
+        game.partyLeader++;
+        if(game.partyLeader === game.playerCount) {
+          game.partyLeader = 0;
+        }
+
+        // ...increment partiesRejected and check if it's the fifth
+        game.partiesRejected++;
+        if(game.partiesRejected === 5) {
+          // if five parties rejected, Evil wins
+          game.phase = 16;
+          game.winningTeam = 2;
+          console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
+          console.log("Here's the JSON of the game:", JSON.stringify(game));
+          for(let j = 0; j < room.length; j++) {
+            io.to(roomNum).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'gameEnd'
+            });
+          }
+          return;
+        }
+
+        // ...return to party select phase
+        game.phase--;
+        console.log(`\n~~~~~ Phase ${game.phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
+        game.waitingOnList = [];
+        for(let i = 0; i < room.length; i++) {
+          game.waitingOnList.push(room[i].name);
+        }
+        for(let i = 0; i < roomList[roomNum].length; i++) {
+          if(i === game.partyLeader) {
+            io.to(roomList[roomNum][i].sid).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'PartySelect'
+            });
+          }
+          else {
+            io.to(roomList[roomNum][i].sid).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'Waiting'
+            });
+          }
+        }
+      } // end if (party rejected)
+      else {
+        // approved and moving to quest phase now, so...
+        // ...record the history
+        game.partyHistories[currentQuest].push(new PartyHistory(game.partyLeader, game.selectedParty, game.votes, true));
+
+        // ...change the game phase
+        game.phase++;
+        console.log(`\n~~~~~ Phase ${game.phase}: Quest ${getCurrentQuest(roomNum) + 1}, Questing ~~~~~`);
+
+        // ...reset all the relevant variables
+        game.actionsTaken = 0;
+        game.successes = 0;
+        game.failures = 0;
+        // maybe these go after party select?
+        game.partiesRejected = 0;
+        game.votes = [0,0,0,0,0,0,0,0,0,0];
+
+        game.waitingOnList = [];
+        for(let i = 0; i < game.selectedParty.length; i++) {
+          if(game.selectedParty[i] === -1) {
+            break;
+          }
+          // this is kind of ugly, and a reason to redo the selectedParty system
+          //   maybe just use the player names?
+          game.waitingOnList.push(room[game.selectedParty[i]].name);
+        }
+        // TODO: send quest boards out to questers, and waiting otherwise
+        for(let i = 0; i < room.length; i++) {
+          if(game.selectedParty.includes(i)) {
+            io.to(roomNum).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'Questing'
+            });
+          }
+          else {
+            io.to(roomNum).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'Waiting'
+            });
+          }
+        }
+      } // end else (party approved)
+    }
+    else {
+      // not everyone has voted; just update the waiting list
+      io.to(roomNum).emit('updateAction', {
+        waitingOnList: game.waitingOnList,
+        game: game,
+        currentAction: 'partyApproval'
       });
     }
   });

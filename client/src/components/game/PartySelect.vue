@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <h3>Select {{ partySize }} players for the party:</h3>
-    <v-btn-toggle multiple group v-bind:max="partySize" v-model="selectedParty">
+    <v-btn-toggle multiple group v-bind:max="partySize" v-model="partySelections">
       <v-hover v-slot:default="{ hover }" v-for="player in room" :key="player.name">
         <v-btn  block :elevation="hover ? 12 : 2" :class="{ 'on-hover': hover }" v-bind:value="player.name">
           {{ player.name }}
@@ -9,9 +9,9 @@
       </v-hover>
     </v-btn-toggle>
     <p/>
-    <v-chip outlined v-for="name in this.selectedParty" :key="name">{{ name }}</v-chip>
+    <v-chip outlined v-for="name in this.partySelections" :key="name">{{ name }}</v-chip>
     <p/>
-    <v-btn :disabled="selectedParty.length > partySize || selectedParty.length < partySize"
+    <v-btn :disabled="partySelections.length > partySize || partySelections.length < partySize"
            x-large v-on:click="btnPressPartySubmit">Submit</v-btn>
     <v-divider/>
   </div>
@@ -22,7 +22,7 @@ export default {
   name: 'PartySelect',
   data: function() {
     return {
-      selectedParty: []
+      partySelections: []
     };
   },
   computed: {
@@ -52,8 +52,10 @@ export default {
   },
   methods: {
     btnPressPartySubmit: function(event) {
+      console.log(this.partySelections);
       this.$socket.emit('btnPressPartySubmit', {
-        // TODO
+        roomNum: this.$store.state.roomNum,
+        partySelections: this.partySelections
       });
     },
   },

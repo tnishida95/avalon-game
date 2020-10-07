@@ -5,8 +5,8 @@
     <h4>{{ self.name }}, you are: <strong>{{ self.character }}</strong>.</h4>
     <h5>{{ characterDescription }}</h5>
     <br/>
-    <h4>Additional Characters:</h4>
-    <h5>{{ additionalCharacters }}</h5>
+    <h4>Special Characters:</h4>
+    <h5>{{ specialCharacters }}</h5>
     <br/>
     <v-btn x-large v-on:click="btnPressReady" v-if="!isDone">Ready</v-btn>
     <v-divider/>
@@ -25,16 +25,14 @@ export default {
     self() {
       return this.$store.state.self;
     },
-    additionalCharacters() {
-      const characterSelections = this.$store.state.characterSelections;
-      console.log(characterSelections);
-      if(characterSelections.length === 0) {
-        return 'None';
+    specialCharacters() {
+      const specialCharacters = ['merlin', 'assassin'];
+
+      if(this.$store.state.characterSelections.length > 0) {
+        specialCharacters.push(...this.$store.state.characterSelections);
       }
-      else {
-        // TODO: use the pretty string
-        return characterSelections.join(', ').toUpperCase();
-      }
+      // TODO: use the pretty string
+      return specialCharacters.join(', ').toUpperCase();
     },
     characterDescription: function() {
       const self = this.$store.state.self;

@@ -13,6 +13,7 @@
 <script>
 import Pregame from './Pregame';
 import PartySelect from './PartySelect';
+import PartyApproval from './PartyApproval';
 import Waiting from './Waiting';
 
 export default {
@@ -20,6 +21,7 @@ export default {
   components: {
     Pregame,
     PartySelect,
+    PartyApproval,
     Waiting
   },
   data: function() {
@@ -37,6 +39,7 @@ export default {
     listenUpdateAction: function() {
       this.$socket.on('updateAction', (data) => {
         this.$store.commit('setWaitingOnList', data.waitingOnList);
+        this.$store.commit('setGame', data.game);
         this.currentAction = data.currentAction;
       });
     }
