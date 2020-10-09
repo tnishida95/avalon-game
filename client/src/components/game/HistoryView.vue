@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-expansion-panels v-bind:value='panel'>
+    <v-expansion-panels>
       <v-expansion-panel>
         <v-expansion-panel-header>
           <h3 class="text-center">Game History</h3>
@@ -37,128 +37,12 @@ export default {
   data() {
     return {
       partyTracker: [],
-      questTracker: [],
-      panel: 0,
-      game: {
-        "room": [{
-          "sid": "EQTNzNt383ilObnfAAAF",
-          "name": "1test",
-          "character": "?"
-        }, {
-          "sid": "VNRX4DeRopPWtDubAAAG",
-          "name": "fzsebf",
-          "character": "?"
-        }, {
-          "sid": "oVbSBiWRVGzZPiWIAAAH",
-          "name": "xrdhncfd",
-          "character": "?"
-        }, {
-          "sid": "fvn9ZaId4U7K69wpAAAI",
-          "name": "xerdnfv",
-          "character": "Assassin"
-        }, {
-          "sid": "zefL5oH604umvgZYAAAJ",
-          "name": "xerthdfn",
-          "character": "Agent of Evil"
-        }],
-        "playerCount": 5,
-        "partyHistories": [
-        [{
-          "partyLeader": 4,
-          "selectedParty": [0, 4, -1, -1, -1, -1],
-          "votes": [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-          "isApproved": true
-        }],
-        [{
-          "partyLeader": 0,
-          "selectedParty": [0, 1, 2, -1, -1, -1],
-          "votes": [2, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-          "isApproved": true
-        }],
-        [{
-          "partyLeader": 1,
-          "selectedParty": [0, 1, -1, -1, -1, -1],
-          "votes": [2, 2, 2, 1, 1, 0, 0, 0, 0, 0],
-          "isApproved": false
-        }, {
-          "partyLeader": 2,
-          "selectedParty": [1, 0, -1, -1, -1, -1],
-          "votes": [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-          "isApproved": true
-        }],
-        [{
-          "partyLeader": 3,
-          "selectedParty": [0, 1, 3, -1, -1, -1],
-          "votes": [1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-          "isApproved": true
-        }]
-        ],
-        "questHistories": [{
-          "partyActions": [1, 0, 0, 0, 2, 0, 0, 0, 0, 0],
-          "isSuccessful": false
-        }, {
-          "partyActions": [1, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-          "isSuccessful": true
-        }, {
-          "partyActions": [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-          "isSuccessful": true
-        }, {
-          "partyActions": [1, 1, 0, 1, 0, 0, 0, 0, 0, 0],
-          "isSuccessful": true
-        }],
-        "goodNum": 3,
-        "evilNum": 2,
-        "questSize": [2, 3, 2, 3, 3],
-        "phase": 16,
-        "quests": [2, 1, 1, 1, 0],
-        "votes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "partyActions": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "winningTeam": 2,
-        "successes": 3,
-        "failures": 0,
-        "partiesRejected": 0,
-        "actionsTaken": 3,
-        "partyLeader": 4,
-        "assassinated": 0,
-        "selectedParty": [0, 1, 3, -1, -1, -1],
-        "approvalHistory": [
-        [
-        [1, 1, 1, 1, 1]
-        ],
-        [
-        [2, 1, 1, 1, 1]
-        ],
-        [
-        [2, 2, 2, 1, 1],
-        [1, 1, 1, 1, 1]
-        ],
-        [
-        [1, 1, 1, 1, 1]
-        ]
-        ],
-        "partyHistory": [
-        [
-        [0, 4]
-        ],
-        [
-        [0, 1, 2]
-        ],
-        [
-        [0, 1],
-        [1, 0]
-        ],
-        [
-        [0, 1, 3]
-        ]
-        ],
-        "waitingOnList": ["xerdnfv"]
-      }
+      questTracker: []
     };
   },
   computed: {
     tableHeaders() {
-      const game = this.game;
-      // const game = this.$store.state.game;
+      const game = this.$store.state.game;
       const headers = ['Player'];
       if(game.phase === 16) {
         headers.push('Character');
@@ -174,8 +58,7 @@ export default {
       return headers;
     },
     playerRows() {
-      const game = this.game;
-      // const game = this.$store.state.game;
+      const game = this.$store.state.game;
       const rows = [];
       for(let i = 0; i < game.playerCount; i++) {
         const row = [];
@@ -250,7 +133,8 @@ export default {
   },
   methods: {
     onParty: function(rowsIndex, index) {
-      if(this.game.phase === 16) {
+      const game = this.$store.state.game;
+      if(game.phase === 16) {
         // if it's the end game history, need to offset by one because
         //   of the extra character column
         index--;
@@ -258,21 +142,23 @@ export default {
       return this.partyTracker[rowsIndex].includes(index);
     },
     isSuccess: function(index) {
-      if(this.game.phase === 16) {
+      const game = this.$store.state.game;
+      if(game.phase === 16) {
         index--;
       }
       if(this.questTracker.includes(index)) {
-        if(this.game.quests[this.questTracker.indexOf(index)] === 1) {
+        if(game.quests[this.questTracker.indexOf(index)] === 1) {
           return true;
         }
       }
     },
     isFail: function(index) {
-      if(this.game.phase === 16) {
+      const game = this.$store.state.game;
+      if(game.phase === 16) {
         index--;
       }
       if(this.questTracker.includes(index)) {
-        if(this.game.quests[this.questTracker.indexOf(index)] === 2) {
+        if(game.quests[this.questTracker.indexOf(index)] === 2) {
           return true;
         }
       }

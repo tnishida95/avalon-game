@@ -9,7 +9,9 @@
       </v-hover>
     </v-btn-toggle>
     <p/>
-    <v-chip outlined v-for="name in this.partySelections" :key="name">{{ name }}</v-chip>
+    <span>Selected:
+      <v-chip outlined v-for="name in this.partySelections" :key="name">{{ name }}</v-chip>
+    </span>
     <p/>
     <v-btn :disabled="partySelections.length > partySize || partySelections.length < partySize"
            x-large v-on:click="btnPressPartySubmit">Submit</v-btn>

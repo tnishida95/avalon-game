@@ -20,6 +20,9 @@ export default {
     ActionView,
     HistoryView,
     PlayerView
+  },
+  computed: {
+
   }
 };
 </script>
