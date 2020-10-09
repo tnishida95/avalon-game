@@ -4,6 +4,7 @@
       <Header v-bind:headerText="headerText"/>
       <component v-bind:is="currentView"
                  v-bind:snackbar="snackbar"/>
+      <HistoryView/>
       <Rules/>
       <Footer/>
     </v-container>
@@ -26,6 +27,7 @@ import GuestLobby from './components/GuestLobby';
 import Rules from './components/Rules';
 import Footer from './components/Footer';
 import Game from './components/game/Game';
+import HistoryView from './components/game/HistoryView';
 
 export default {
   name: 'App',
@@ -36,7 +38,8 @@ export default {
     GuestLobby,
     Game,
     Rules,
-    Footer
+    Footer,
+    HistoryView
   },
   computed: {
     room() {

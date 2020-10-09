@@ -10,9 +10,6 @@ Vue.config.productionTip = false;
 
 Vue.use(Vuex);
 
-// note: consider whether Vuex is needed here;
-// project may be simple enough for
-// Vue.prototype.$foo usage throughout
 const store = new Vuex.Store({
   state: {
     room: [],
@@ -47,7 +44,7 @@ const port = process.env.PORT || 3000;
 const socket = io(`http://localhost:${port}`);
 
 socket.on('connect', () => {
-  console.log(socket.id);
+  console.log('Successfully established socket connection');
 });
 
 Vue.prototype.$socket = socket;

@@ -396,7 +396,9 @@ io.on('connection', (socket) => {
     console.log("sending out game boards...");
     for(let i = 0; i < roomList[roomNum].length; i++) {
       const revealedRoom = utils.getRevealedRoom(data.charList, roomList[roomNum], roomList[roomNum][i].character);
-      game.room = revealedRoom;
+      // TODO: need to look into whether or not game can be looked at in the client...
+      //   if it's easy, will need to send copy of the Game object with a revealedRoom set
+      //   to each player every time a game update is sent to the client
       io.to(roomList[roomNum][i].sid).emit("loadGame", {
         self: {
           sid: roomList[roomNum][i].sid,
