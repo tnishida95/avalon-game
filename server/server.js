@@ -240,6 +240,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('btnPressNewGame', function(data) {
+    // TODO: add input sanitization for name, roomNum
     console.log(`[${data.name}] pressed New Game`);
     let roomNum;
     do {
@@ -261,7 +262,9 @@ io.on('connection', (socket) => {
       roomNum: roomNum.toString()
     });
   });
+
   socket.on('btnPressJoinGame', function(data) {
+    // TODO: add input sanitization for name, roomNum
     const roomNum = (data.roomNum).toString();
     console.log(`[${data.name}] pressed Join Game with roomNum: ${data.roomNum}`);
     if(gameList[roomNum] != null) {
@@ -318,6 +321,7 @@ io.on('connection', (socket) => {
       });
     }
   });
+
   socket.on('btnPressLeaveGame', function(data) {
     const roomNum = data.roomNum;
     if(roomList[roomNum] !== undefined) {
@@ -341,6 +345,7 @@ io.on('connection', (socket) => {
     }
     io.to(socket.id).emit('loadMainMenu');
   });
+
   socket.on('btnPressDisbandGame', function(data) {
     const roomNum = data.roomNum;
     console.log("Disband Game button pressed for roomNum: " + roomNum);
@@ -360,6 +365,7 @@ io.on('connection', (socket) => {
     }
 
   });
+
   socket.on('btnPressStartGame', function(data) {
     const roomNum = data.roomNum;
     const characterSelections = [...data.charList];
@@ -404,6 +410,7 @@ io.on('connection', (socket) => {
       });
     }
   });
+
   socket.on('btnPressReady', function(data) {
     const roomNum = data.roomNum;
     if(roomList[roomNum] === undefined) {
@@ -414,6 +421,7 @@ io.on('connection', (socket) => {
 
     const game = gameList[roomNum];
     const room = game.room;
+    console.log(`[${data.self.name}] is ready`);
     game.waitingOnList.splice(game.waitingOnList.indexOf(data.self.name), 1);
     if(game.waitingOnList.length === 0) {
       console.log('all players ready, starting game');
@@ -445,6 +453,7 @@ io.on('connection', (socket) => {
       });
     }
   });
+
   socket.on('btnPressPartySubmit', function(data) {
     const roomNum = data.roomNum;
     const partySelections = data.partySelections;
@@ -491,7 +500,8 @@ io.on('connection', (socket) => {
       currentAction: 'partyApproval'
     });
   });
-  socket.on('btnPressPartyApproval',function(data) {
+
+  socket.on('btnPressPartyApproval', function(data) {
     const roomNum = data.roomNum;
     if(roomList[roomNum] === undefined) {
       console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
@@ -551,7 +561,7 @@ io.on('connection', (socket) => {
         game.partyHistories[currentQuest] = [];
       }
       if(rejects >= accepts) {
-        // quest rejected, so...
+        // party rejected, so...
         // ...record the history
         game.partyHistories[currentQuest].push(new PartyHistory(game.partyLeader, game.selectedParty, game.votes, false));
 
@@ -569,7 +579,7 @@ io.on('connection', (socket) => {
           game.winningTeam = 2;
           console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
           console.log("Here's the JSON of the game:", JSON.stringify(game));
-          for(let j = 0; j < room.length; j++) {
+          for(let i = 0; i < room.length; i++) {
             io.to(roomNum).emit('updateAction', {
               waitingOnList: game.waitingOnList,
               game: game,
@@ -582,20 +592,17 @@ io.on('connection', (socket) => {
         // ...return to party select phase
         game.phase--;
         console.log(`\n~~~~~ Phase ${game.phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
-        game.waitingOnList = [];
-        for(let i = 0; i < room.length; i++) {
-          game.waitingOnList.push(room[i].name);
-        }
+        game.waitingOnList = [room[game.partyLeader].name];
         for(let i = 0; i < roomList[roomNum].length; i++) {
           if(i === game.partyLeader) {
-            io.to(roomList[roomNum][i].sid).emit('updateAction', {
+            io.to(room[i].sid).emit('updateAction', {
               waitingOnList: game.waitingOnList,
               game: game,
               currentAction: 'PartySelect'
             });
           }
           else {
-            io.to(roomList[roomNum][i].sid).emit('updateAction', {
+            io.to(room[i].sid).emit('updateAction', {
               waitingOnList: game.waitingOnList,
               game: game,
               currentAction: 'Waiting'
@@ -629,17 +636,18 @@ io.on('connection', (socket) => {
           //   maybe just use the player names?
           game.waitingOnList.push(room[game.selectedParty[i]].name);
         }
-        // TODO: send quest boards out to questers, and waiting otherwise
+
+        // ...send out Actions
         for(let i = 0; i < room.length; i++) {
           if(game.selectedParty.includes(i)) {
-            io.to(roomNum).emit('updateAction', {
+            io.to(room[i].sid).emit('updateAction', {
               waitingOnList: game.waitingOnList,
               game: game,
               currentAction: 'Questing'
             });
           }
           else {
-            io.to(roomNum).emit('updateAction', {
+            io.to(room[i].sid).emit('updateAction', {
               waitingOnList: game.waitingOnList,
               game: game,
               currentAction: 'Waiting'
@@ -656,6 +664,208 @@ io.on('connection', (socket) => {
         currentAction: 'partyApproval'
       });
     }
+  });
+
+  socket.on('btnPressQuestAction', function(data) {
+    const roomNum = data.roomNum;
+    if(roomList[roomNum] === undefined) {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+      io.to(socket.id).emit('loadMainMenu');
+      return;
+    }
+    const game = gameList[roomNum];
+    const room = roomList[roomNum];
+    game.waitingOnList.splice(game.waitingOnList.indexOf(data.self.name), 1);
+    // find out which player pressed it, and save the action
+    for(let i = 0; i < room.length; i++) {
+      if(socket.id === room[i].sid) {
+        game.partyActions[i] = data.questAction;
+        console.log(`\tQuest Action: [${room[i].name}] quested: ${data.questAction}.`);
+        break;
+      }
+    }
+    if(data.questAction === 1) {
+      game.successes++;
+    }
+    else {
+      game.failures++;
+    }
+    game.actionsTaken++;
+    const currentQuest = getCurrentQuest(roomNum);
+    if(game.actionsTaken === game.questSize[currentQuest]) {
+      // quest has ended, so now...
+
+      console.log("Final quest action taken. Quest...");
+      if(game.questHistories[currentQuest] == null) {
+        game.questHistories[currentQuest] = [];
+      }
+
+      // ...determine successfulness
+      // if no failures OR
+      //   4th quest AND more than six players AND less than two failures
+      if(game.failures === 0 ||
+         (currentQuest === 3 && room.length > 6 && game.failures < 2) ) {
+        game.quests[currentQuest] = 1;
+        game.questHistories[currentQuest] = new QuestHistory(game.partyActions, true);
+        console.log(`\t...Succeeded!`);
+      }
+      else {
+        game.quests[currentQuest] = 2;
+        game.questHistories[currentQuest] = new QuestHistory(game.partyActions, false);
+        console.log(`\t...Failed!`);
+      }
+      // ...reset the party actions
+      game.partyActions = [0,0,0,0,0,0,0,0,0,0];
+
+      // ...change party leader
+      game.partyLeader++;
+      if(game.partyLeader === game.playerCount) {
+        console.log(``);
+        game.partyLeader = 0;
+      }
+
+      // ...move to next phase
+      game.waitingOnList = [room[game.partyLeader].name];
+      game.phase++;
+
+      // count successes and failures
+      let currentSuccesses = 0;
+      let currentFailures = 0;
+      for(let i = 0; i < 5; i++) {
+        if(game.quests[i] === 1) {
+          currentSuccesses++;
+        }
+        else if (game.quests[i] === 2) {
+          currentFailures++;
+        }
+        else {
+          break;
+        }
+      }
+      if(currentSuccesses >= 3) {
+        game.phase = 15;
+      }
+      if(currentFailures >= 3) {
+        game.phase = 16;
+        game.winningTeam = 2;
+      }
+
+      if(game.phase < 15) {
+        console.log(`\n~~~~~ Phase ${game.phase}: Quest ${getCurrentQuest(roomNum) + 1}, Party Select ~~~~~`);
+        for(let i = 0; i < roomList[roomNum].length; i++) {
+          if(i === game.partyLeader) {
+            io.to(room[i].sid).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'PartySelect'
+            });
+          }
+          else {
+            io.to(room[i].sid).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'Waiting'
+            });
+          }
+        }
+      }
+      else if(game.phase === 15) {
+        console.log(`\n~~~~~ Phase 15: Assassin Phase ~~~~~`);
+        // setting the waitingOnList to the Assassin player
+        for(let i = 0; i < room.length; i++) {
+          if(room[i].character === 'assassin') {
+            game.waitingOnList = [room[i].name];
+            break;
+          }
+        }
+        for(let i = 0; i < room.length; i++) {
+          if(room[i].character === 'assassin') {
+            io.to(room[i].sid).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'Assassin'
+            });
+          }
+          else {
+            io.to(room[i].sid).emit('updateAction', {
+              waitingOnList: game.waitingOnList,
+              game: game,
+              currentAction: 'Waiting'
+            });
+          }
+        }
+      }
+      else {
+        console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
+        console.log("Here's the JSON of the game:", JSON.stringify(game));
+        io.to(roomNum).emit('updateAction', {
+          waitingOnList: game.waitingOnList,
+          game: game,
+          currentAction: 'GameEnd'
+        });
+      }
+    } // end if questing had ended
+    else {
+      // not everyone has quested; just update the waiting list
+      for(let i = 0; i < room.length; i++) {
+        if(game.selectedParty.includes(i)) {
+          io.to(room[i].sid).emit('updateAction', {
+            waitingOnList: game.waitingOnList,
+            game: game,
+            currentAction: 'Questing'
+          });
+        }
+        else {
+          io.to(room[i].sid).emit('updateAction', {
+            waitingOnList: game.waitingOnList,
+            game: game,
+            currentAction: 'Waiting'
+          });
+        }
+      }
+    }
+  });
+
+  socket.on('btnPressAssassinSubmit', function(data) {
+    const roomNum = data.roomNum;
+    if(roomList[roomNum] === undefined) {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+      io.to(socket.id).emit('loadMainMenu');
+      return;
+    }
+
+    const game = gameList[roomNum];
+    const room = roomList[roomNum];
+    const assassinatedName = data.assassinatedName;
+    for(let i = 0; i < room.length; i++) {
+      if(room[i].name === assassinatedName) {
+        game.assassinated = i;
+      }
+    }
+    game.winningTeam = 0; // 1 = Good, 2 = Evil
+    console.log(`The Assassin has chosen to assassinate ${assassinatedName}.`);
+    if(room[game.assassinated].character === "merlin") {
+      console.log(`Merlin [${room[game.assassinated].name}] has been assassinated!`);
+      game.winningTeam = 2;
+    }
+    else {
+      console.log(`Merlin survives!`);
+      game.winningTeam = 1;
+    }
+    game.phase = 16;
+    console.log(`\n~~~~~ Phase 16: Game End ~~~~~`);
+    console.log("Here's the JSON of the game:", JSON.stringify(game));
+    if(game.winningTeam === 1) {
+      console.log("Good has defeated Evil!");
+    }
+    else {
+      console.log("Evil has defeated Good!");
+    }
+    io.to(roomNum).emit('updateAction', {
+      waitingOnList: game.waitingOnList,
+      game: game,
+      currentAction: 'GameEnd'
+    });
   });
 
 });

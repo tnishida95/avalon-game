@@ -52,7 +52,6 @@ export default {
   },
   methods: {
     btnPressPartySubmit: function(event) {
-      console.log(this.partySelections);
       this.$socket.emit('btnPressPartySubmit', {
         roomNum: this.$store.state.roomNum,
         partySelections: this.partySelections

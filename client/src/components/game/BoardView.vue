@@ -2,7 +2,7 @@
   <div class="text-center">
     <h3>Game Board</h3>
     <h4>Quests:</h4>
-    <v-btn icon x-large outlined class="mx-1" v-for="(quest, index) in game.quests" :key="quest"
+    <v-btn icon x-large outlined class="mx-1" v-for="(quest, index) in game.quests" :key="index"
            v-bind:class="{ [`good-blue`]: (quest === 1), [`evil-red`]: (quest === 2) }">
       {{ game.questSize[index] }}
     </v-btn>

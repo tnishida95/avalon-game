@@ -9,6 +9,7 @@
     <h5>{{ specialCharacters }}</h5>
     <br/>
     <v-btn x-large v-on:click="btnPressReady" v-if="!isDone">Ready</v-btn>
+    <h3 v-if="isDone">Readied.</h3>
     <v-divider/>
   </div>
 </template>

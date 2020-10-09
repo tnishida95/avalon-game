@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-expansion-panels>
+    <v-expansion-panels v-bind:value='panel'>
       <v-expansion-panel>
         <v-expansion-panel-header>
           <h3 class="text-center">Players</h3>
@@ -30,6 +30,11 @@
 <script>
 export default {
   name: 'PlayerView',
+  data() {
+    return {
+      panel: 0
+    };
+  }
 };
 </script>
 

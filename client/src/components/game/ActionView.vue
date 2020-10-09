@@ -14,6 +14,9 @@
 import Pregame from './Pregame';
 import PartySelect from './PartySelect';
 import PartyApproval from './PartyApproval';
+import Questing from './Questing';
+import Assassin from './Assassin';
+import GameEnd from './GameEnd';
 import Waiting from './Waiting';
 
 export default {
@@ -22,6 +25,9 @@ export default {
     Pregame,
     PartySelect,
     PartyApproval,
+    Questing,
+    Assassin,
+    GameEnd,
     Waiting
   },
   data: function() {
@@ -32,7 +38,36 @@ export default {
   },
   computed: {
     progress: function() {
-      return ((this.$store.state.room.length - this.$store.state.waitingOnList.length) / this.$store.state.room.length) * 100;
+      const phase = this.$store.state.game.phase;
+      let max = 10;
+      // pregame, party approval (this comes first because phase = 0 when Pregame)
+      if(this.currentAction === 'Pregame' || phase === 1 || phase === 4 || phase === 7 || phase === 10 || phase === 13) {
+        max = this.$store.state.room.length;
+      }
+      // party select, assassin
+      else if(phase === 0 || phase === 3 || phase === 6 || phase === 9 || phase === 12) {
+        max = 1;
+      }
+      // questing
+      else if(phase === 2) {
+        max = this.$store.state.game.questSize[0];
+      }
+      else if(phase === 5) {
+        max = this.$store.state.game.questSize[1];
+      }
+      else if(phase === 8) {
+        max = this.$store.state.game.questSize[2];
+      }
+      else if(phase === 11) {
+        max = this.$store.state.game.questSize[3];
+      }
+      else if(phase === 14) {
+        max = this.$store.state.game.questSize[4];
+      }
+      else {
+        return 100;
+      }
+      return ((max - this.$store.state.waitingOnList.length) / max) * 100;
     }
   },
   methods: {
