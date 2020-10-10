@@ -1,9 +1,11 @@
 const utils = require('./utils');
 const app = require('express')();
-const serv = require('http').createServer(app);
+const path = require('path');
+const serveStatic = require('serve-static');
+app.use(serveStatic(__dirname + "/dist"));
 const port = process.env.PORT || 3000;
-serv.listen(port);
-const io = require('socket.io')(serv);
+const server = app.listen(port);
+const io = require('socket.io')(server);
 console.log(`Server started listening on port ${port}.`);
 
 const socketList = [];

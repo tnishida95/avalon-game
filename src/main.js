@@ -40,12 +40,10 @@ const store = new Vuex.Store({
   }
 });
 
-const port = process.env.PORT || 3000;
-const hostname = process.env.HOSTNAME || location.hostname;
-const socket = io(`${hostname}:${port}`);
+const socket = io();
 
 socket.on('connect', () => {
-  console.log(`Successfully established socket connection with ${location.hostname}:${port}`);
+  console.log('Successfully established socket connection');
 });
 
 Vue.prototype.$socket = socket;
