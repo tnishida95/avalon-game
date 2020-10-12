@@ -139,7 +139,7 @@ exports.getRevealedRoom = function(characterSelections, room, givenCharacter) {
       character = exports.getPrettyName(givenCharacter);
     }
     else if(givenCharacter === 'merlin') {
-      if(room[i].character === 'assassin' || room[i].character === 'morgana' || room[i].character === 'oberon') {
+      if(room[i].character === 'assassin' || room[i].character === 'morgana' || room[i].character === 'oberon' || room[i].character.includes('evil')) {
         character = 'Agent of Evil';
       }
       else {
