@@ -872,14 +872,12 @@ io.on('connection', (socket) => {
 
   socket.on('btnPressEndNoRejoin', function(data) {
     const roomNum = data.roomNum;
-    if(roomList[roomNum] !== undefined) {
-      // removing the player from the lobby
-      for(let i = 0; i < roomList[roomNum].length; i++) {
-        if(roomList[roomNum][i].sid === socket.id) {
-          console.log("Leave Game button pressed by: " + roomList[roomNum][i].name);
-          roomList[roomNum].splice(i, 1);
-          break;
-        }
+    const room = roomList[roomNum];
+    if(room !== undefined) {
+      // if the host has left, discard the game and room
+      if(room[0].sid === socket.id) {
+        delete roomList[roomNum];
+        delete gameList[roomNum];
       }
       socket.leave(roomNum);
       printRoomList();
@@ -888,6 +886,77 @@ io.on('connection', (socket) => {
       console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
     }
     io.to(socket.id).emit('loadMainMenu');
+  });
+
+  socket.on('btnPressRehostLobby', function(data) {
+    const roomNum = data.roomNum;
+    const name = data.self.name;
+
+    io.to(roomNum).emit("hostReady");
+    // this clears the socket room
+    io.of('/').in(roomNum).clients((error, socketIds) => {
+      if (error) {
+        console.error(error);
+      }
+      socketIds.forEach(socketId => io.sockets.sockets[socketId].leave(roomNum));
+    });
+
+    delete gameList[roomNum];
+    // restart the room with the only the host
+    roomList[roomNum] = [createPlayer(socket, name)];
+    printRoomList();
+    socket.join(roomNum);
+    io.to(socket.id).emit("updateLobby", {
+      room: roomList[roomNum],
+      roomNum: roomNum.toString()
+    });
+  });
+
+  socket.on('btnPressRejoinLobby', function(data) {
+    // TODO: add input sanitization for name, roomNum
+    const roomNum = (data.roomNum).toString();
+    const name = data.self.name;
+
+    // does the room exist?
+    if(roomList[roomNum] === undefined) {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+      io.to(socket.id).emit("error", {
+        message: `Room ${roomNum} not found.`
+      });
+      io.to(socket.id).emit('loadMainMenu');
+      return;
+    }
+
+    // has the game already started?
+    if(gameList[roomNum] != null) {
+      console.log(`player tried to join room [${roomNum}], but game is already in progress`);
+      io.to(socket.id).emit("error", {
+        message: 'Game is already in progress, cannot join.'
+      });
+      io.to(socket.id).emit('loadMainMenu');
+      return;
+    }
+
+    // is there a player with that name already?
+    for(let i = 0; i < roomList[roomNum].length; i++) {
+      if(name === roomList[roomNum][i].name) {
+        console.log(`player tried to join room [${roomNum}] with duplicate name [${name}]`);
+        io.to(socket.id).emit("error", {
+          message: 'Someone in the lobby already has that name.'
+        });
+        io.to(socket.id).emit('loadMainMenu');
+        return;
+      }
+    }
+
+    // all clear, join the lobby
+    roomList[roomNum].push(createPlayer(socket, name));
+    printRoomList();
+    socket.join(roomNum);
+    io.to(roomNum).emit("updateLobby", {
+      room: roomList[roomNum],
+      roomNum: roomNum
+    });
   });
 
 });

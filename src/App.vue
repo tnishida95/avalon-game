@@ -59,10 +59,12 @@ export default {
   methods: {
     listenUpdateLobby: function() {
       this.$socket.on('updateLobby', (data) => {
+        // TODO: bug - rehosting player does not receive updates to HostLobby
+        console.log(`got updateLobby with room: ${data.room}`);
         this.$store.commit('setRoomNum', data.roomNum);
         this.headerText = `Room #${data.roomNum}`;
         this.$store.commit('setRoom', data.room);
-        if(this.$socket.id == data.room[0].sid) {
+        if(this.$socket.id === data.room[0].sid) {
           this.currentView = 'HostLobby';
         }
         else {
