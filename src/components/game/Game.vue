@@ -1,7 +1,7 @@
 <template>
   <div>
     <BoardView/>
-    <ActionView/>
+    <ActionView v-bind:rejoinAction='this.rejoinActionApp'/>
     <HistoryView/>
     <PlayerView/>
   </div>
@@ -21,8 +21,8 @@ export default {
     HistoryView,
     PlayerView
   },
-  computed: {
-
+  props: {
+    rejoinActionApp: String
   }
 };
 </script>

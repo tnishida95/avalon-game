@@ -86,10 +86,10 @@ function GameManager(room) {
   if(this.playerCount == 10) {this.questSize = [3,4,4,5,5];}
 
   /*
-  0, 1, 2 = 1st quest: party select, voting, questing
-  3, 4, 5 = 2nd quest
-  6, 7, 8 = 3rd quest
-  9, 10, 11 = 4th quest
+  0,  1,  2  = 1st quest: party select, voting, questing
+  3,  4,  5  = 2nd quest
+  6,  7,  8  = 3rd quest
+  9,  10, 11 = 4th quest
   12, 13, 14 = 5th quest
   15 = assassin phase
   16 = game end/results/stats
@@ -138,6 +138,10 @@ function GameManager(room) {
   for(let i = 0; i < room.length; i++) {
     this.waitingOnList.push(room[i].name);
   }
+
+  // an array of optional characters selected by the host to be in the game;
+  // needs to be preserved to support disconnected players rejoining
+  this.characterSelections = [];
 }
 
 /** Prints the list of connected sockets. */
@@ -278,14 +282,16 @@ io.on('connection', (socket) => {
           console.log(`Player [${data.name}] is rejoining the game in room [${roomNum}].`);
           socket.join(roomNum);
           room[i].sid = socket.id;
-          io.to(room[i].sid).emit("loadGame", {
+          io.to(room[i].sid).emit("rejoinGame", {
+            roomNum: data.roomNum,
             self: {
               sid: room[i].sid,
               name: room[i].name,
               character: utils.getPrettyName(room[i].character)
             },
-            room: utils.getRevealedRoom(data.charList, room, room[i].character),
-            waitingOnList: gameList[roomNum].waitingOnList
+            room: utils.getRevealedRoom(gameList[roomNum].characterSelections, room, room[i].character),
+            waitingOnList: gameList[roomNum].waitingOnList,
+            game: gameList[roomNum]
           });
           return;
         }
@@ -390,6 +396,7 @@ io.on('connection', (socket) => {
 
     // create a new GameManager and designate the first party leader
     gameList[roomNum] = new GameManager(roomList[roomNum]);
+    gameList[roomNum].characterSelections = [...data.charList];
     const game = gameList[roomNum];
     const room = game.room;
     game.partyLeader = Math.floor(Math.random() * room.length);
@@ -865,11 +872,31 @@ io.on('connection', (socket) => {
     else {
       console.log("Evil has defeated Good!");
     }
-    io.to(roomNum).emit('updateAction', {
+    io.to(roomNum).emit('endGame', {
       waitingOnList: game.waitingOnList,
       game: game,
-      currentAction: 'GameEnd'
+      room: game.room
     });
+  });
+
+  socket.on('btnPressEndNoRejoin', function(data) {
+    const roomNum = data.roomNum;
+    if(roomList[roomNum] !== undefined) {
+      // removing the player from the lobby
+      for(let i = 0; i < roomList[roomNum].length; i++) {
+        if(roomList[roomNum][i].sid === socket.id) {
+          console.log("Leave Game button pressed by: " + roomList[roomNum][i].name);
+          roomList[roomNum].splice(i, 1);
+          break;
+        }
+      }
+      socket.leave(roomNum);
+      printRoomList();
+    }
+    else {
+      console.error(`room [${roomNum}] does not exist, returning to MainMenu`);
+    }
+    io.to(socket.id).emit('loadMainMenu');
   });
 
 });

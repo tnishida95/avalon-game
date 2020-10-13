@@ -16,7 +16,7 @@ export default {
         return 'Waiting for a party to be selected';
       }
       else if(phase === 1 || phase === 4 || phase === 7 || phase === 10 || phase === 13) {
-        // TODO: don't think this ever will happen (view just stays on PartyApproval)
+        // this happens if a player rejoins after casting a vote
         return 'Waiting for approval votes to be cast.';
       }
       else if(phase === 2 || phase === 5 || phase === 8 || phase === 11 || phase === 14) {

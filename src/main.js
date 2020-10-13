@@ -16,7 +16,8 @@ const store = new Vuex.Store({
     roomNum: -1,
     self: {},
     waitingOnList: [],
-    game: {}
+    game: {},
+    characterSelections: []
   },
   mutations: {
     setRoom(state, payload) {
@@ -40,7 +41,14 @@ const store = new Vuex.Store({
   }
 });
 
-const socket = io();
+let socket;
+if(process.env.PORT) {
+  socket = io();
+}
+else {
+  // if here, then we're in a dev env
+  socket = io('http://localhost:3000');
+}
 
 socket.on('connect', () => {
   console.log('Successfully established socket connection');

@@ -9,6 +9,7 @@
       <v-btn x-large v-on:click="btnPressSuccess" v-if="isGood">Success</v-btn>
       <v-btn x-large v-on:click="btnPressFail" v-else>Fail</v-btn>
     </div>
+    <h3 v-if="isDone">Quested!</h3>
     <v-divider/>
   </div>
 </template>

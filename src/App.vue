@@ -3,7 +3,8 @@
     <v-container style="max-width: 1000px;">
       <Header v-bind:headerText="headerText"/>
       <component v-bind:is="currentView"
-                 v-bind:snackbar="snackbar"/>
+                 v-bind:snackbar="snackbar"
+                 v-bind:rejoinActionApp="this.rejoinActionApp"/>
       <Rules/>
       <Footer/>
     </v-container>
@@ -51,7 +52,8 @@ export default {
       currentView: "MainMenu",
       headerText: "Welcome to Avalon!",
       snackbar: false,
-      snackbarText: "Oops, something went wrong."
+      snackbarText: "Oops, something went wrong.",
+      rejoinActionApp: 'Pregame'
     };
   },
   methods: {
@@ -71,7 +73,12 @@ export default {
     },
     listenLoadMainMenu: function() {
       this.$socket.on('loadMainMenu', (data) => {
+        this.$store.commit('setRoom', []);
         this.$store.commit('setRoomNum', -1);
+        this.$store.commit('setSelf', {});
+        this.$store.commit('setWaitingOnList', []);
+        this.$store.commit('setGame', {});
+        this.$store.commit('setCharacterSelections', []);
         this.headerText = "Welcome to Avalon!";
         this.currentView = 'MainMenu';
         document.title = 'Avalon';
@@ -92,6 +99,60 @@ export default {
         this.snackbar = true;
         this.snackbarText = data.message;
       });
+    },
+    listenRejoinGame: function() {
+      this.$socket.on('rejoinGame', (data) => {
+        this.$store.commit('setRoom', data.room);
+        this.$store.commit('setRoomNum', data.roomNum);
+        this.$store.commit('setSelf', data.self);
+        this.$store.commit('setWaitingOnList', data.waitingOnList);
+        this.$store.commit('setGame', data.game);
+        const game = this.$store.state.game;
+        const room = this.$store.state.room;
+        const self = this.$store.state.self;
+        const phase = this.$store.state.game.phase;
+
+        let roomSpot = -1;
+        for(let i = 0; i < room.length; i++) {
+          if(room[i].name === self.name) {
+            roomSpot = i;
+            break;
+          }
+        }
+
+        this.currentView = 'Game';
+        // need to render the right Action component
+        // did the player already take action?  are they supposed to be waiting instead?
+        if(phase === 0 || phase === 3 || phase === 6 || phase === 9 || phase === 12) {
+          // if player is the party leader
+          if(room[game.partyLeader].name === self.name) {
+            this.rejoinActionApp = 'PartySelect';
+            return;
+          }
+        }
+        else if(phase === 1 || phase === 4 || phase === 7 || phase === 10 || phase === 13) {
+          // if the player didn't vote yet
+          if(game.votes[roomSpot] === 0) {
+            this.rejoinActionApp = 'PartyApproval';
+            return;
+          }
+        }
+        else if(phase === 2 || phase === 5 || phase === 8 || phase === 11 || phase === 14) {
+          // if the player is on the quest and did not quest yet
+          if(game.selectedParty.includes(roomSpot) && game.partyActions[roomSpot] === 0) {
+            this.rejoinActionApp = 'Questing';
+            return;
+          }
+        }
+        else {
+          // if the player is the Assassin
+          if(self.character === 'Assassin') {
+            this.rejoinActionApp = 'Assassin';
+            return;
+          }
+        }
+        this.rejoinActionApp = 'Waiting';
+      });
     }
   },
   beforeMount() {
@@ -99,6 +160,7 @@ export default {
     this.listenLoadMainMenu();
     this.listenLoadGame();
     this.listenError();
+    this.listenRejoinGame();
   }
 };
 </script>

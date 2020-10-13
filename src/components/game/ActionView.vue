@@ -2,11 +2,13 @@
   <div class="container-fluid text-center">
     <component v-bind:is="currentAction"/>
     <p/>
-    <span>Waiting for:
-      <v-chip outlined v-for="name in this.$store.state.waitingOnList" :key="name">{{ name }}</v-chip>
-    </span>
-    <v-progress-linear height="10" class="my-5" v-bind:value="progress"></v-progress-linear>
-    <v-divider/>
+    <div v-if="this.$store.state.game.phase < 16">
+      <span>Waiting for:
+        <v-chip outlined v-for="name in this.$store.state.waitingOnList" :key="name">{{ name }}</v-chip>
+      </span>
+      <v-progress-linear height="10" class="my-5" v-bind:value="progress"></v-progress-linear>
+      <v-divider/>
+    </div>
   </div>
 </template>
 
@@ -33,8 +35,11 @@ export default {
   data: function() {
     return {
       isDone: false,
-      currentAction: 'Pregame'
+      currentAction: this.rejoinAction
     };
+  },
+  props: {
+    rejoinAction: String
   },
   computed: {
     progress: function() {
@@ -73,14 +78,25 @@ export default {
   methods: {
     listenUpdateAction: function() {
       this.$socket.on('updateAction', (data) => {
+        // TODO: GAME BREAKING bug: this is will allow a player to take action,
+        // disconnect and rejoin, then receive this and allow another action
         this.$store.commit('setWaitingOnList', data.waitingOnList);
         this.$store.commit('setGame', data.game);
         this.currentAction = data.currentAction;
+      });
+    },
+    listenEndGame: function() {
+      this.$socket.on('endGame', (data) => {
+        this.$store.commit('setWaitingOnList', data.waitingOnList);
+        this.$store.commit('setGame', data.game);
+        this.$store.commit('setRoom', data.room);
+        this.currentAction = 'GameEnd';
       });
     }
   },
   beforeMount() {
     this.listenUpdateAction();
+    this.listenEndGame();
   }
 };
 </script>
