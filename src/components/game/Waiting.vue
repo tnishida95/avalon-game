@@ -13,7 +13,7 @@ export default {
     message() {
       const phase = this.$store.state.game.phase;
       if(phase === 0 || phase === 3 || phase === 6 || phase === 9 || phase === 12) {
-        return 'Waiting for a party to be selected';
+        return 'Waiting for a party to be selected.';
       }
       else if(phase === 1 || phase === 4 || phase === 7 || phase === 10 || phase === 13) {
         // this happens if a player rejoins after casting a vote

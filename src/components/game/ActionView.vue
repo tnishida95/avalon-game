@@ -78,11 +78,11 @@ export default {
   methods: {
     listenUpdateAction: function() {
       this.$socket.on('updateAction', (data) => {
-        // TODO: GAME BREAKING bug: this is will allow a player to take action,
-        // disconnect and rejoin, then receive this and allow another action
         this.$store.commit('setWaitingOnList', data.waitingOnList);
         this.$store.commit('setGame', data.game);
-        this.currentAction = data.currentAction;
+        if(data.currentAction !== '') {
+          this.currentAction = data.currentAction;
+        }
       });
     },
     listenEndGame: function() {

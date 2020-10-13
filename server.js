@@ -672,7 +672,7 @@ io.on('connection', (socket) => {
       io.to(roomNum).emit('updateAction', {
         waitingOnList: game.waitingOnList,
         game: game,
-        currentAction: 'partyApproval'
+        currentAction: ''
       });
     }
   });
@@ -819,20 +819,11 @@ io.on('connection', (socket) => {
     else {
       // not everyone has quested; just update the waiting list
       for(let i = 0; i < room.length; i++) {
-        if(game.selectedParty.includes(i)) {
-          io.to(room[i].sid).emit('updateAction', {
-            waitingOnList: game.waitingOnList,
-            game: game,
-            currentAction: 'Questing'
-          });
-        }
-        else {
-          io.to(room[i].sid).emit('updateAction', {
-            waitingOnList: game.waitingOnList,
-            game: game,
-            currentAction: 'Waiting'
-          });
-        }
+        io.to(room[i].sid).emit('updateAction', {
+          waitingOnList: game.waitingOnList,
+          game: game,
+          currentAction: ''
+        });
       }
     }
   });
