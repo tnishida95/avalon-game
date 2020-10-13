@@ -21,8 +21,9 @@ export default {
   },
   methods: {
     btnPressEndNoRejoin: function(event) {
-      // TODO
-      console.log("TODO");
+      this.$socket.emit('btnPressEndNoRejoin', {
+        roomNum: this.$store.state.roomNum
+      });
     }
   }
 };
