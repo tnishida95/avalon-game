@@ -18,8 +18,10 @@ Currently no support for Lancelot or Lady of the Lake.
 
 Node.js and npm are prerequisites.
 
-Call `npm i` from the client/ and server/ directories to download the needed packages.
+Call `npm i` from the root directory to install any needed packages.
 
-To start the server, call `node server.js` from the server/ folder.  To start the client, call `npm start` from the client folder/.  You should then be able to view the app in a browser at http://localhost:8080/.
+For development, the client and server should be run as distinct instances.  `npm run dev` will launch the frontend and `node server.js` will start the backend.  You should then be able to view the app in a browser at http://localhost:8080/.
 
-Note: Your port may vary, and can be adjusted by setting the `$PORT` environment variable.
+To deploy to a production environment, first build with `npm run build`.  To start the server and serve the prebuilt front-end from the `dist/` directory, call `npm start`.
+
+Note: Your ports may vary, and can be adjusted by setting the `$PORT` environment variable.
