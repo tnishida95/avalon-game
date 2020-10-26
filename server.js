@@ -388,7 +388,7 @@ io.on('connection', (socket) => {
 
     const {isValid, message} = utils.assignCharacters(characterSelections, roomList[roomNum]);
     if(!isValid) {
-      io.to(socket.id).emit("invalidCharacterSelect", {
+      io.to(socket.id).emit("error", {
         message: message
       });
       return;

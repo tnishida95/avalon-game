@@ -2,7 +2,6 @@
   <div id="lobby" class="text-center">
       <v-btn x-large v-on:click="btnPressStartGame">Start Game</v-btn>
       <v-btn x-large v-on:click="btnPressDisbandGame">Disband Game</v-btn>
-    <h3>{{ messageToHost }}</h3>
     <v-divider/>
     <h3>Special Characters</h3>
     <v-container>
@@ -68,15 +67,7 @@ export default {
         charList: this.checkedChars,
         roomNum: this.$store.state.roomNum
       });
-    },
-    listenInvalidCharacterSelect: function() {
-      this.$socket.on('invalidCharacterSelect', (data) => {
-        this.messageToHost = data.message;
-      });
     }
-  },
-  beforeMount() {
-    this.listenInvalidCharacterSelect();
   }
 };
 </script>
