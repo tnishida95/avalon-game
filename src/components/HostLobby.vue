@@ -8,7 +8,7 @@
       <v-row class="justify-center">
         <v-col cols="4">
           <v-checkbox input-value="true" readonly label="Merlin" color="blue" hint="Sees Evil." persistent-hint></v-checkbox>
-        <v-checkbox v-model="checkedChars" label="Percival" value="percival" color="blue" hint="Sees Merlin." persistent-hint></v-checkbox>
+          <v-checkbox v-model="checkedChars" label="Percival" value="percival" color="blue" hint="Sees Merlin." persistent-hint></v-checkbox>
         </v-col>
           <v-col cols="4">
           <v-checkbox input-value="true" readonly label="Assassin" color="red" hint="Tries to kill Merlin." persistent-hint></v-checkbox>

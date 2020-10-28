@@ -330,6 +330,24 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('btnPressSeeLobbies', function(data) {
+
+    const lobbies = [];
+    for(let roomNum in roomList) {
+      if(gameList[roomNum] === undefined) {
+        // there is a lobby if there is a party but no game
+        lobbies.push({
+          roomNum: roomNum,
+          size: roomList[roomNum].length
+        });
+      }
+    }
+
+    io.to(socket.id).emit("lobbies", {
+      lobbies: lobbies
+    });
+  });
+
   socket.on('btnPressLeaveGame', function(data) {
     const roomNum = data.roomNum;
     if(roomList[roomNum] !== undefined) {
